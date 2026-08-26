@@ -284,3 +284,26 @@ ensemble spots with a > 0.5) — that would mean the null K_eff overstates indep
 **Why:** none of the three loosens the gate's numbers (FP <= 0.2, recall >= 0.95 at >= 5 sigma);
 they fix what is being counted.
 **Revisit if:** the re-selected grid's null-bin K_eff falls below 4 (G10).
+
+## D-013 · Gate 4: §10 forced stop invoked; interim operating point proposed, not chosen
+**Date:** 2026-08-26
+**Status:** proposed — awaiting the human decision the brief assigns (§10: "Report the
+trade-off curve and let a human choose")
+**Context:** two genuine attempts (M-009, D-012) leave no operating point meeting FP ≤ 0.2/blank
+and recall ≥ 0.95 at ≥ 5σ simultaneously. The failure is confined to the real-texture null:
+on synthetic noise both arms are met within a few percent of recall at a ≥ 0.5.
+**Options for the human:**
+  1. Interim two-tier point (recommended): `spots_reported` a ≥ 0.6 (pooled FP 0.31; 0.05 on
+     noise; recall 0.88), `spots_candidate` a ≥ 0.4 (recall 0.96). Honest FP claim: "≤ 0.1 on
+     synthetic noise; real-plate phantom rate not measured". Build continues to Phase 5 with
+     confidence refused (E_UNCALIBRATED) as already mandated.
+  2. Precision-first: a ≥ 0.7 (pooled FP 0.16 meets the gate; recall 0.74 — a quarter of
+     5σ spots missed).
+  3. Recall-first: a ≥ 0.5 (recall 0.94; pooled FP 0.54; 0.08 on noise).
+  4. Stop the build until 20 real solvent-only blank plates are photographed under
+     CAPTURE_PROTOCOL — the experiment that actually resolves the question.
+**What is traded in option 1:** on real plates, up to ~0.3 phantom candidates per plate may
+reach the reported list if the real-texture structure is truly phantom; 12% of faint (5σ)
+spots land in the candidate list rather than the reported list.
+**Revisit if:** real blank plates exist (then the battery re-runs with a real null and this
+entry is superseded).

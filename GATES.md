@@ -99,3 +99,20 @@ org spend limit and resumed; all items completed). **Verdict: PASS.**
 4. gate3_check.py's real-P33 analysable band (0.25h–0.80h) is a chosen convention → A-014.
 
 ---
+## Gate 4 · Ensemble detection and the null battery — NOT MET; §10 forced stop invoked
+**Attempts:** two genuine (attempt 1 failed on a contaminated real-texture null — M-009;
+attempt 2 with the honest null, row-coherent S1, re-selected grid, spec-anchored matching).
+**Evidence:** reports/gate4_evidence.json, reports/gate4_tradeoff_curve.png,
+reports/GATE4_FINDING.md (eval split: 100 blanks, 128 observable true spots ≥5σ).
+- No operating point over (agreement, z_med, p) satisfies FP ≤ 0.2/blank AND recall ≥ 0.95.
+- Synthetic-noise blanks: 0.08 FP/plate at a ≥ 0.5 with recall 0.938 — both arms nearly met
+  on noise. Real-texture blanks: 1.23 FP/plate at the same point (phantoms with z_med 10–30,
+  majority agreement) — coherent structure in P33's gutter residual, decidable only by human
+  adjudication on real plates (Phase 6).
+- Grid health G10: K_eff on null bins 9.67 (≥ 4). Per-commit sentinel test added (A-016).
+**Disposition:** written up as a finding per brief §6 Phase 4 and §10; the gate is NOT lowered.
+Recommended interim two-tier operating point (spec 01 §2.6): reported at a ≥ 0.6 (pooled FP
+0.31, noise 0.05, recall 0.88), candidates at a ≥ 0.4 (recall 0.96). Awaiting the human choice
+(D-013). Independent adversarial review of the finding's numbers requested.
+
+---
