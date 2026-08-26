@@ -9,7 +9,6 @@
 Checkpointed per plate (M-008).
 """
 
-import io
 import json
 import sys
 from concurrent.futures import ProcessPoolExecutor
@@ -36,8 +35,13 @@ ROOT = Path(__file__).resolve().parent.parent
 CACHE = ROOT / "reports" / "gate5_cache"
 GRID = json.loads((ROOT / "config" / "ensemble" / "CONFIG_GRID_v1.json").read_text())
 OP = json.loads((ROOT / "config" / "ensemble" / "OPERATING_POINT_v1.json").read_text())
-CONFIG_DOC = {"seed_salt": 0, "config_ref": "config/pipeline/v0.5.0.toml", "grid": GRID["id"], "grid_hash": GRID["hash"],
-              "operating_point": OP["id"], "gate_thresholds": {}}
+from tlc.config.loader import load_pipeline  # noqa: E402
+
+CONFIG_DOC, CONFIG_HASH, CONFIG_REF = load_pipeline("0.5.0")
+CONFIG_DOC = {**CONFIG_DOC, "grid_hash": GRID["hash"], "operating_point_id": OP["id"],
+              "gate_thresholds": {"green_clip_max": 0.15, "green_clip_unusable": 0.40, "frame_overrun_max": 0.02,
+                                  "lane_clip_abstain": 0.20, "lane_clip_area_max": 0.02, "px_per_lane_min": 10.0,
+                                  "vif_abstain": 6.0, "origin_ci90_max_frac": 0.08}}
 
 
 def run_config(n_lanes: int | None, labels: tuple[str, ...] | None) -> RunConfig:

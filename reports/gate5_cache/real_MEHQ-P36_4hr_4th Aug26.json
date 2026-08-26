@@ -1,0 +1,1 @@
+{"file": "MEHQ-P36_4hr_4th Aug26.png", "n_refusals": 7, "n_spots": 4, "refusal_codes": ["E_CLIP_PHOTOMETRY", "E_FRAME_OVERRUN", "E_LANE_COUNT_UNKNOWN", "E_NO_FRONT", "E_NO_REFERENCE_LANE", "NOISE_STRUCTURED"], "schema_valid": true, "silent_nulls": [], "status": "degraded", "verdict": "positions_only"}
