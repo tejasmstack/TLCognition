@@ -341,3 +341,23 @@ test now reads the operating point through the pipeline config instead of naming
 (a, p, z) triple rather than "whatever the config says". But every result JSON produced before this
 commit was made at agreement >= 0.60 while the documentation claimed 0.55, which would have been a
 real audit finding.
+
+## M-019 — The replay path changed the run it was supposed to reproduce (2026-08-26)
+
+**What happened.** `RunService.replay()` re-ran every plate with `vlm_mode="replay"` regardless of the
+mode the original run used. Until the semantic layer was actually wired in (D-028), the VLM block was
+a constant stub and the mode string never reached the result, so this was invisible. The moment the
+block became real, every replay of an `off`-mode run produced a different `vlm.mode`, therefore a
+different `result_sha256`, therefore `E_REPLAY_DRIFT` — **3 of 3 plates** in Gate 10, which had
+passed an hour earlier.
+
+**Why it matters.** Byte-reproducibility is non-negotiable #5. A replay that perturbs the thing it
+reproduces makes drift detection useless: it would cry drift on every honest run and hide a real one.
+
+**Fix.** A replay runs the semantic layer in the ORIGINAL run's mode — `off` stays `off` (the Null
+provider is deterministic), and a `live` original replays from the response cache, which is what
+replay mode is for. Gate 10 back to 3/3 byte-identical.
+
+**The lesson.** Wiring a previously-inert component into the result is a change to the determinism
+surface, not just a feature. The gate that guards that surface has to be re-run in the same commit —
+this one was caught only because Gate 10 was re-run after an unrelated config change.

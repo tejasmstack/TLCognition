@@ -230,5 +230,11 @@ class RunService:
         res = json.loads(Path(row["result_path"]).read_text())
         labels = tuple(L["label"] for L in res["lanes"]) if res["lanes"] and res["lanes"][0]["label_provenance"] == "operator" else None
         n_lanes = len(res["lanes"]) if labels else None
-        return self.run(data, img["original_filename"], n_lanes=n_lanes, labels=labels, vlm_mode="replay",
+        # A replay reproduces the ORIGINAL run's conditions, so it runs the semantic layer in the mode
+        # that run used: `off` stays `off` (the Null provider is deterministic), and a live original
+        # replays from the response cache. Forcing "replay" here changed the VLM block and therefore
+        # the result hash, which is drift caused by the replay itself (M-019).
+        mode = res.get("vlm", {}).get("mode", "off")
+        return self.run(data, img["original_filename"], n_lanes=n_lanes, labels=labels,
+                        vlm_mode="replay" if mode == "live" else mode,
                         replay_of=run_id, expected_result_sha256=row["result_sha256"])

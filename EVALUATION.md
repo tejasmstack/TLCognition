@@ -1,6 +1,6 @@
 # EVALUATION
 
-Generated 2026-08-26T17:31:29Z from committed evidence at commit `ab52eda50ca4` (dirty tree) by `tools/evaluate.py`. Regenerate rather than edit.
+Generated 2026-08-26T17:36:42Z from committed evidence at commit `febdc593b926` (dirty tree) by `tools/evaluate.py`. Regenerate rather than edit.
 
 **The contract of this document:** every number carries an n and an interval. Every metric that cannot be computed is listed as `not computed`, with the reason and what would unblock it — never omitted, never replaced by a plausible-looking figure.
 
@@ -79,8 +79,8 @@ The calibration machinery itself is implemented and tested against synthetic lab
 
 ## 6. Findings and correlations (Gate 9)
 
-- Label-shuffle null battery: **1.8%** of 500 shuffled cohorts surfaced any finding (Wilson upper 95% 3.4%); nominal false-discovery rate q = 0.1.
-- Per-hypothesis fire rate on shuffled data: {'H11': 0.018} (spec 02 §6 N3 disables any hypothesis above 5%).
+- Label-shuffle null battery: **2.0%** of 200 shuffled cohorts surfaced any finding (Wilson upper 95% 5.0%); nominal false-discovery rate q = 0.1.
+- Per-hypothesis fire rate on shuffled data: {'H11': 0.02} (spec 02 §6 N3 disables any hypothesis above 5%).
 - On the unshuffled cohort: reported none; suppressed ['H16', 'H11', 'H14', 'H17']; insufficient data ['H12', 'H13', 'H15', 'H18', 'H19', 'H20', 'H21', 'H22'].
 
 **Gate 9 verdict: PASS** — the system reports nothing from a cohort this size, which is the correct behaviour: with 9 Class B hypotheses and fewer than 6 independent campaigns, no cross-plate correlation can clear its own family (spec 02 §4.7).

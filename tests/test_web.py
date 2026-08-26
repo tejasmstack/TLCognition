@@ -194,3 +194,18 @@ def test_method_page_gate_table_comes_from_the_evidence(client):
     g5 = _json.loads((root / "reports" / "gate5_evidence.json").read_text())
     assert f"{g5['position']['rst_err_p95']}" in html
     assert ("PASS" if g5["gate5_pass"] else "not met") in html
+
+
+def test_replay_reproduces_the_result_byte_for_byte(client, run_id):
+    """NN5, and M-019: the replay must not perturb the run it reproduces (VLM mode included)."""
+    from tlc.api import deps
+    from tlc.api.app import app
+
+    svc = app.dependency_overrides[deps.get_service]()   # the fixture's service, not the process one
+    before = client.get(f"/runs/{run_id}.json").json()
+    out = svc.replay(run_id)
+    assert out["replay_drift"] is False
+    assert out["result_sha256"] == before["provenance"]["result_sha256"]
+    after = svc.load_result(out["run_id"])
+    assert after["vlm"]["mode"] == before["vlm"]["mode"]
+    assert svc.repo.get_run(run_id)["superseded_by"] == out["run_id"]

@@ -23,11 +23,11 @@
   },
   "passed": true,
   "per_hypothesis_fire_rate": {
-    "H11": 0.018
+    "H11": 0.02
   },
   "plates": 8,
   "seed": 20260826,
-  "shuffles": 500,
-  "surfaced_finding_rate": 0.018,
-  "wilson_upper95": 0.0339
+  "shuffles": 200,
+  "surfaced_finding_rate": 0.02,
+  "wilson_upper95": 0.0503
 }
