@@ -8,6 +8,7 @@ from fastapi import APIRouter, Depends, File, Form, HTTPException, UploadFile
 from fastapi.responses import Response
 
 from tlc.api.deps import get_service
+from tlc.insight.service import analyse_cohort_findings
 from tlc.jobs.service import RunService
 from tlc.labels.corrections import CorrectionDoc
 from tlc.labels.partition import batch_key_for, effective_partition
@@ -56,6 +57,32 @@ def get_run(run_id: str, svc: RunService = Depends(get_service)):  # noqa: B008
         raise _error(404, "E_NOT_FOUND", "No such run.", "Check the run id.")
     # byte-identical to the stored pipeline output
     return Response(content=Path(row["result_path"]).read_text(), media_type="application/json")
+
+
+@router.get("/runs/{run_id}/findings")
+def get_findings(run_id: str, svc: RunService = Depends(get_service)):  # noqa: B008
+    """Spec 02 §7.2 findings for this plate (Class A). Cross-plate findings need a cohort: POST /cohort/findings."""
+    if not svc.repo.get_run(run_id):
+        raise _error(404, "E_NOT_FOUND", "No such run.", "Check the run id.")
+    return svc.load_findings(run_id)
+
+
+@router.post("/cohort/findings")
+def cohort_findings(body: dict, svc: RunService = Depends(get_service)):  # noqa: B008
+    """body: {"runs": [run_id, ...], "meta": {run_id: {campaign_id, reaction_time_h, ...}}}"""
+    ids = list(body.get("runs") or [])
+    meta = body.get("meta") or {}
+    results, metas = [], []
+    for rid in ids:
+        r = svc.load_result(rid)
+        if r is None:
+            raise _error(404, "E_NOT_FOUND", f"No such run: {rid}.", "Check the run ids.")
+        results.append(r)
+        metas.append(meta.get(rid, {}))
+    if len(results) < 2:
+        raise _error(422, "E_COHORT_TOO_SMALL", "A cohort needs at least two runs.",
+                     "Select more plates; a cross-plate trend needs at least six in one campaign.")
+    return [f.to_dict() for f in analyse_cohort_findings(results, metas)]
 
 
 @router.post("/runs/{run_id}/replay", status_code=202)

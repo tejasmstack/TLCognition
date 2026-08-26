@@ -163,7 +163,11 @@ def blank_specs() -> list[tuple[str, int]]:
 
 
 def spotted_specs() -> list[int]:
-    return [9000 + i for i in range(250)]  # n >= 300 observable 5-sigma spots (reviewer: n=128 cannot decide 0.95)
+    # 600 plates ~ 1500 observable 5-sigma spots, ~750 per split. At 250 plates (~315 per split) the
+    # 95% interval on recall was [0.918, 0.956] — it contained the 0.95 bound, so the battery could
+    # not decide the gate either way (D-029). Seeds are appended, never renumbered, so the first 250
+    # plates keep their cached records.
+    return [9000 + i for i in range(600)]
 
 
 def _spotted_plate(seed: int) -> tuple[PlateSpec, int]:

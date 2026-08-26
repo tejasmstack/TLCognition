@@ -48,6 +48,18 @@ def list_runs(data_dir: str | None = typer.Option(None), limit: int = 20):
 
 
 @app.command()
+def findings(run_id: str, data_dir: str | None = typer.Option(None)):  # noqa: B008
+    """Print this run's findings (spec 02 §7.2), one line per hypothesis."""
+    svc = _svc(data_dir)
+    fs = svc.load_findings(run_id)
+    if not fs:
+        typer.echo("no findings recorded for this run")
+        raise typer.Exit(1)
+    for f in fs:
+        typer.echo(f"{f['hypothesis_id']:5s} {f['verdict']:18s} {f['headline'][:100]}")
+
+
+@app.command()
 def export(run_id: str, out: str = "-", data_dir: str | None = typer.Option(None)):
     """Write the exact stored result JSON (byte-identical to the pipeline output)."""
     res = _svc(data_dir).load_result(run_id)

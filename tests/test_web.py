@@ -169,3 +169,15 @@ def test_vlm_layer_runs_in_off_mode_and_fabricates_nothing(client, run_id):
     # the lane labels a chemist sees came from the operator, never from the model
     lanes = client.get(f"/runs/{run_id}.json").json()["lanes"]
     assert {L["label_provenance"] for L in lanes} == {"operator"}
+
+
+def test_findings_api_and_cohort_endpoint(client, run_id):
+    r = client.get(f"/api/v1/runs/{run_id}/findings")
+    assert r.status_code == 200 and len(r.json()) >= 10
+    assert client.get("/api/v1/runs/run_nope/findings").status_code == 404
+    small = client.post("/api/v1/cohort/findings", json={"runs": [run_id]})
+    assert small.status_code == 422 and small.json()["detail"]["code"] == "E_COHORT_TOO_SMALL"
+    coh = client.post("/api/v1/cohort/findings", json={"runs": [run_id, run_id]})
+    assert coh.status_code == 200
+    verdicts = {f["verdict"] for f in coh.json()}
+    assert verdicts <= {"insufficient_data", "suppressed", "anomaly"}, "two plates can support no trend"

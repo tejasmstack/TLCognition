@@ -552,3 +552,27 @@ cannot be known before the run.
 **Why:** a block that says `mode: off` because nothing ran is indistinguishable, in the JSON, from a
 block that says `off` because the layer ran and abstained. Only the second is a measurement of
 anything, and NN2 requires the difference to be visible.
+
+## D-029 — Gate 4's battery grows to 600 spotted plates, because 250 could not decide the gate (2026-08-26)
+With M-017 fixed (the gate had been matching the EMG mu instead of the mode), recall at the
+tuning-chosen operating point a >= 0.5 is:
+
+| split | recall at >= 5 sigma | n spots | false bands / synthetic-noise blank |
+|---|---|---|---|
+| tuning (even seeds) | 0.9272 | 316 | 0.07 |
+| eval (odd seeds) | **0.9524** | 315 | 0.14 |
+| pooled | 0.9398 | 631 | — |
+
+The pooled 95% interval is **[0.918, 0.956]**: it contains the 0.95 bound, so the battery cannot
+decide the recall arm either way — the two halves disagree by about two standard errors, which is
+ordinary sampling noise at this size. The false-positive arm is met with room (0.14 against 0.2).
+
+The battery therefore grows from 250 to 600 spotted plates (~1500 observable spots, ~750 per split,
+interval about +/-1.7 points). Seeds are appended, so every existing cached record is reused.
+**This is not a weakened contract:** the bound stays 0.95 and the operating point is still chosen on
+the tuning split alone. If recall lands below 0.95 with a tight interval, Gate 4 is NOT MET and the
+detector needs work at 5-8 sigma, where `reports/exp_recall_miss.py` shows the misses live
+(recall 0.83 at 5-6 sigma, 0.89 at 6-8, 0.95 at 8-12, 0.98 above).
+`scripts/exp_decision_rule.py` rules out the cheap fix: re-scoring the same ensemble evidence with a
+z-weighted score reaches at best 0.93 on tuning at ANY false-positive rate, so the gap is in
+detection, not in the decision rule.
