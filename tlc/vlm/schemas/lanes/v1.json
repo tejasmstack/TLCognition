@@ -1,0 +1,22 @@
+{
+  "$id": "tlc.vlm.lanes.v1",
+  "type": "object",
+  "required": ["lane_count", "lanes"],
+  "additionalProperties": false,
+  "properties": {
+    "lane_count": {"type": ["integer", "string"], "enum": [1, 2, 3, 4, 5, 6, 7, 8, "UNREADABLE"]},
+    "lanes": {
+      "type": "array", "maxItems": 8,
+      "items": {
+        "type": "object",
+        "required": ["x_frac", "label", "label_evidence"],
+        "additionalProperties": false,
+        "properties": {
+          "x_frac": {"type": "number", "minimum": 0, "maximum": 1},
+          "label": {"enum": ["S", "co", "R", "sd", "blank", "other", "UNREADABLE"]},
+          "label_evidence": {"type": "string", "maxLength": 120}
+        }
+      }
+    }
+  }
+}

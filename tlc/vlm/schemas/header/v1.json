@@ -1,0 +1,12 @@
+{
+  "$id": "tlc.vlm.header.v1",
+  "type": "object",
+  "required": ["text", "legible"],
+  "additionalProperties": false,
+  "properties": {
+    "text": {"type": ["string", "null"], "maxLength": 200},
+    "legible": {"enum": ["clear", "partial", "UNREADABLE"]},
+    "uncertain_char_indices": {"type": "array", "items": {"type": "integer", "minimum": 0}},
+    "evidence": {"type": "string", "maxLength": 200}
+  }
+}

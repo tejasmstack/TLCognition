@@ -176,6 +176,7 @@ def assemble(out: RunOutput, image_bytes: bytes, image_meta: dict, config_docume
         photometry_mode=out.photometry_mode,
     )
 
+    od_sha = hashlib.sha256(out.od.astype(np.float32).tobytes()).hexdigest() if out.od is not None else "none"
     densitograms = []
     for L in out.lanes:
         prof32 = L.profile.astype(np.float32)
@@ -185,7 +186,8 @@ def assemble(out: RunOutput, image_bytes: bytes, image_meta: dict, config_docume
             lane_index=L.index, y_px=S.DensitogramYAxis(start=0, stop=int(prof32.size), step=1), unit="OD",
             sampling=f"mean over valid px in [x_center-{L.half_width_px}, x_center+{L.half_width_px}]",
             n_valid_columns=int(np.median(L.n_valid_columns)) if L.n_valid_columns.size else 0,
-            ref=f"pending://runs/{run_id}/densitograms/lane_{L.index:02d}", sha256=hashlib.sha256(prof32.tobytes()).hexdigest(),
+            # content-addressed (A-018): the reference denotes the OD record, not a deployment path
+            ref=f"h5://od/{od_sha}#/densitograms/lane_{L.index:02d}", sha256=hashlib.sha256(prof32.tobytes()).hexdigest(),
             preview=preview[:512],
         ))
 
@@ -248,12 +250,17 @@ def assemble(out: RunOutput, image_bytes: bytes, image_meta: dict, config_docume
     return result
 
 
+# spec 03 §7.2.4 plus the run-envelope fields that necessarily differ between an original and its
+# byte-identical replay (A-018): replay_of/superseded_by and the git bookkeeping (code_fingerprint
+# is the hashed identity; git_commit is not).
 DETERMINISM_EXCLUDED_TOP = {"run_id", "created_at", "storage"}
+DETERMINISM_EXCLUDED_PROVENANCE = {"result_sha256", "replay_of", "superseded_by", "git_commit", "git_dirty"}
 
 
 def result_sha256(result: S.Result) -> str:
     d = result.model_dump(mode="json")
     for k in DETERMINISM_EXCLUDED_TOP:
         d.pop(k, None)
-    d.get("provenance", {}).pop("result_sha256", None)
+    for k in DETERMINISM_EXCLUDED_PROVENANCE:
+        d.get("provenance", {}).pop(k, None)
     return sha256_bytes(canonical_json(d).encode("ascii"))

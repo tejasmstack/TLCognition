@@ -1,0 +1,13 @@
+{
+  "$id": "tlc.vlm.bands.v1",
+  "type": "object",
+  "required": ["header_present", "header_y1_frac", "label_row_present", "label_row_y0_frac", "evidence"],
+  "additionalProperties": false,
+  "properties": {
+    "header_present": {"enum": ["yes", "no", "UNREADABLE"]},
+    "header_y1_frac": {"type": ["number", "null"], "minimum": 0, "maximum": 1},
+    "label_row_present": {"enum": ["yes", "no", "UNREADABLE"]},
+    "label_row_y0_frac": {"type": ["number", "null"], "minimum": 0, "maximum": 1},
+    "evidence": {"type": "string", "maxLength": 200}
+  }
+}

@@ -200,3 +200,29 @@ passes: PER-P19-Opt 3-6hr rows 85-168 (83 rows). The threshold sensitivity and t
 tile-row histogram are written into the evidence so a seam artefact is visible. The textured FP
 figure remains an upper bound on real-texture phantoms; the real phantom rate on genuine blank
 plates is NOT MEASURED.
+
+## A-018 · result_sha256 excludes replay_of, superseded_by, git_commit and git_dirty
+Spec 03 §7.2.4 lists the excluded envelope fields; a byte-identical replay necessarily differs in
+provenance.replay_of, and the git commit/dirty flags are bookkeeping (code_fingerprint is the hashed
+identity). These four are excluded from result_sha256 so the E_REPLAY_DRIFT assertion tests the
+numbers, not the envelope. An identical replay supersedes the original run row (never edits it).
+
+## A-019 · VLM layer interpretations (tlc/vlm, spec 03 §7.9 / spec 01 §7 / brief §8)
+1. Reported `agreement` is Jeffreys-smoothed (spec 01 §7.3); the 0.6 abstention threshold applies
+   to the raw plurality share (spec 03 §7.9.3) — with |V|=9 a unanimous 5/5 is only 0.58 smoothed,
+   so the two cannot be combined literally.
+2. Free-text vocabulary for Jeffreys = number of clusters + 1 (UNREADABLE always present);
+   confusion classes v1 applied after uppercasing, used for clustering only (consensus votes on the
+   chemist's actual glyphs); alignment = pad-to-max (not MSA) — adequate for short IDs, flagged.
+3. Quasi-continuous/free-text fields abstain E_VLM_UNREADABLE when < 60% of samples yield a value.
+4. Crop rule v1: header = top 18%, label row = bottom 18% of the rectified plate, full plate for
+   bands/front; PNG at native resolution; schemas split per prompt id, UNREADABLE in every enum.
+5. Paraphrase i % 4 per sample; the critique prompt's anchor degrades to "(no prior reading)"
+   (spec 01's T=0 anchor pass not implemented; spec 03's 5 x T=1.0 followed).
+6. Only live mode writes cache rows; off mode never touches the store; replay miss raises
+   E_VLM_CACHE_MISS; degraded=True only for provider unavailability in live mode.
+7. A `jsonschema` dependency was avoided (small draft-7-subset validator in tlc/vlm/schema_validate.py).
+8. Live providers are async; read_plate_semantics drives them with asyncio.run (call from a worker
+   thread inside FastAPI).
+No VLM output is a measurement: positions are proposals only; no API keys exist in this
+environment, so live mode is untested end-to-end (A-004-class limitation).

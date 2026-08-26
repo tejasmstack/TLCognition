@@ -1,0 +1,11 @@
+{
+  "$id": "tlc.vlm.front.v1",
+  "type": "object",
+  "required": ["front_drawn", "front_y_frac", "evidence"],
+  "additionalProperties": false,
+  "properties": {
+    "front_drawn": {"enum": ["yes", "no", "UNREADABLE"]},
+    "front_y_frac": {"type": ["number", "null"], "minimum": 0, "maximum": 1},
+    "evidence": {"type": "string", "maxLength": 200}
+  }
+}
