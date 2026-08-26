@@ -13,7 +13,10 @@ import sys
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
-import tlc.core.determinism  # noqa: F401, E402  (must precede numpy)
+
+import tlc.core.determinism  # noqa: F401, E402  (sets BLAS env; MUST import before numpy)
+
+# isort: split
 
 import imageio.v3 as iio  # noqa: E402
 import numpy as np  # noqa: E402
