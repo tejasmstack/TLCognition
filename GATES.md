@@ -164,3 +164,10 @@ shows a flat phantom tile-row histogram.
   D-016 VIF abstention suspended (estimator uncalibrated); band ends at the detected origin.
 
 ---
+**Attempt 4 (2026-08-26, D-019 structure):** after M-012/M-013 the real-noise-texture variant is
+declared not constructible from this corpus of reaction plates (four constructions each carried
+chemistry or tiling artefacts at the ensemble's sensitivity). The FP arm is measured on 200
+synthetic-noise blanks (Null A, ≥200 realisations); the 80 textured plates are a labelled
+diagnostic (`diagnostic_not_null`) with their own phantom rate and tile-row histogram, excluded
+from the gate number. Recall arm unchanged (250 spotted plates). Evidence regenerating at HEAD
+with a code-fingerprinted cache; numbers follow.
