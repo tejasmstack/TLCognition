@@ -176,13 +176,16 @@ dropped; rows where any column's FWHM-smoothed residual exceeds 4 MAD, ±2 FWHM 
 largest contiguous remaining block kept). The screen's decisions are recorded in the Gate 4
 evidence. The null preserves sub-spot texture of the surviving region only.
 
-## A-017 second amendment · The real-texture null source is chosen by a pre-registered corpus rule
+## A-017 second amendment · The real-texture null source is chosen by a fixed corpus rule (history stated; NOT pre-registered)
 P33's gutters failed even after screening (a spot halo at rectified row ~168 read 2.9-3.8 MAD to
 the screen and z 15-25 to the detector). Attempt 3 selects the null source by rule, before the
 battery: over every unique plate with <= 2% clipping (30 plates), score each rectified row by the
 worst lane-window row-mean bump (FWHM-smoothed, detrended at 5 FWHM, in MAD of that statistic —
 the detector's own statistic); keep the longest full-width run with every row < 3 MAD; require
 >= 80 rows. Exactly one region qualifies: MEHQ-P44 rows 56-149 (93 rows x 132 px, max 2.9 MAD).
-The rule, the winner and its score are written into the Gate 4 evidence. The remaining textured
-phantom rate is therefore a measurement of real texture under an honest null, not of P33's
-chemistry.
+The rule, the winner, its score and the threshold sensitivity (2.5 -> no region; 3.5-4.0 -> a
+PER-P19 region) are written into the Gate 4 evidence. History: the rule replaced a per-column
+4-MAD screen that failed on P33 (M-010), and its first version scored only inside the analysable
+band, leaving it blind at the band edge (M-012, fixed: full-height scoring, edge discard, iid
+row-mean check). The textured FP rate is an UPPER BOUND on real-texture phantoms until the
+phantom tile-row histogram in the evidence is flat.

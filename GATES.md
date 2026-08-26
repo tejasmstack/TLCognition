@@ -133,12 +133,18 @@ evidence reports/gate4_evidence.json, curve reports/gate4_tradeoff_curve.png.
 - Tuning split: no point meets both arms strictly; one eval point (a ≥ 0.55, p ≤ 4/61) meets
   both but was not selected on tuning — not claimed.
 - Sampling SE at these n: ±0.045 (FP), ±0.012 (recall).
-**Verdict: BOUNDARY — both arms met within one standard error at the shipped reported tier
-(a ≥ 0.55); a strict pre-registered pass is not demonstrated. Three genuine attempts, none
-weakening the contract.** The human's two-tier interim choice (D-013) is restated on the D-015
-scale as config/ensemble/OPERATING_POINT_v2.json (reported a ≥ 0.55, candidates a ≥ 0.40).
-Textured-null phantom rate now reflects real texture under a pre-registered null (A-017 second
-amendment), not P33 chemistry. Final independent review requested.
+**Verdict: BOUNDARY.** The tuning-selected point is a ≥ 0.50 (eval: FP 0.22, recall 0.952;
+pooled 200 blanks/631 spots: FP 0.19, recall 0.943). The shipped reported tier a ≥ 0.55 was
+fixed AFTER inspecting the eval curve (it restates the human's D-013 two-tier choice on the
+D-015 scale), so its eval figures (FP 0.19, recall 0.949) are in-sample and optimistic; the
+recall arm is the genuine boundary (tuning 0.930, pooled 0.940 — ~1 SE below 0.95). Three
+genuine attempts, none weakening the contract. Final independent review (2026-08-26): numbers
+reproduce exactly; the null screen was found blind at its band edge with 16/18 remaining textured
+phantoms on a mirror seam (M-012) and the committed evidence predated M-011 — the screen is
+fixed, the cache is now code-fingerprinted, and the evidence is being regenerated at HEAD (the
+seam artefact inflated FP, so its removal can only help the FP arm). "Real texture under an
+honest null" is WITHDRAWN as a description of the textured FP until the regenerated evidence
+shows a flat phantom tile-row histogram.
 
 ---
 ## Gate 5 · Peak modelling, Rst, refusal

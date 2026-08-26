@@ -201,3 +201,28 @@ and the error grows linearly with row: ~0.85 px at row 170 of 200.
 plate size and that a ground-truth row maps to the same row in the rectified frame within 0.3 px.
 **Lesson:** pixel-centre vs pixel-edge conventions bite twice (M-005 was the generator side);
 every resampling boundary needs an explicit round-trip test against ground truth.
+
+## M-012 · The null screen was blind at its own band edge; a mirror seam manufactured the remaining textured phantoms
+**Symptom:** final Gate 4 review: 16 of 18 textured phantoms at a >= 0.55 map to tile rows 0-4
+(the mirror seam), 2 to rows 40-43; uniform expectation ~2 per 10-row bin.
+**Wrong hypothesis:** A-017 second amendment called the remaining textured FP "a measurement of
+real texture under an honest null".
+**Actual cause:** cleanest_real_region scored rows inside the 0.20h-0.82h band with a running
+median detrend in "nearest" mode, so at the band's first rows the detrend reproduces the signal
+and the score is identically 0 — the "longest clean run" therefore always started at the band
+edge (row 56 for BOTH candidate plates), and the tile's row 0 carried a -2.5 sigma row-mean dip
+the screen structurally could not see. Mirror tiling then doubled that dip into a spot-shaped
+feature. Also: the rule itself was fixed after the 4-MAD per-column screen failed on P33 (so
+"pre-registered" was overstated), and its 3.0-MAD threshold is knife-edge (2.5 -> no region;
+3.5-4.0 -> a PER-P19 region). Also: the battery cache keyed on seed only, so evidence generated
+just before the M-011 geometry fix (tile 93x132) was reused instead of the HEAD tile (94x133).
+**Fix:** score over the whole rectified height, discard >= 2.5 FWHM at each detrend edge before
+choosing runs, require the tile's own row-mean profile to lie within 3x its iid expectation,
+record the threshold sensitivity in the evidence; cache keyed by a code fingerprint so any
+pipeline/generator change invalidates it; every "pre-registered" claim replaced by the actual
+history of the rule.
+**Test added:** the evidence now records the tile's row-mean max in iid-sigma units and the
+phantom tile-row histogram, so a seam artefact is visible in the artifact itself.
+**Lesson:** a screen must be checked in ITS OWN output coordinates (does it score every row it
+can select?) before its verdict is trusted; and "pre-registered" is a claim about history, not
+about intent.

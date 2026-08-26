@@ -63,65 +63,86 @@ TILE_REPORT: dict = {}
 
 
 def cleanest_real_region() -> np.ndarray:
-    """Real noise texture from the corpus region that a PRE-REGISTERED rule selects as blank.
+    """Real noise texture from the corpus region that a fixed rule selects as blank (A-017).
 
-    Rule (A-017, second amendment): over every unique low-clip (<= 2%) plate, rectify, take the
-    poly3 residual, and score each row by the worst lane-window row-mean bump (detrended at
-    5 FWHM, FWHM-smoothed, in MAD units of that statistic) — the detector's own statistic. Keep
-    the longest full-width run of rows with score < TILE_SCREEN_MAD; the plate with the longest
-    qualifying run (>= TILE_MIN_ROWS) is the source. Recorded in TILE_REPORT. P33's gutters
-    failed this rule (spot halos at row ~168); one region in the corpus passes.
+    Rule history (M-010, M-012 — stated, not hidden): a per-column 4-MAD screen on P33 gutters
+    was tried first and let spot halos through; this corpus-wide rule replaced it. The screen is
+    scored over the WHOLE rectified height (M-012: scoring inside a band left it blind at the
+    band edge), >= 2.5 FWHM at each detrend edge are discarded, and the tile's own row-mean
+    profile must lie within 3x its iid expectation. Threshold sensitivity is recorded.
     """
     from scipy import ndimage
 
     audit = json.loads((ROOT / "dataset" / "audit.json").read_text())
     cands = [r for r in audit["images"] if r["duplicate_of"] is None and r["in_plate_green_clip_fraction"] <= 0.02]
-    best = None
-    for rec in sorted(cands, key=lambda r: r["file"]):
-        p = ROOT / "dataset" / rec["file"]
-        img = iio.imread(p)
-        geo = analyse_geometry(img)
-        if not geo.found:
-            continue
-        pp = rectify_and_mask(img, geo)
-        odr = compute_od(pp.green, pp.valid, "poly3", 0)
-        h, w = pp.green.shape
-        if w < 90 or h < 160:
-            continue
-        resid = np.where(odr.od_valid, pp.green - odr.i0, 0.0)
-        pitch = w / 4.0
-        fwhm = 2.355 * 0.18 * pitch
-        hw = 0.275 * pitch
-        b0, b1 = int(0.20 * h), int(0.82 * h)
-        bumps = []
-        for i in range(4):
-            xc = (i + 0.5) * pitch
-            rm = ndimage.gaussian_filter1d(resid[b0:b1, int(xc - hw) : int(xc + hw) + 1].mean(axis=1), fwhm / 2.355)
-            tr = ndimage.median_filter(rm, size=max(11, int(5 * fwhm) | 1), mode="nearest")
-            bumps.append(rm - tr)
-        bmat = np.stack(bumps)
-        mad = 1.4826 * float(np.median(np.abs(bmat - np.median(bmat))))
-        score = np.abs(bmat).max(axis=0) / max(mad, 1e-12)
-        ok = score < TILE_SCREEN_MAD
-        runs, start = [], None
-        for k, v_ in enumerate(list(ok) + [False]):
-            if v_ and start is None:
-                start = k
-            elif not v_ and start is not None:
-                runs.append((start, k))
-                start = None
-        if not runs:
-            continue
-        r0, r1 = max(runs, key=lambda t: t[1] - t[0])
-        if r1 - r0 >= TILE_MIN_ROWS and (best is None or r1 - r0 > best[0]):
-            tile = resid[b0 + r0 : b0 + r1]
-            best = (r1 - r0, rec["file"], b0 + r0, b0 + r1, w, float(score[r0:r1].max()), tile - float(np.median(tile)))
+
+    def best_region(threshold: float):
+        best = None
+        for rec in sorted(cands, key=lambda r: r["file"]):
+            p = ROOT / "dataset" / rec["file"]
+            img = iio.imread(p)
+            geo = analyse_geometry(img)
+            if not geo.found:
+                continue
+            pp = rectify_and_mask(img, geo)
+            odr = compute_od(pp.green, pp.valid, "poly3", 0)
+            h, w = pp.green.shape
+            if w < 90 or h < 160:
+                continue
+            resid = np.where(odr.od_valid, pp.green - odr.i0, 0.0)
+            pitch = w / 4.0
+            fwhm = 2.355 * 0.18 * pitch
+            hw = 0.275 * pitch
+            bumps = []
+            for i in range(4):
+                xc = (i + 0.5) * pitch
+                rm = ndimage.gaussian_filter1d(resid[:, int(xc - hw) : int(xc + hw) + 1].mean(axis=1), fwhm / 2.355)
+                tr = ndimage.median_filter(rm, size=max(11, int(5 * fwhm) | 1), mode="nearest")
+                bumps.append(rm - tr)
+            bmat = np.stack(bumps)                        # scored over the WHOLE height (M-012)
+            edge = int(np.ceil(2.5 * fwhm))
+            valid_rows = np.zeros(h, dtype=bool)
+            valid_rows[max(edge, int(0.20 * h)) : min(h - edge, int(0.82 * h))] = True
+            mad = 1.4826 * float(np.median(np.abs(bmat[:, valid_rows] - np.median(bmat[:, valid_rows]))))
+            score = np.abs(bmat).max(axis=0) / max(mad, 1e-12)
+            ok = (score < threshold) & valid_rows
+            runs, start = [], None
+            for k, v_ in enumerate(list(ok) + [False]):
+                if v_ and start is None:
+                    start = k
+                elif not v_ and start is not None:
+                    runs.append((start, k))
+                    start = None
+            if not runs:
+                continue
+            r0, r1 = max(runs, key=lambda t: t[1] - t[0])
+            if r1 - r0 < TILE_MIN_ROWS:
+                continue
+            tile = resid[r0:r1] - float(np.median(resid[r0:r1]))
+            # the tile's own row-mean must look like noise: |row mean| <= 3 x sigma/sqrt(W)
+            iid_sigma = float(tile.std()) / np.sqrt(tile.shape[1])
+            rowmean_max_iid = float(np.abs(tile.mean(axis=1)).max() / max(iid_sigma, 1e-12))
+            if rowmean_max_iid > 3.0:
+                continue
+            if best is None or r1 - r0 > best[0]:
+                best = (r1 - r0, rec["file"], r0, r1, w, float(score[r0:r1].max()), rowmean_max_iid, tile)
+        return best
+
+    best = best_region(TILE_SCREEN_MAD)
+    sensitivity = {}
+    for thr in (2.5, 3.0, 3.5, 4.0):
+        b = best_region(thr)
+        sensitivity[str(thr)] = None if b is None else f"{b[1]} rows {b[2]}-{b[3]} ({b[0]} rows)"
     if best is None:
-        raise RuntimeError("no corpus region passes the pre-registered blank screen; no honest real-texture null available")
-    TILE_REPORT.update({"rule": f"longest full-width run with every lane-window spot-scale bump < {TILE_SCREEN_MAD} MAD, >= {TILE_MIN_ROWS} rows, over unique plates with clip <= 2%",
-                        "source_file": best[1], "rows": [int(best[2]), int(best[3])], "width_px": int(best[4]),
-                        "max_score_mad": round(best[5], 3), "n_candidate_plates": len(cands)})
-    return best[6]
+        raise RuntimeError("no corpus region passes the blank screen; no honest real-texture null available")
+    TILE_REPORT.update({
+        "rule": f"longest run with every lane-window spot-scale bump < {TILE_SCREEN_MAD} MAD (scored over the full height, >= 2.5 FWHM edge discard), >= {TILE_MIN_ROWS} rows, tile row-mean max <= 3 iid-sigma; over unique plates with clip <= 2%",
+        "rule_history": "per-column 4-MAD screen on P33 gutters failed (M-010); corpus rule adopted; edge-blindness fixed (M-012)",
+        "source_file": best[1], "rows": [int(best[2]), int(best[3])], "width_px": int(best[4]),
+        "max_score_mad": round(best[5], 3), "tile_rowmean_max_iid_sigma": round(best[6], 2),
+        "threshold_sensitivity": sensitivity, "n_candidate_plates": len(cands),
+    })
+    return best[7]
 
 
 def p33_residual_tile() -> np.ndarray:  # name kept for callers; the source is now rule-selected
@@ -173,7 +194,10 @@ def _init_worker(tile: np.ndarray) -> None:
     _TILE = tile
 
 
-CACHE_DIR = ROOT / "reports" / "gate4_cache"
+from tlc.core.hashing import tree_fingerprint  # noqa: E402
+
+_CODE_FP = tree_fingerprint(ROOT / "tlc" / "pipeline", ROOT / "tlc" / "synth")[:12]
+CACHE_DIR = ROOT / "reports" / "gate4_cache" / _CODE_FP   # M-012: stale caches never reused
 
 
 def process_one(job: tuple[str, str, int]) -> dict:
@@ -321,7 +345,22 @@ def main() -> None:
     rc_eval = ev["recall_5s"]
     gate4_pass = bool(feasible) and fp_eval <= FP_BOUND and rc_eval >= RECALL_BOUND
 
+    # phantom tile-row histogram (M-012 visibility): where do textured phantoms fall in the tile?
+    th = tile.shape[0]
+    hist = {}
+    for pl in tune + evalp:
+        if pl["kind"] != "blank" or pl["family"] != "textured":
+            continue
+        oy = int(np.random.Generator(np.random.PCG64(pl["seed"])).integers(0, th))
+        for s in pl["spots"]:
+            if s["a"] >= 0.55:
+                fold = int(s["row"] + oy) % (2 * th)
+                trow = fold if fold < th else 2 * th - 1 - fold
+                b = f"{(trow // 10) * 10}-{(trow // 10) * 10 + 9}"
+                hist[b] = hist.get(b, 0) + 1
     evidence = {
+        "code_fingerprint": _CODE_FP,
+        "textured_phantom_tile_row_histogram_a055": dict(sorted(hist.items())),
         "operating_point": {"a_star": op["a_star"], "p_star": op["p_star"], "z_star": op["z_star"],
                             "chosen_on": "tuning split (even seeds)"},
         "tuning": {"curve": tune_curve, "feasible_points": len(feasible)},

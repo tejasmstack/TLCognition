@@ -1,8 +1,8 @@
 {
-  "gate4_status": "boundary: both arms met within one standard error at the reported tier; a strict pass at a pre-registered point is NOT demonstrated (tuning split found no feasible point; eval curve crosses at a\u22480.5\u20130.55)",
+  "gate4_status": "boundary: tuning-selected point a>=0.50 gives eval FP 0.22 / recall 0.952 and pooled FP 0.19 / recall 0.943; the shipped tier a>=0.55 was fixed after inspecting the eval curve, so its eval figures (0.19 / 0.949) are in-sample; recall is the genuine boundary (~1 SE below 0.95 on tuning/pooled)",
   "grid": "CONFIG_GRID_v1",
   "grid_hash": "0c0e3b5157f646b5e1677b6a4d3a780b88aa3edc2931796656e4ea20bceddf82",
-  "honest_claim": "reported tier: ~0.2 false spots per blank plate (0.17 on synthetic noise, 0.23 on rule-selected real texture) and ~95% recall on observable spots >= 5 sigma, each within sampling error of the gate; real-plate phantom rate on genuine solvent-only blanks NOT MEASURED",
+  "honest_claim": "reported tier: ~0.2 false spots per blank plate on synthetic noise (0.17) and an UPPER BOUND of ~0.2-0.3 on the rule-selected corpus region (dominated by a tiling artefact, M-012); ~94-95% recall on observable spots >= 5 sigma; real-plate phantom rate on genuine solvent-only blanks NOT MEASURED",
   "id": "OPERATING_POINT_v2",
   "measured_eval_split": {
     "candidate": {
@@ -20,6 +20,7 @@
       "recall_5sigma": 0.949
     }
   },
+  "note": "in-sample threshold: 0.55 chosen after the eval curve was seen (see GATES.md Gate 4 attempt 3)",
   "sampling_se": {
     "fp_per_blank": 0.045,
     "recall": 0.012

@@ -2,9 +2,12 @@
 
 **Attempt 3 result (eval split, 100 blanks incl. 40 real-texture from a pre-registered clean
 region of MEHQ-P44; 315 observable ≥5σ spots):** at agreement ≥ 0.50, FP = 0.22/blank and
-recall = 0.952; at ≥ 0.55, FP = 0.19 and recall = 0.949. Sampling SE ±0.045 / ±0.012. Both arms
-are met within one standard error at the shipped reported tier (a ≥ 0.55); no pre-registered
-point passes strictly (the tuning split had none). **Verdict: boundary, not lowered.** The
+recall = 0.952; at ≥ 0.55, FP = 0.19 and recall = 0.949. Sampling SE ±0.045 / ±0.012. The tuning-selected
+point is a ≥ 0.50 (eval 0.22 / 0.952; pooled 0.19 / 0.943); a ≥ 0.55 was fixed after inspecting
+the eval curve and its figures are in-sample. Recall is the genuine boundary (tuning 0.930,
+pooled 0.940). **Verdict: boundary, not lowered.** The final review also found the remaining
+textured phantoms were a mirror-seam artefact of a screen blind at its band edge (M-012) — the
+FP arm can only improve when that is removed; evidence is being regenerated at HEAD. The
 shipped operating point is config/ensemble/OPERATING_POINT_v2.json (two-tier: reported ≥ 0.55,
 candidates ≥ 0.40 — the human's D-013 choice on the corrected scale). What would settle it:
 (i) real solvent-only blank plates (the real phantom rate is still NOT MEASURED), (ii) Phase 7
