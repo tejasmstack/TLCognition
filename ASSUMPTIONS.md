@@ -117,3 +117,11 @@ is never read as a sub-pixel re-detection claim.
 "EVALUATION.md" is the Phase 12 deliverable (forward reference): when written, it lists
 cross-machine tier-1 determinism as an open item until the committed CI workflow has run on a
 second architecture (ubuntu-x86_64).
+
+## A-012 · Background-model parameters the eval report leaves unstated
+(UNSTATED #1-#4 in reference/EVAL_REPORT_EXTRACT.md.) Chosen, all `chosen` provenance:
+Gaussian illumination blur sigma = radius/2; iterative-masked = box blur (kernel 2R+1), 3
+iterations, mask rule `keep if g > bg - 0.5*mean|bg-g|` (ported constants from
+tlc-spec-impl/normalize.py:146-152); median kernel = 2R+1; rolling ball in the ImageJ 8-bit
+convention (M-007). Untrusted pixels (invalid/clipped) are excluded via normalized convolution
+or pre-filled from the Gaussian estimate; they never inform a fit.

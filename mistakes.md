@@ -100,3 +100,20 @@ the switch point beyond float rounding.
 determinism tests would now catch NaN (array_equal fails on NaN).
 **Lesson:** special functions blow up exactly where a physical tail is "obviously negligible";
 evaluate tails in log/asymptotic form from the start.
+
+## M-007 · Rolling-ball background destroyed the signal on float images (sigma read as 0)
+**Symptom:** the Gate 3 sigma-stability grid returned sigma = 0.0 for rolling_ball at radii
+12-35: the member's OD residual had literally zero median absolute difference.
+**Wrong hypothesis:** median/rolling-ball edges would INFLATE the difference-based sigma.
+**Actual cause:** skimage's rolling_ball couples the ball's intensity radius to its spatial
+radius in the image's own units. On a [0,1] float image a radius of 12-55 intensity units is
+enormous relative to the 0-1 range, and the envelope hugs every noise pixel: I0 == g almost
+everywhere, OD identically 0 — background model eating ALL signal, exactly the failure mode
+Gate 3's monotonicity property exists to catch, found here by the sigma probe instead.
+**Fix:** run the ball in the ImageJ 8-bit convention (scale to 0-255 grays, radius in grays ~ px),
+which is what the eval's Fiji Analyze>Gels reference did. All 17 grid members now agree on
+sigma within 3.5%.
+**Test added:** sigma-stability assertion over the full model x radius grid in
+tests/test_photometry.py (any member collapsing to 0 fails loudly).
+**Lesson:** unit conventions of morphological operators are part of the algorithm; "the same
+algorithm" in a different unit system is a different algorithm.

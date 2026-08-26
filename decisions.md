@@ -146,3 +146,48 @@ coverage (verbatim in GATES.md).
 re-hashed); committed in the same change.
 **Revisit if:** Phase 2 plate detection behaves differently on real vs synthetic in a way traced
 to residual background/edge differences (e.g. cut corners, tape).
+
+## D-007 · Background model for the primary estimate
+**Date:** 2026-08-26
+**Status:** accepted
+**Context:** F5: polynomial and iterative-masked agree to 0.3 px (0.1 px per the eval report
+§2); polynomial has 10 printable coefficients, iterative has kernel + iterations + a masking
+rule; rolling-ball sits 3.3 px off the cluster; Kubelka-Munk diverges in exactly the faint-zone
+regime (9 spots vs 2). The brief's own worked example (§5.1) reaches the same conclusion.
+**Options considered:**
+  1. Polynomial surface, order 3 — fewest parameters, all printable in an SOP.
+  2. Iterative masked box-blur — avoids spots biasing their own background (ported from
+     tlc-spec-impl normalize.py:143-164 per D-005).
+  3. Rolling ball — familiar to reviewers, but 3.3 px off the cluster (F5).
+**Decision:** poly3 as the primary; iterative, Gaussian, median, rolling-ball retained as
+ensemble members (they are the Phase 4 grid's background axis). Kubelka-Munk not implemented
+anywhere (F5: wrong regime; anti-pattern list).
+**Why:** validation cost — ten coefficients go in a method document; a three-stage masking
+procedure cannot be checked by a QA reviewer. Ensemble disagreement surfaces the cases where
+poly3 is worse under strong local gradients.
+**Revisit if:** blank-plate FP rate for poly3 exceeds the iterative variant's by >20% (Phase 4).
+
+## D-008 · The noise unit: background-free difference-based sigma, measured once, pre-masking
+**Date:** 2026-08-26
+**Status:** accepted
+**Context:** F4: sigma measured on a post-subtraction residual inherits the background radius
+(3.6x spread) and spot-masking loosens every threshold 1.68x. The eval never states its
+estimator (UNSTATED #5). The prior impl's 70th-percentile trim is itself weak masking.
+**Options considered:**
+  1. sd/MAD over a chosen "blank band" — band choice depends on spot content: weak masking.
+  2. MAD over the poly3 residual — inherits the primary model (radius-free but model-bound).
+  3. Robust first-difference estimator on raw log-intensity:
+     sigma_od = 1.4826 * median(|d log10(g)|) / sqrt(2) over valid unclipped pixel pairs in the
+     analysable band — no background model, no masking, no tuning radius, measured once on the
+     raw band before anything else sees the image.
+**Decision:** option 3 (`sigma_method: "mad_diff_1.4826_prespot"`). Every ensemble member and
+every threshold consumes this one number. `sigma_stability_across_radii` is still computed (the
+same estimator applied to each member's OD residual) and gated at <=0.15 as the tripwire that
+nobody reintroduces a radius-dependent unit.
+**Why:** the only estimator in the option list whose value cannot move when a tuning parameter
+moves (F4's demand made structural). Known property: first differences read correlated noise
+lower than per-pixel sd by sqrt(1-rho1) (~20% at the corpus texture); the unit is consistent
+system-wide, and detection thresholds are calibrated in this unit against the null battery
+(Phase 4), so the scale convention cancels where it matters.
+**Revisit if:** Gate 4 cannot meet FP<=0.2/plate and recall>=0.95 simultaneously and the
+operating-point analysis traces the failure to the noise unit's scale convention.
