@@ -186,3 +186,25 @@ gated metric (≤ 2%); D-017 threshold 1 FWHM with the sensitivity table in the 
 cache fingerprinted. Re-run in progress; re-review follows.
 
 ---
+**Attempt 4 result (HEAD 5980967 code, D-019 structure) — Gate 4 final for this iteration: NOT MET
+(recall arm).** Eval split (100 synthetic-noise blanks, 315 observable ≥5σ spots): a ≥ 0.50 →
+FP **0.14** (≤ 0.2 ✓), recall **0.933** (< 0.95 ✗); a ≥ 0.55 → FP 0.11, recall 0.927. Pooled
+(200 blanks / 631 spots): a ≥ 0.50 → FP 0.105, recall 0.924. Textured diagnostic family: ~1.4
+phantoms/plate spread uniformly over tile rows (real material at the ensemble's sensitivity,
+M-013) — an upper bound, not the gate number. Recall is the open arm: ~0.93 at a ≥ 0.5.
+Shipped point stays OPERATING_POINT_v2 (reported 0.55 / candidate 0.40).
+
+## Gate 5 · current state (after M-014, evidence at HEAD): NOT MET (position arm; streak FP)
+Position p95 **0.0132** (< 0.01 ✗) on 156 resolved (1 FWHM) confirmed spots, median 0.0005;
+sensitivity: 0.0227 (0 FWHM) … 0.0112 (2 FWHM). Streak: 19/19 true streaks flagged; **false-streak
+rate 5.0%** (11/221; target ≤ 2%) — residual mechanisms: two spots ~20-30 px apart forming one
+> 2.5-FWHM run when only one of them is tiered, and EMG fits whose window spans a neighbouring
+peak (tau/sigma 10.8). Real corpus: 61/61 typed, 0 silent nulls ✓.
+
+## Owner decision (2026-08-26 20:40, D-020): fast-forward to a working end-to-end system
+Gates 4 and 5 are recorded above as NOT MET with evidence; the build proceeds to Phases 6-12 to
+deliver a usable system (upload → result/refusal → review), then returns to the open arms in
+iteration. No gate is lowered; every accuracy-bearing field stays refused/uncalibrated where the
+evidence says so.
+
+---

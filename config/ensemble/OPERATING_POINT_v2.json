@@ -1,9 +1,24 @@
 {
-  "gate4_status": "boundary: tuning-selected point a>=0.50 gives eval FP 0.22 / recall 0.952 and pooled FP 0.19 / recall 0.943; the shipped tier a>=0.55 was fixed after inspecting the eval curve, so its eval figures (0.19 / 0.949) are in-sample; recall is the genuine boundary (~1 SE below 0.95 on tuning/pooled)",
+  "gate4_status": "NOT MET (recall arm ~0.93 vs 0.95); FP arm met on synthetic-noise blanks (0.11-0.14 <= 0.2); real-plate phantom rate NOT MEASURED (D-019); shipped as interim under D-020",
   "grid": "CONFIG_GRID_v1",
   "grid_hash": "0c0e3b5157f646b5e1677b6a4d3a780b88aa3edc2931796656e4ea20bceddf82",
   "honest_claim": "reported tier: ~0.2 false spots per blank plate on synthetic noise (0.17) and an UPPER BOUND of ~0.2-0.3 on the rule-selected corpus region (dominated by a tiling artefact, M-012); ~94-95% recall on observable spots >= 5 sigma; real-plate phantom rate on genuine solvent-only blanks NOT MEASURED",
   "id": "OPERATING_POINT_v2",
+  "measured_attempt4_at_HEAD": {
+    "n_synth_blanks_eval": 100,
+    "n_true_spots_eval": 315,
+    "reported_a055": {
+      "fp_per_blank_synthetic_noise": 0.11,
+      "recall_5sigma": 0.927,
+      "textured_diagnostic_upper_bound": 1.2
+    },
+    "tuning_selected_a050": {
+      "fp_per_blank_synthetic_noise": 0.14,
+      "pooled_fp": 0.105,
+      "pooled_recall": 0.924,
+      "recall_5sigma": 0.933
+    }
+  },
   "measured_eval_split": {
     "candidate": {
       "fp_per_blank_pooled": 0.3,

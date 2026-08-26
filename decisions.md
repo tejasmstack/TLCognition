@@ -432,3 +432,19 @@ The independent Gate 5 review showed the 2-FWHM threshold was post hoc (chosen a
 was inspected) and that 1 FWHM — the separation at which two bands are physically unresolved
 (spec 05 §12.6) — is the defensible value. Adopted; the scoring sensitivity across 0-2.5 FWHM
 is written into the Gate 5 evidence so the choice is visible.
+
+## D-020 · Owner directive: fast-forward to a working system, iterate on open gates afterwards
+**Date:** 2026-08-26
+**Status:** accepted (human decision by the repository owner)
+**Context:** after three genuine Gate 4 attempts and two Gate 5 rounds, the detector sits near
+both gates (FP arm met on synthetic noise; recall ~0.93 vs 0.95; position p95 0.013 vs 0.01;
+false-streak 5% vs 2%). Phases 6-12 (labels/review, calibration, VLM, correlations, API,
+frontend, evaluation) are unbuilt, and they are what makes this a system a chemist can use.
+**Decision (owner):** proceed to Phases 6-12 now; keep Gates 4/5 recorded as NOT MET with their
+numbers; return to them in iteration with the full system available for real-plate feedback.
+**Constraints kept:** NN1-NN5 unchanged; confidence stays E_UNCALIBRATED; the operating point
+carries its measured numbers and status text; EVALUATION.md will list the open gates explicitly;
+the real-plate phantom rate stays NOT MEASURED until blank plates exist.
+**Why:** a working end-to-end system produces the labelled set (F12, the critical path) and real
+feedback that no further synthetic iteration can.
+**Revisit if:** Phase 7 calibration or real labels change what the open arms mean.
