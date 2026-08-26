@@ -78,10 +78,11 @@ class PlateSpec:
     origin_row_frac: float = 0.86          # origin row as fraction of plate height
     front_row_frac: float = 0.20           # front row as fraction of plate height (drawn or not)
 
-    # Colour model (corpus_stats medians: R/G 0.288, B/G 0.770; background dark blue-grey)
+    # Colour model (corpus_stats medians: R/G 0.288, B/G 0.770; background = measured teal
+    # bench, median RGB (13, 96, 115), G range 71-124 — Gate 1 reviewer flag #5)
     red_over_green: float = 0.29
     blue_over_green: float = 0.77
-    background_rgb: tuple[float, float, float] = (14.0, 24.0, 30.0)
+    background_rgb: tuple[float, float, float] = (13.0, 96.0, 115.0)
 
     def to_dict(self) -> dict:
         d = asdict(self)

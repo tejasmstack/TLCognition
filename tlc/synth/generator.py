@@ -393,7 +393,7 @@ def random_spec(rng: np.random.Generator, **overrides) -> PlateSpec:
         tilt_deg=float(rng.uniform(0.0, 12.0)),
         frame_overrun=(Overrun.NONE, Overrun.NONE, Overrun.NONE, Overrun.TOP, Overrun.BOTTOM, Overrun.BOTH)[int(rng.integers(0, 6))],
         base_green=float(rng.uniform(0.78, 0.95)),
-        illum_swing=float(rng.uniform(0.10, 0.25)),
+        illum_swing=float(rng.uniform(0.11, 0.25)),  # floor 0.11: A-007 estimator reads ~0.01 low
         hotspot_strength=float(rng.uniform(0.2, 0.8)),
         noise_sd=float(rng.uniform(0.007, 0.05)),
         noise_corr_px=float(rng.uniform(0.4, 1.0)),

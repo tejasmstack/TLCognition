@@ -120,3 +120,29 @@ into a compliant skeleton costs less than re-deriving them and less than retrofi
 **Consequences:** golden-output tests against runs/ JSONs are written before porting begins
 (converts the README's unverifiable determinism claim into a regression gate).
 **Revisit if:** golden tests show the described algorithms don't reproduce runs/ outputs.
+
+## D-006 · Gate 1 reviewer flags: what changes now, what becomes a convention
+**Date:** 2026-08-26
+**Status:** accepted
+**Context:** the independent Gate 1 review passed the gate and raised six flags outside its
+coverage (verbatim in GATES.md).
+**Decision:**
+  1. Flag 5 (background contrast): PlateSpec default background_rgb corrected from a guessed
+     near-black (14,24,30) to the measured corpus teal (13,96,115). Plate detection on synthetics
+     now faces realistic contrast. Gate 1 statistics are unaffected (all in-plate, green).
+  2. Flag 2: random_spec swing floor raised 0.10→0.11 to match the gate sweep.
+  3. Flag 3 (EMG centre semantics) becomes a build-wide CONVENTION: a spot's position is the EMG
+     mu (Gaussian-component centre), in ground truth and in every pipeline fit and error metric.
+     The rendered intensity peak of an EMG sits ~O(tau) toward the origin; mixing conventions
+     would create a systematic offset on tailing spots. Recorded here so Phase 3/5 inherit it.
+  4. Flags 1 (estimator-relative noise target) and 6 (clip knob delivers ~0.02-0.04 low on the
+     emitted image; effective emitted range 0.12-0.56) are accepted and documented — A-007
+     already states the estimator-relative nature; the clip knob's purpose (span the observed
+     regime) is met.
+  5. Flag 4 (no spot hue signal in synthetics): accepted; the pipeline measures green only (F1
+     context). If colour-ratio logic is ever proposed, synthetics cannot validate it — that
+     limitation is recorded here.
+**Consequences:** gate1 evidence regenerated at the new defaults (criteria unchanged, artifacts
+re-hashed); committed in the same change.
+**Revisit if:** Phase 2 plate detection behaves differently on real vs synthetic in a way traced
+to residual background/edge differences (e.g. cut corners, tape).
