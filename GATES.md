@@ -171,3 +171,18 @@ synthetic-noise blanks (Null A, ≥200 realisations); the 80 textured plates are
 diagnostic (`diagnostic_not_null`) with their own phantom rate and tile-row histogram, excluded
 from the gate number. Recall arm unchanged (250 spotted plates). Evidence regenerating at HEAD
 with a code-fingerprinted cache; numbers follow.
+**Gate 5 independent review (2026-08-26): FAIL (conditional) on the self-check above.** Numbers
+reproduced exactly and determinism verified (8/8 regenerated cache files byte-identical), but:
+20/221 non-streak lanes (9.0%) were falsely flagged as streaking, suppressing 33 real detections;
+scoring those lifts the resolved-spot p95 from 0.0085 to 0.0117. Mechanisms: the run rule merged
+two adjacent spots into one > 2.5-FWHM run; the tail rule fired on degenerate EMG fits
+(sigma 2.7 / tau 37 on a plain Gaussian). D-017's 2-FWHM threshold was post hoc (1 FWHM gives
+0.0098). Also confirmed: real-corpus arm clean (0 silent nulls, no numeric rf, E_NO_FRONT
+everywhere); adversarial streak plate handled exactly; mode-convention residual +0.26 px on
+heavy-tailed spots (≈0.002 Rst, immaterial). **Fixes applied (M-014):** AIC selection between an
+explicit Gaussian fit and the EMG; run rule ignores runs containing ≥ 2 tiered peaks unless
+flat-topped; tail rule uses only the dominant non-degenerate peak; false-streak rate is now a
+gated metric (≤ 2%); D-017 threshold 1 FWHM with the sensitivity table in the evidence; gate5
+cache fingerprinted. Re-run in progress; re-review follows.
+
+---
