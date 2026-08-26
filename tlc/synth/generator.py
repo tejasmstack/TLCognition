@@ -370,6 +370,108 @@ def make_plate(spec: PlateSpec, seed: int) -> tuple[np.ndarray, GroundTruth]:
     return image, truth
 
 
+def make_textured_blank(
+    spec: PlateSpec, residual_tile: np.ndarray, seed: int
+) -> tuple[np.ndarray, GroundTruth]:
+    """A blank plate carrying REAL noise texture (eval Null B; brief Gate 4).
+
+    The given residual patch (from a blank band of a real plate, in normalised-green units) is
+    tiled mirror-wise over the synthetic illumination surface at a seeded phase shift, replacing
+    the generator's synthetic noise. No spots, no dots, no ink — provably nothing to detect,
+    with the plate's own spatial correlation and compression texture preserved.
+    """
+    blank = PlateSpec(
+        plate_w=spec.plate_w,
+        plate_h=spec.plate_h,
+        n_lanes=spec.n_lanes,
+        tilt_deg=spec.tilt_deg,
+        frame_overrun=spec.frame_overrun,
+        margin_frac=spec.margin_frac,
+        base_green=spec.base_green,
+        illum_swing=spec.illum_swing,
+        hotspot_strength=spec.hotspot_strength,
+        noise_sd=0.0,
+        noise_corr_px=0.0,
+        clip_fraction=spec.clip_fraction,
+        spots=(),
+        empty_lanes=(),
+        origin_dots=False,
+        front_line=False,
+        handwriting=Handwriting.NONE,
+        red_over_green=spec.red_over_green,
+        blue_over_green=spec.blue_over_green,
+        background_rgb=spec.background_rgb,
+    )
+    rng = np.random.Generator(np.random.PCG64(seed))
+    h, w = blank.plate_h, blank.plate_w
+    # Mirror-tile the residual to cover the plate, with a seeded phase shift.
+    th, tw = residual_tile.shape
+    reps_y = h // th + 2
+    reps_x = w // tw + 2
+    rows = []
+    for iy in range(reps_y):
+        row = []
+        for ix in range(reps_x):
+            t = residual_tile
+            if iy % 2 == 1:
+                t = t[::-1]
+            if ix % 2 == 1:
+                t = t[:, ::-1]
+            row.append(t)
+        rows.append(np.concatenate(row, axis=1))
+    big = np.concatenate(rows, axis=0)
+    oy = int(rng.integers(0, th))
+    ox = int(rng.integers(0, tw))
+    field = big[oy : oy + h, ox : ox + w]
+
+    # Rebuild make_plate's photometric path with the real texture as the noise term.
+    rng2 = np.random.Generator(np.random.PCG64(seed))
+    surface, swing_true = _illumination(blank, rng2)
+    g = surface + field
+    if blank.clip_fraction > 0.0:
+        q = float(np.quantile(g, 1.0 - blank.clip_fraction))
+        scale = 1.0 / max(q, 1e-6)
+    else:
+        scale = min(1.0, (252.0 / 255.0) / max(float(g.max()), 1e-6))
+    g_u8 = np.clip(np.round(g * scale * 255.0), 0, 255)
+    plate_rgb = np.empty((h, w, 3), dtype=np.float64)
+    for ch, ratio in ((0, blank.red_over_green), (2, blank.blue_over_green)):
+        plate_rgb[:, :, ch] = np.clip(g * ratio * scale * 255.0, 0, 255)
+    plate_rgb[:, :, 1] = g_u8
+    clip_actual = float(np.mean(g_u8 >= 255))
+
+    scene, _alpha, corners = _rotate_into_scene(plate_rgb, blank, rng2)
+    scene, corners = _crop_for_overrun(scene, corners, blank, rng2)
+    image = np.clip(np.round(scene), 0, 255).astype(np.uint8)
+
+    pitch = w / blank.n_lanes
+    truth = GroundTruth(
+        corners_xy=tuple(corners),
+        plate_w=w,
+        plate_h=h,
+        tilt_deg=float(blank.tilt_deg),
+        image_w=int(image.shape[1]),
+        image_h=int(image.shape[0]),
+        lane_centres_x=tuple((i + 0.5) * pitch for i in range(blank.n_lanes)),
+        lane_pitch=float(pitch),
+        origin_row=float(blank.origin_row_frac * h),
+        front_row=None,
+        header_band=(0, 0),
+        label_band=(int(min(h - 1, blank.origin_row_frac * h + 0.04 * h)), int(min(h, blank.origin_row_frac * h + 0.11 * h))),
+        origin_dot_xy=(),
+        spots=(),
+        empty_lanes=tuple(range(blank.n_lanes)),
+        streak_lanes=(),
+        sigma_od_analytic=float(np.std(field) / (blank.base_green * LN10)),
+        noise_sd=float(np.std(field)),
+        illum_swing_true=float(swing_true),
+        base_green=float(blank.base_green),
+        exposure_scale=float(scale),
+        clip_fraction_actual=clip_actual,
+    )
+    return image, truth
+
+
 def random_spec(rng: np.random.Generator, **overrides) -> PlateSpec:
     """A PlateSpec drawn from the corpus-calibrated ranges (spec 05 §12.2 table)."""
     w = int(rng.integers(71, 401))

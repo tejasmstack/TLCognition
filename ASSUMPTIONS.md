@@ -140,3 +140,23 @@ Until the VLM/operator annotation bands exist (Phase 8/6), real-plate photometry
 chosen convention band of rows 0.25h–0.80h (below the header ink, above the label row/origin on
 every corpus plate). Provenance is `chosen`; gate3_check.py's P33 case uses it. Superseded per
 plate by measured bands once the semantic layer runs.
+
+## A-015 · Surrogate nulls operate on the OD residual band, not the raw green plate
+Spec 01 §2.2 says "run the identical pipeline on each" null realization. Running geometry +
+background per surrogate per config (200 x 24 refits per plate) is prohibitive; implemented:
+each config computes its own OD field once, and the surrogates randomize the lane band's OD
+content (S1 gutter transplant of OD strips; S2 IAAFT applied to the lane profile — spectrum +
+amplitude distribution preserved; S3 circular roll), after which the IDENTICAL profile ->
+matched-filter -> peak statistic runs. The background-fit variance the per-plate null thereby
+misses is covered by (a) the between-config ensemble spread (the grid's background axis) and
+(b) the S4 end-to-end battery: >= 200 full synthetic blanks (including the real-noise-texture
+variant) run through geometry + background + detection, which is the Gate 4 metric itself.
+
+## A-016 · Null-battery and surrogate sample sizes
+Spec 01 §2.2 asks 100 surrogates each for S1/S2 per lane; spec 05 §12.8 asks a 50-realisation
+battery per commit under a <6 min CI budget. On this hardware: grid selection ran at 30
+surrogates (p-resolution is not the selection signal; detection-vector overlap is); the Gate 4
+battery runs at 60 (Davison-Hinkley floor 1/61 = 0.016, below the BH first-rank threshold for
+typical candidate counts); production runs use 100. The per-commit CI battery is a reduced
+SENTINEL (top-weighted grid subset on ~40 blanks) whose job is regression detection, not the
+gate; the full 200-blank battery is the committed Gate 4 evidence and the nightly artifact.

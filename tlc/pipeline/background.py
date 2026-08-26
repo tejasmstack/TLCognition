@@ -92,7 +92,20 @@ def rolling_ball(green: np.ndarray, weight: np.ndarray, radius_px: int) -> np.nd
     """
     filled = np.where(weight, green, gaussian(green, weight, radius_px))
     inv = (filled.max() - filled) * 255.0
-    bg_inv = _sk_rolling_ball(inv, radius=max(1, radius_px)) / 255.0
+    r = max(1, radius_px)
+    # ImageJ-style shrink for large balls (O(N R^2) otherwise — M-008): roll a proportionally
+    # smaller ball on a block-mean-reduced image, then bilinearly re-expand the background.
+    shrink = 1 if r < 16 else (2 if r < 32 else 4)
+    if shrink > 1:
+        h, w = inv.shape
+        hs, ws = (h // shrink) * shrink, (w // shrink) * shrink
+        small = inv[:hs, :ws].reshape(hs // shrink, shrink, ws // shrink, shrink).mean(axis=(1, 3))
+        bg_small = _sk_rolling_ball(small, radius=max(1, r // shrink))
+        yy, xx = np.mgrid[0:h, 0:w]
+        coords = np.stack([(yy / shrink - 0.5 + 0.5 / shrink).ravel(), (xx / shrink - 0.5 + 0.5 / shrink).ravel()])
+        bg_inv = ndimage.map_coordinates(bg_small, coords, order=1, mode="nearest").reshape(h, w) / 255.0
+    else:
+        bg_inv = _sk_rolling_ball(inv, radius=r) / 255.0
     return np.maximum(filled.max() - bg_inv, I0_FLOOR)
 
 

@@ -117,3 +117,23 @@ sigma within 3.5%.
 tests/test_photometry.py (any member collapsing to 0 fails loudly).
 **Lesson:** unit conventions of morphological operators are part of the algorithm; "the same
 algorithm" in a different unit system is a different algorithm.
+
+## M-008 · The 576-config sweep ran 10x slower than estimated and died with the session
+**Symptom:** grid selection ran >16 min with no artifact; after a session fork the parent was
+alive with no workers and exit code -1. Foreground timing: 352 s per spotted plate, 191 s per
+blank (estimate had been ~30 s).
+**Wrong hypothesis:** the sweep was progressing normally and just needed more wall-clock.
+**Actual cause:** (1) every one of 576 configs recomputed its 2-D background fit although only
+16 distinct (model, radius) fits exist — a 36x redundancy per lane; (2) matched_filter_scan
+rebuilt each template's m x m covariance matrix with a Python list comprehension on every call
+(31 calls per shared scan); (3) skimage rolling_ball at R=64 is O(N*R^2) on the full-res image;
+(4) the background process's worker children did not survive the session fork, and the job
+had no checkpoints, so all partial work was lost.
+**Fix:** per-plate OD-field cache keyed by (model, radius) threaded through the detector;
+covariance matrices precomputed once per template set with vectorised lag indexing; rolling
+ball run ImageJ-style on a shrunk image for R >= 16; sweep checkpoints each plate's result to
+reports/grid_sweep_cache/ and skips finished plates on re-run.
+**Test added:** timing assertion in the sweep log (per-plate seconds printed); determinism of
+cached vs uncached detection asserted in tests/test_detection.py.
+**Lesson:** estimate compute by counting the innermost call, not the outer loop; and any job
+longer than a few minutes checkpoints to disk from the start.

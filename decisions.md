@@ -218,3 +218,49 @@ midcovariance); Gate 4's numeric criteria unchanged (FP <= 0.2/plate on >= 200 b
 recall >= 0.95 at >= 5 sigma, simultaneously).
 **Revisit if:** K_eff on the selected 24 falls below 4 on the dev set (G10), or the 576-sweep
 compute becomes prohibitive on this hardware (then shrink axes, recorded here).
+
+## D-010 · The operative per-plate null is S1 (gutter transplant); S2 (IAAFT) is a diagnostic
+**Date:** 2026-08-26
+**Status:** accepted
+**Context:** spec 01 §2.2 lists S1 and S2 as "the primary null (100 each)". Measured on
+synthetic dev plates: IAAFT preserves the lane profile's power spectrum and amplitude
+distribution, so on a lane carrying a strong spot the surrogates inherit that spot's spectral
+power — a real 6-sigma spot next to a 10-sigma spot drew p_mc = 0.51 against a mixed S1+S2
+null (its z=9.3 vs null p90 = 11.3), which would fail Gate 4's recall arm outright. On blank
+lanes S1 and S2 agree (no signal to inherit).
+**Decision:** p_mc = FWER-style Davison-Hinkley p against per-surrogate MAX z over S1 nulls
+(spec's own FWER construction). S2 runs at n/5 samples and its exceedance fraction is recorded
+per peak (`s2_exceed`) as a calibration feature and diagnostic — never the operative null.
+Three further null-fidelity fixes found empirically and applied: (a) S1 transplants contiguous
+gutter STRIPS with one flip+roll per strip (independent per-column rolls destroy cross-column
+correlation and made the null anti-conservatively light: an empty-lane z=1.4 bump drew
+p=0.010); (b) S1 segments are taken and rolled WITHIN the analysable band (rolling whole
+columns rotated header/label ink into the chemistry zone and manufactured phantom null peaks);
+(c) candidates and null peaks are both screened to positive z and positive amplitude
+(negative-going maxima inflated BH's m and shrank MC denominators — anti-conservative).
+**Why:** the null must be signal-free by construction and texture-true; S1 is both, S2 is
+neither on spotted lanes. FP control is still verified end-to-end by the S4 battery (Gate 4's
+own metric), which is independent of this choice.
+**Revisit if:** the Gate 4 battery shows the S1 null under-controls FP on real-texture blanks
+(then S2 returns to the operative mix on blank-classified lanes).
+
+## D-011 · K_eff for grid health (G10) is computed on blank-plate detection vectors
+**Date:** 2026-08-26
+**Status:** accepted
+**Context:** spec 01 §2.3 defines K_eff from the mean pairwise phi-correlation of configs'
+binary detection vectors "over all candidate positions". Measured on CONFIG_GRID_v1: 1.93 over
+all dev bins, 10.68 over blank-plate bins only. The all-bins value is dominated by configs
+agreeing on TRUE spots (14 spotted dev plates with 12-25 sigma spots every good config finds) —
+perfect detectors would score K_eff = 1 by that formula, which cannot be the intended "grid
+health" reading.
+**Decision:** both values are recorded in the artifact; G10 (K_eff >= 4) is evaluated on the
+blank-plate (null) detection vectors — the correlation of configs' MISTAKES, which is the
+redundancy §2.3 warns about ("agreement then measures redundancy rather than robustness").
+Config weights w_c stay as specified (from the full vectors).
+**Why:** agreement suppresses phantoms only if configs' phantoms are decorrelated; that is
+what the null-vector K_eff measures directly. Selected grid: 4 models, 4 radii, 3 sigma
+variants (unmasked_mad did not survive diversity selection), 3 extractions, 3 peak models;
+218 configs excluded by measured performance (156 for FP > 1.0/blank — all rolling-ball
+families and median@32/64; 78 for recall < 0.5 — the R=8 families).
+**Revisit if:** the Gate 4 battery shows phantom agreement clustering (many blank-plate
+ensemble spots with a > 0.5) — that would mean the null K_eff overstates independence.

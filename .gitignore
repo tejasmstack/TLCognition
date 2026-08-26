@@ -20,3 +20,7 @@ data/
 *.db-wal
 *.db-shm
 .env
+
+# regenerable sweep/battery checkpoints (evidence summaries are committed instead)
+reports/grid_sweep_cache/
+reports/gate4_cache/
