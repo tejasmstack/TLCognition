@@ -461,3 +461,24 @@ review island (D-018); no HTMX dependency was needed for the vertical slice.
 **Why:** the example is what a chemist will compare against; a formatter with an extra digit
 reads as more precision than the interval supports (§11.10 screenshot test).
 **Revisit if:** the spec owner clarifies the prose.
+
+## D-022 — insight/: registry in JSON, sigma convention is this build's, not the spec's (2026-08-26)
+Spec 02 §5.2 specifies `hypotheses.yaml`; PyYAML is not a dependency and adding one for a static,
+content-hashed file is not worth it, so the registry is `config/insight/hypotheses.json`
+(22 hypotheses, hashed into every Finding). Spec 02 §4.9 freezes sigma at poly2/R=12/unmasked;
+this build's frozen convention is poly3/R=32/unmasked-prespot (D-007/D-008), so that is what the
+registry records, with a note that findings under a different convention are not comparable.
+Class A findings are computed inside the run (from the assembled Result, never from pixels) and
+folded back in as the result's correlation block; the full §7.2 Finding JSON is stored beside the
+result at `data/findings/{run_id}.json`. Cross-plate (Class B/C) analysis runs on demand over a
+selected cohort at `/compare`.
+**Why:** a run must carry its own findings for replay and print; a cohort is a user selection, not
+a property of one run.
+**Revisit if:** a campaign/reaction-time metadata model lands, at which point cohorts become
+first-class rows rather than a URL parameter.
+
+## D-023 — Forbidden-word linter narrowed to claim forms of "prove" (2026-08-26)
+Spec 02 §9 forbids `proves` in user-facing strings; its own §8.3 standing recommendation contains
+"the fastest path ... to prove a trend". The linter forbids `proves`, `proved`, `proof`, and allows
+the infinitive. Every emitted Finding is linted at construction: a forbidden word raises, so bad
+copy cannot reach a screen.

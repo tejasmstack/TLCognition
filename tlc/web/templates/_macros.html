@@ -59,3 +59,38 @@
   <span class="muted">— no reference band; comparable within this plate only</span>
 {% endif %}
 {%- endmacro %}
+
+{% macro finding_card(f) -%}
+<article class="finding v-{{ f.verdict }}">
+  <header>
+    <span class="hid mono">{{ f.hypothesis_id }}</span>
+    <span class="verdict">{{ {'reported':'reported','tentative':'tentative','suppressed':'suppressed','anomaly':'anomaly','insufficient_data':'not enough plates'}[f.verdict] }}</span>
+    {% if f.evidence.n_units %}<span class="muted small">{{ f.evidence.n_plates }} plate(s) · {{ f.evidence.n_campaigns }} campaign(s)</span>{% endif %}
+  </header>
+  {% if f.verdict == 'suppressed' %}
+  <details><summary>{{ f.headline }}</summary>
+    <ul>{% for r in (f.suppression.reasons if f.suppression else []) %}<li><b>{{ r.code }}</b> — {{ r.statement }}</li>{% endfor %}</ul>
+    {% if f.what_would_make_this_reportable %}<p><b>What would make this reportable:</b></p>
+    <ul>{% for u in f.what_would_make_this_reportable %}<li>{{ u }}</li>{% endfor %}</ul>{% endif %}
+  </details>
+  {% elif f.verdict == 'insufficient_data' %}
+  <div class="pre">{{ f.caveats[0] if f.caveats else f.headline }}</div>
+  {% else %}
+  <h3>{{ f.headline }}</h3>
+  <p>{{ f.plain_language }}</p>
+  {% if f.effect and f.effect.value is not none %}
+  <p class="num"><b>{{ f.effect.metric }}:</b> {{ f.effect.value }}
+    {% if f.effect.interval %}<span class="muted">interval {{ f.effect.interval[0] }} – {{ f.effect.interval[1] }} ({{ f.effect.interval_method }})</span>{% endif %}
+    <span class="muted">· n = {{ f.evidence.n_units }}</span></p>
+  {% endif %}
+  {% if f.verdict == 'tentative' and f.evidence.ensemble_agreement %}
+  <p class="tentative-note">reproduced by {{ (f.evidence.ensemble_agreement * (f.effect.supporting.get('K', 24) if f.effect else 24))|round(0)|int }} of {{ f.effect.supporting.get('K', 24) if f.effect else 24 }} defensible analysis pipelines</p>
+  {% endif %}
+  {% for c in f.caveats %}<p class="muted small">{{ c }}</p>{% endfor %}
+  <p class="falsifier"><b>What would falsify this:</b> {{ f.falsifier }}</p>
+  {% if f.next_experiment %}<p class="muted small"><b>Next experiment:</b> {{ f.next_experiment }}</p>{% endif %}
+  {% set fired = f.confounds | selectattr('result', 'equalto', 'FIRED') | list %}
+  {% if fired %}<p class="muted small">Confounds fired: {{ fired | map(attribute='id') | join(', ') }}</p>{% endif %}
+  {% endif %}
+</article>
+{%- endmacro %}

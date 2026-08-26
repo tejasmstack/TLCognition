@@ -234,3 +234,19 @@ follows from it directly. The result view reports "about {5 × σ_od} OD" and st
 as `chosen` on /method. Gate 4 data: recall ≈ 0.94–0.95 at ≥ 5σ, which is why 5 was chosen.
 **Verify by:** replacing the factor with the measured 95%-recall amplitude once Gate 4's recall
 curve is re-run at the shipped operating point.
+
+## A-021 — Class B series metadata is not yet collected (2026-08-26)
+Spec 02's Class B hypotheses need `reaction_time_h`, `campaign_id`, `solvent_system_id`,
+`loading_constant` and `epsilon_comparable` per plate. The upload screen collects none of these
+today, so every Class B/C hypothesis emits `insufficient_data` with the §8.1 wording and the unlock
+ladder — which is the correct output at n=1 anyway. `analyse_cohort_findings` accepts a `meta` dict
+per plate so the fields can be wired in without touching the statistics.
+**Verify by:** adding the fields to the upload form and the images table, then checking that a
+6-plate single-campaign cohort produces a real test rather than an insufficient-data card.
+
+## A-022 — H15's epsilon_comparable gate is enforced by absence, not by a flag (2026-08-26)
+Spec 02 H15 requires the operator to declare `epsilon_comparable ∈ {yes,no,unknown}` and refuses a
+conversion number unless it is `yes`. No such field is collected, so the area ratio is computed as
+`area_ratio` only inside the cohort statistic and is never labelled "conversion" anywhere in the UI.
+**Verify by:** adding the per-reaction-class flag to the upload form; until then, treat any ratio in
+the JSON as an area ratio.

@@ -1,5 +1,5 @@
 {% extends "base.html" %}
-{% from "_macros.html" import capability_bar, scale %}
+{% from "_macros.html" import capability_bar, scale, finding_card %}
 {% block title %}Compare · TLC{% endblock %}
 {% block body %}
 <h1>Compare {{ cols|length }} runs</h1>
@@ -17,4 +17,11 @@
   </div>
 {% endfor %}
 </div>
+{% if cols|length >= 2 %}
+<section class="findings">
+  <h2>Cross-plate findings</h2>
+  <p class="banner">{{ standing }}</p>
+  {% for f in cohort %}{{ finding_card(f) }}{% endfor %}
+</section>
+{% endif %}
 {% endblock %}

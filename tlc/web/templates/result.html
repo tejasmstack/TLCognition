@@ -1,5 +1,5 @@
 {% extends "base.html" %}
-{% from "_macros.html" import capability_bar, tally, chip, refusal_card, scale %}
+{% from "_macros.html" import capability_bar, tally, chip, refusal_card, scale, finding_card %}
 {% set run_id = res.run_id %}
 {% block title %}Run #{{ res.run_id[4:12] }} · TLC{% endblock %}
 {% block body %}
@@ -113,5 +113,20 @@
 
 <section class="refusals">
   {% for c in cards %}{{ refusal_card(c) }}{% endfor %}
+</section>
+
+<section class="findings">
+  <h2>Findings <span class="muted">{{ findings | selectattr('verdict', 'equalto', 'reported') | list | length }} reported ·
+    {{ findings | selectattr('verdict', 'equalto', 'suppressed') | list | length }} suppressed ·
+    {{ findings | selectattr('verdict', 'equalto', 'insufficient_data') | list | length }} need more plates</span></h2>
+  <p class="muted small">Within-plate structural statements (registry {{ findings[0].provenance.registry_version if findings else '—' }},
+    hash <code class="mono">{{ (findings[0].provenance.registry_hash[:12] if findings else '—') }}</code>). Cross-plate trends are on
+    <a href="/compare?runs={{ res.run_id }}">the comparison screen</a> and need at least six plates in one campaign.</p>
+  {% for f in findings %}{{ finding_card(f) }}{% endfor %}
+</section>
+
+<section class="limits">
+  <h2>Assumptions and limits</h2>
+  <ul>{% for l in limits %}<li>{{ l }}</li>{% endfor %}</ul>
 </section>
 {% endblock %}

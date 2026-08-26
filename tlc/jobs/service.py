@@ -20,8 +20,11 @@ from tlc.assemble import assemble, result_sha256
 from tlc.config.loader import load_pipeline
 from tlc.core.canonical_json import canonical_json
 from tlc.core.hashing import sha256_bytes, sha256_canonical, tree_fingerprint
+from tlc.insight.findings import to_result_block
+from tlc.insight.service import analyse_plate_findings
 from tlc.pipeline.configs import Config
 from tlc.pipeline.runner import RunConfig, run_plate
+from tlc.schemas import result as S
 from tlc.storage.blobs import LocalFSStore
 from tlc.storage.db import init_schema, make_engine
 from tlc.storage.odstore import write_run_h5
@@ -120,10 +123,17 @@ class RunService:
         seed = int(info["sha256"][:16], 16) ^ int(self.config_doc.get("seed_salt", 0))
         out = run_plate(dec.rgb, self.run_config(n_lanes, labels), seed=seed)
         run_id = f"run_{uuid.uuid4().hex[:24]}"
-        result = assemble(out, data, {"width_px": dec.width, "height_px": dec.height, "mime": dec.mime,
-                                      "exif_orientation": dec.exif_orientation, "decoder": f"imageio.v3/{dec.decoder}",
-                                      "original_filename": filename},
-                          self.config_doc, run_id, utcnow())
+        image_meta = {"width_px": dec.width, "height_px": dec.height, "mime": dec.mime,
+                      "exif_orientation": dec.exif_orientation, "decoder": f"imageio.v3/{dec.decoder}",
+                      "original_filename": filename}
+        created = utcnow()
+        result = assemble(out, data, image_meta, self.config_doc, run_id, created)
+        # insight (spec 02): Class A findings are computed from the assembled result — never from pixels —
+        # then folded back in as the result's correlation block, so a run carries its own findings.
+        findings = analyse_plate_findings(result.model_dump(mode="json"))
+        result = assemble(out, data, image_meta, self.config_doc, run_id, created,
+                          correlations=S.CorrelationBlock.model_validate(
+                              to_result_block(findings, fdr_target=0.10, adjustment="none_class_a")))
         sha_res = result_sha256(result)
         # persist OD + densitograms, then the JSON (with result_sha256 stamped in provenance)
         od_path = None
@@ -139,6 +149,9 @@ class RunService:
         result_path = self.data_dir / "results" / f"{run_id}.json"
         result_path.parent.mkdir(parents=True, exist_ok=True)
         result_path.write_text(canonical_json(d) + "\n")
+        findings_path = self.data_dir / "findings" / f"{run_id}.json"
+        findings_path.parent.mkdir(parents=True, exist_ok=True)
+        findings_path.write_text(canonical_json([f.to_dict() for f in findings]) + "\n")
         drift = expected_result_sha256 is not None and expected_result_sha256 != sha_res
         if replay_of is not None and drift:
             # spec 03 §7.2.5: a replay that does not reproduce result_sha256 is FAILED with E_REPLAY_DRIFT
@@ -156,6 +169,10 @@ class RunService:
             self.repo.insert_run(d, str(result_path), od_path, run_key, vlm_mode, started, int((time.time() - t0) * 1000), replay_of)
         return {"run_id": run_id, "deduplicated": False, "status": d["status"], "result_sha256": sha_res,
                 "replay_drift": drift, "expected_result_sha256": expected_result_sha256}
+
+    def load_findings(self, run_id: str) -> list[dict]:
+        p = self.data_dir / "findings" / f"{run_id}.json"
+        return json.loads(p.read_text()) if p.exists() else []
 
     def load_result(self, run_id: str) -> dict | None:
         row = self.repo.get_run(run_id)

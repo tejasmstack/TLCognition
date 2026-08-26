@@ -75,7 +75,8 @@ def git_state() -> tuple[str, bool]:
 
 
 def assemble(out: RunOutput, image_bytes: bytes, image_meta: dict, config_document: dict, run_id: str,
-             created_at: str, vlm_block: S.VLMBlock | None = None, storage: S.StorageBlock | None = None) -> S.Result:
+             created_at: str, vlm_block: S.VLMBlock | None = None, storage: S.StorageBlock | None = None,
+             correlations: S.CorrelationBlock | None = None) -> S.Result:
     image_sha = sha256_bytes(image_bytes)
     config_hash = sha256_canonical(config_document)
     lock_hash = sha256_bytes((ROOT / "uv.lock").read_bytes()) if (ROOT / "uv.lock").exists() else "unavailable"
@@ -225,7 +226,7 @@ def assemble(out: RunOutput, image_bytes: bytes, image_meta: dict, config_docume
             vlm_proposed=False, vlm_confirmation=None, flags=list(sp.flags),
         ))
 
-    correlations = S.CorrelationBlock(hypotheses_tested=0, adjustment="benjamini_hochberg", fdr_target=0.10, findings=[], suppressed=[])
+    correlations = correlations or S.CorrelationBlock(hypotheses_tested=0, adjustment="benjamini_hochberg", fdr_target=0.10, findings=[], suppressed=[])
     vlm = vlm_block or S.VLMBlock(mode="off", model_id=None, prompt_bundle={}, n_samples=0, temperature=0.0, fields={},
                                   cache={"hits": 0, "misses": 0, "bundle_hash": ""}, cost={"input_tokens": 0, "output_tokens": 0, "usd": 0.0},
                                   attempts=0, retries=0, degraded=False)

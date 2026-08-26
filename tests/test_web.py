@@ -65,6 +65,22 @@ def test_json_is_byte_identical_to_api(client, run_id):
     assert d["provenance"]["result_sha256"]
 
 
+def test_findings_panel_and_limits_render(client, run_id):
+    html = client.get(f"/runs/{run_id}").text
+    assert "Findings" in html and "Assumptions and limits" in html
+    assert "What would falsify this" in html
+    assert "H01" in html and "H03" in html
+    fj = client.get(f"/runs/{run_id}/findings.json").json()
+    assert {f["hypothesis_id"] for f in fj} >= {f"H{i:02d}" for i in range(1, 11)}
+    assert all(f["falsifier"] for f in fj)
+    # the result document carries the same findings as its correlation block
+    res = client.get(f"/runs/{run_id}.json").json()
+    assert res["correlations"]["hypotheses_tested"] == len(fj)
+    # cross-plate findings need a cohort; one plate must say so rather than reporting a trend
+    cmp_html = client.get(f"/compare?runs={run_id},{run_id}").text
+    assert "Cross-plate findings" in cmp_html and "Not enough plates" in cmp_html
+
+
 def test_plate_png_and_print_and_compare(client, run_id):
     assert client.get(f"/runs/{run_id}/plate.png").headers["content-type"] == "image/png"
     assert client.get(f"/runs/{run_id}/print").status_code == 200

@@ -13,6 +13,8 @@ from PIL import Image
 
 from tlc.api.deps import get_service
 from tlc.api.routers.runs import record_correction
+from tlc.insight.render import STANDING_RECOMMENDATION as INSIGHT_RECOMMENDATION
+from tlc.insight.service import analyse_cohort_findings
 from tlc.jobs.service import RunService, decode_image
 from tlc.labels.corrections import CorrectionDoc
 from tlc.labels.stats import draft_from_row, label_stats
@@ -116,9 +118,29 @@ def _load(svc: RunService, run_id: str) -> tuple[dict, dict]:
 
 def _ctx(request: Request, svc: RunService, run_id: str) -> dict:
     row, res = _load(svc, run_id)
+    findings = svc.load_findings(run_id)
     cfg = {**svc.config_doc, "_reported_agreement_min": svc.op_doc["tiers"]["reported"]["agreement_min"]}
     vm = view_model(res, cfg)
-    return {"request": request, "row": row, **vm}
+    order = {"reported": 0, "tentative": 1, "anomaly": 2, "insufficient_data": 3, "suppressed": 4}
+    findings.sort(key=lambda f: (order.get(f["verdict"], 9), f["hypothesis_id"]))
+    return {"request": request, "row": row, "findings": findings,
+            "limits": _limits(res, svc), **vm}
+
+
+def _limits(res: dict, svc: RunService) -> list[str]:
+    """§7.4: a per-run assumptions-and-limits panel, mandatory and non-dismissible."""
+    qc, phot = res["capture_qc"], res["photometry"]
+    sig = phot["sigma_od"]["value"]
+    return [
+        f"Clipping on this plate: {nf.fmt_pct(qc['green_clip_frac_in_plate']['value'], 1)} of in-plate green pixels at the sensor maximum.",
+        f"Noise convention (frozen): {phot['sigma_method']}, background {phot['background_model']}, "
+        f"sigma = {nf.fmt_plain(sig, 5)} optical density. A finding computed under a different convention is not comparable.",
+        "No solvent front exists on this corpus, so positions are Rst against the standard lane; Rf is not reported.",
+        "Phantom baseline at the reporting gate (5 sigma and ensemble agreement 0.60): about 0.19 bands per blank plate, "
+        "measured on synthetic-noise blanks only — the rate on genuine solvent-only plates is not yet measured.",
+        "Independent units: 1 plate, 1 campaign. Cross-plate trends need at least 6 plates in one campaign.",
+        f"Confidence is not calibrated: {svc.op_doc['id']} reports agreement tallies, not probabilities.",
+    ]
 
 
 # ----------------------------------------------------------------------------- routes
@@ -227,6 +249,12 @@ def review_submit(request: Request, run_id: str, reviewer_id: str = Form(...), b
     return RedirectResponse(f"/runs/{run_id}?saved={out['label_status']}", status_code=303)
 
 
+@router.get("/runs/{run_id}/findings.json")
+def run_findings(run_id: str, svc: RunService = Depends(get_service)):  # noqa: B008
+    _load(svc, run_id)
+    return JSONResponse(svc.load_findings(run_id))
+
+
 @router.get("/compare", response_class=HTMLResponse)
 def compare(request: Request, runs: str = "", svc: RunService = Depends(get_service)):  # noqa: B008
     ids = [x for x in runs.split(",") if x]
@@ -238,7 +266,14 @@ def compare(request: Request, runs: str = "", svc: RunService = Depends(get_serv
         res = json.loads(Path(row["result_path"]).read_text())
         cols.append({"row": row, "res": res, "cap": capability(res),
                      "spots": [s for s in res["spots"] if s["status"] == "confirmed"]})
-    return templates.TemplateResponse(request, "compare.html", {"request": request, "cols": cols})
+    cohort = []
+    if len(cols) >= 2:
+        metas = [{"campaign_id": c["res"]["image"]["original_filename"], "capture_order": i}
+                 for i, c in enumerate(cols)]
+        cohort = [f.to_dict() for f in analyse_cohort_findings([c["res"] for c in cols], metas)]
+    return templates.TemplateResponse(request, "compare.html",
+                                      {"request": request, "cols": cols, "cohort": cohort,
+                                       "standing": INSIGHT_RECOMMENDATION})
 
 
 @router.get("/method", response_class=HTMLResponse)
