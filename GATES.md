@@ -23,3 +23,9 @@ reorder of the determinism import below numpy, now guarded by
   at review time — remediated by committing them with the fix.
 **Remediation commit:** (see git log — lint fix, import-order guard test, reference files
 tracked). Re-check of item 4 by the same reviewer follows below.
+**Re-check at 44bf51d: PASS (final).** CI exit 0 (ruff clean, 7 passed); all four evidence files
+tracked; committed import order determinism-before-numpy (line 17 vs 21+) behind `# isort: split`
+— reviewer verified ruff --fix reorders the OLD version but not the committed one, and that the
+guard test fails on a deliberately violated copy. Gate 0 closed.
+
+---
