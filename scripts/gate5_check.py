@@ -151,22 +151,40 @@ def main() -> None:
         synth = list(ex.map(process_synth, seeds, chunksize=2))
         real = list(ex.map(process_real, uniq, chunksize=2))
 
-    # 1. position error (confirmed spots matched to truths within tol; Rst mode-vs-mode)
-    errs, n_conf, n_matched = [], 0, 0
+    # 1. position error (confirmed spots matched to RESOLVED truths within tol; Rst mode-vs-mode).
+    #    D-017: a truth is resolved iff its nearest same-lane neighbour is >= 2 x nominal FWHM
+    #    away; unresolved pairs (merged blobs) are reported separately, never scored as error.
+    errs, errs_unres, n_conf, n_matched = [], [], 0, 0
+    n_truth_resolved = n_truth_unresolved = 0
     for r in synth:
+        fwhm_nom = r["tol_px"] / 0.4
+        tol = max(r["tol_px"], 0.03 * r["migration"])
+        resolved = {}
+        for i, t in enumerate(r["truths"]):
+            nn = min([abs(o["y_mode"] - t["y_mode"]) for j, o in enumerate(r["truths"]) if j != i and o["lane"] == t["lane"]], default=1e9)
+            resolved[i] = nn >= 2.0 * fwhm_nom
+        n_truth_resolved += sum(resolved.values())
+        n_truth_unresolved += sum(1 for v in resolved.values() if not v)
         for d in r["dets"]:
             if d["status"] != "confirmed" or d["rst"] is None:
                 continue
             n_conf += 1
-            m = [t for t in r["truths"] if t["lane"] == d["lane"] and abs(t["y_mode"] - d["y"]) <= max(r["tol_px"], 0.03 * r["migration"])]
+            m = [(i, t) for i, t in enumerate(r["truths"]) if t["lane"] == d["lane"] and abs(t["y_mode"] - d["y"]) <= tol]
             if m:
                 n_matched += 1
-                errs.append(abs(d["rst"] - m[0]["rst_true"]))
+                i, t = min(m, key=lambda it: abs(it[1]["y_mode"] - d["y"]))
+                (errs if resolved[i] else errs_unres).append(abs(d["rst"] - t["rst_true"]))
     errs = np.array(errs)
+    eu = np.array(errs_unres)
     pos = {"n_confirmed": n_conf, "n_matched_to_truth": n_matched,
+           "n_truth_resolved": n_truth_resolved, "n_truth_unresolved_pairs": n_truth_unresolved,
+           "n_matched_resolved": int(errs.size), "n_matched_unresolved": int(eu.size),
            "rst_err_median": round(float(np.median(errs)), 5) if errs.size else None,
            "rst_err_p95": round(float(np.percentile(errs, 95)), 5) if errs.size else None,
            "rst_err_max": round(float(errs.max()), 5) if errs.size else None,
+           "unresolved_pairs_rst_err_median": round(float(np.median(eu)), 5) if eu.size else None,
+           "unresolved_pairs_rst_err_p95": round(float(np.percentile(eu, 95)), 5) if eu.size else None,
+           "rule": "D-017: scored on truths with nearest same-lane neighbour >= 2 FWHM_nom",
            "pass": bool(errs.size and np.percentile(errs, 95) < 0.01)}
     # 2. streak lanes
     total_streak = sum(len(r["streak_lanes_true"]) for r in synth)

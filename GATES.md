@@ -141,3 +141,20 @@ Textured-null phantom rate now reflects real texture under a pre-registered null
 amendment), not P33 chemistry. Final independent review requested.
 
 ---
+## Gate 5 · Peak modelling, Rst, refusal
+**Self-check:** 2026-08-26, reports/gate5_evidence.json (60 synthetic plates, seeds 11000-11059;
+61 unique real images). Independent review requested.
+- Position (D-014 mode convention; D-017 resolved-spot scoring): 142 matched resolved confirmed
+  spots — Rst error median 0.0004, **p95 0.00846 (< 0.01)**, max 0.023. Unresolved pairs
+  (same-lane truths < 2 FWHM apart; 52 truths, 14 matched detections) reported separately:
+  median 0.019, p95 0.076 — merged blobs, not localisation error.
+- Streak: **19/19** synthetic streak lanes flagged AND unquantified (fraction / contiguous-run /
+  plateau / tail-ratio rules).
+- Real corpus: **61/61** produce a schema-valid Result or typed refusal; **0 silent nulls**
+  (every null-valued Q carries provenance=refused + refusal). Statuses: 58 degraded, 3 refused,
+  0 succeeded (pre-VLM: lane count/labels refused on every plate → E_LANE_COUNT_UNKNOWN,
+  E_NO_REFERENCE_LANE; E_NO_FRONT on all; E_FRAME_OVERRUN on 53; clipping gates on 20).
+- Fixed on the way (all logged): M-011 rectified-frame off-by-one (origin bias −0.9 → −0.1 px);
+  D-016 VIF abstention suspended (estimator uncalibrated); band ends at the detected origin.
+
+---

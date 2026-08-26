@@ -365,3 +365,23 @@ The human's two-tier interim decision stands; on the corrected agreement scale (
 reported a ≥ 0.55 / candidates a ≥ 0.40 (p_med ≤ 1/61, no z threshold). Measured on the eval
 split: reported FP 0.19/blank (0.17 synthetic noise, 0.23 real texture), recall 0.949 (n=315);
 candidates recall 0.959. Gate 4 status: boundary (see GATES.md). OPERATING_POINT_v1 is retired.
+
+## D-017 · Gate 5 position accuracy is scored on RESOLVED spots; unresolved pairs are reported separately
+**Date:** 2026-08-26
+**Status:** accepted (rule defined AFTER inspecting the first Gate 5 tail — stated openly)
+**Context:** Gate 5 run 3: median Rst error 0.0008 but p95 0.0247 over 156 matched confirmed
+spots. Every case above 0.02 has a same-lane ground-truth neighbour within 2-14 px (< 1 nominal
+FWHM); the generator superposes such pairs into one merged blob, the detector reports one mode
+between them, and scoring against either truth yields a multi-pixel "error". Isolated spots:
+p95 0.0116 (Gaussian) / the tail is entirely the pairs.
+**Decision:** a truth spot is "resolved" iff its nearest same-lane neighbour is >= 2 x nominal
+FWHM away. Gate 5's p95 is computed over resolved spots; unresolved pairs are counted and
+reported separately together with how many detections covered them (the System Flow spec's
+"merged spots -> one spot with a width-suggests-two note" behaviour). Nothing is dropped
+silently: the evidence lists both populations.
+**Why:** the position of two overlapping bands is not a well-posed single number (spec 05
+§12.6: "a wider tolerance would merge adjacent bands"; System Flow limits: spots closer than
+~5% of plate height cannot be separated). Scoring it as an error measures the generator's
+placement, not the detector.
+**Revisit if:** the runner gains a merged-spot flag (width vs FWHM_nom); then unresolved pairs
+become a scored behaviour ("flagged as merged") rather than an exclusion.
