@@ -482,3 +482,24 @@ Spec 02 §9 forbids `proves` in user-facing strings; its own §8.3 standing reco
 "the fastest path ... to prove a trend". The linter forbids `proves`, `proved`, `proof`, and allows
 the infinitive. Every emitted Finding is linted at construction: a forbidden word raises, so bad
 copy cannot reach a screen.
+
+## D-024 — Isotonic calibration by PAVA, no scikit-learn (2026-08-26)
+Gate 7's map is monotone-only (agreement is ordinal evidence; nothing licenses a parametric shape at
+n = 30 plates). scikit-learn would be a large dependency for one 20-line algorithm, so
+`tlc/calibration/calibrate.py` implements pool-adjacent-violators directly. Grouped CV is
+leave-one-plate-out; the ECE interval is a cluster bootstrap over plates, never over spots (spots in
+a plate share sigma, the illumination field and the exposure). `fit` refuses below 30 labelled
+plates and no map is shipped in `config/` — a test asserts that, because a shipped map would imply a
+passed Gate 7.
+**Why:** the machinery has to exist and be tested before the labels arrive, without letting an
+untested probability leak into the UI in the meantime.
+
+## D-025 — Gate 9's null battery runs on a synthetic metadata-shuffle cohort (2026-08-26)
+The brief asks for ≥ 500 label shuffles. The real corpus has no reaction-time or campaign metadata
+(A-021), so there is nothing to shuffle on it. `scripts/gate9_check.py` builds an 8-plate cohort whose
+band counts, positions and optical densities are drawn independently of the metadata but whose capture
+variables vary over the real corpus's measured ranges, then permutes the metadata records 500 times
+(N1 + N2 together). Result: 1.8% surfaced-finding rate, Wilson upper 3.4%, against q = 0.10 — PASS.
+**Why:** the gate tests the analysis pipeline's leak rate, which is a property of the code and the
+design, not of these particular pixels.
+**Revisit if:** real series metadata is collected, at which point the battery should run on it too.

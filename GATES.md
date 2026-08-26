@@ -208,3 +208,41 @@ iteration. No gate is lowered; every accuracy-bearing field stays refused/uncali
 evidence says so.
 
 ---
+
+## Gate 9 — Correlations / null battery: PASS (2026-08-26)
+
+`uv run python scripts/gate9_check.py --shuffles 500 --plates 8` → `reports/gate9.json`.
+
+- 500 metadata shuffles (N1 breaks the X–Y link, N2 breaks the image–metadata link) over an 8-plate
+  synthetic cohort carrying no chemistry: **1.8%** of shuffled cohorts surfaced any finding, Wilson
+  upper 95% **3.4%**, against the nominal q = 0.10. Per-hypothesis rate: H11 1.8%, everything else 0
+  (spec 02 §6 N3 disables any hypothesis above 5%).
+- On the unshuffled cohort: **nothing reported**; H16/H11/H14/H17 suppressed (confound or
+  underpowered-design), the rest `insufficient_data` with the §8.1 wording and the unlock ladder.
+- Every confound check runs (C01–C04, C08, C11 against the capture matrix; C03/C06/C07/C10 as hard
+  vetoes). The brief's failure condition — "if it reports a confident finding from 7 plates, the gate
+  has failed" — does not fire: the family arithmetic (m ≤ q·n!/2) refuses before any statistic is read.
+
+## Gate 10 — API, persistence, byte-identical re-run: PASS (2026-08-26)
+
+`uv run python scripts/gate10_check.py --images dataset --n 3` → `reports/gate10.json`.
+
+- Schema validation **3/3 (100%)**: structural check against `schemas/result_v1.schema.json` plus the
+  frozen pydantic model (`extra="forbid"`).
+- Replay **3/3 byte-identical**: each run re-executed at its recorded pipeline version reproduced
+  `result_sha256`, and each original row was superseded by its replay (never edited).
+- API contract: `GET /api/v1/runs/{id}` returns the stored bytes verbatim; unknown run → typed 404;
+  a correction against a stale `result_sha256` → typed 409.
+
+## Gate 7 / 8 — BLOCKED, not failed (2026-08-26)
+
+Gate 7 (calibration, ECE ≤ 0.10) and Gate 8 (VLM field accuracy) both require the labelled set from
+Gate 6, which requires a chemist. Per BUILD_BRIEF §10 the correct response is to build against
+synthetic ground truth and mark every accuracy field as not computed:
+
+- `tlc/calibration/calibrate.py` implements the map (isotonic/PAVA), leave-one-plate-out grouped CV,
+  ECE and a cluster bootstrap over plates; it **refuses** below 30 labelled plates. Verified on
+  synthetic labels: ECE 0.034, 95% interval [0.027, 0.068] over 40 plates × 12 bands.
+- No calibration map is shipped in `config/`, and a test asserts that (a shipped map would imply a
+  passed Gate 7). Confidence remains `provenance: refused` with `E_UNCALIBRATED` in every result.
+- The VLM layer runs in `off`/`replay` only; no API credentials exist in this environment.

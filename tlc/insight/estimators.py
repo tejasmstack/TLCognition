@@ -2,6 +2,7 @@
 
 import itertools
 import math
+from functools import lru_cache
 
 import numpy as np
 from scipy import stats
@@ -38,14 +39,42 @@ def _stat(name: str):
     return kendall if name == "kendall" else spearman
 
 
+def _rank(v) -> np.ndarray:
+    return stats.rankdata(np.asarray(v, float))
+
+
+def _spearman_all_permutations(rx: np.ndarray, ry: np.ndarray) -> np.ndarray:
+    """Exact null for Spearman: rho over every permutation of y, vectorised (Pearson on ranks, which
+    is exactly Spearman and stays correct under ties)."""
+    n = len(rx)
+    perms = np.array(list(itertools.permutations(range(n))), dtype=np.int16)
+    Y = ry[perms]
+    xc = rx - rx.mean()
+    Yc = Y - Y.mean(axis=1, keepdims=True)
+    den = np.linalg.norm(xc) * np.linalg.norm(Yc, axis=1)
+    with np.errstate(invalid="ignore", divide="ignore"):
+        return np.where(den > 0, (Yc @ xc) / np.where(den > 0, den, 1.0), np.nan)
+
+
+@lru_cache(maxsize=64)
+def _cached_null(estimator: str, rx_key: tuple, ry_key: tuple) -> tuple:
+    """The permutation null depends only on the two rank vectors, so identical designs (a shuffle
+    battery, a repeated cohort) pay for the enumeration once."""
+    rx, ry = np.array(rx_key, float), np.array(ry_key, float)
+    if estimator == "spearman":
+        return tuple(_spearman_all_permutations(rx, ry))
+    f = _stat(estimator)
+    return tuple(f(rx, ry[list(p)]) for p in itertools.permutations(range(len(rx))))
+
+
 def null_distribution(x, y, estimator: str = "spearman", rng: np.random.Generator | None = None) -> tuple[np.ndarray, str]:
     """Exact enumeration of all n! permutations for n ≤ 9; otherwise B=100k Monte-Carlo."""
     x, y = np.asarray(x, float), np.asarray(y, float)
-    f = _stat(estimator)
     n = len(x)
     if n <= EXACT_MAX_N:
-        out = np.fromiter((f(x, y[list(p)]) for p in itertools.permutations(range(n))), float, count=math.factorial(n))
-        return out, "exact"
+        rx, ry = _rank(x), _rank(y)
+        return np.array(_cached_null(estimator, tuple(rx), tuple(ry)), float), "exact"
+    f = _stat(estimator)
     rng = rng or np.random.Generator(np.random.PCG64(0))
     return np.array([f(x, rng.permutation(y)) for _ in range(MC_B)]), "monte_carlo"
 

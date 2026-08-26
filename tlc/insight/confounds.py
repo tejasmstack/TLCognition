@@ -23,23 +23,31 @@ def partial_spearman(x, y, z) -> float:
 
 
 def stratified_permutation_p(x, y, z, n_perm: int = 5000, seed: int = 0) -> float:
-    """Permute y within Z-strata (median split at n<10, tertiles at n≥12)."""
+    """Permute y within Z-strata (median split at n<10, tertiles at n≥12), vectorised over
+    permutations: partial Spearman is Pearson on ranks, so one matrix product does the whole battery."""
     z = np.asarray(z, float)
     n = len(z)
     qs = [0.5] if n < 12 else [1 / 3, 2 / 3]
-    cuts = np.quantile(z, qs)
-    strata = np.digitize(z, cuts)
+    strata = np.digitize(z, np.quantile(z, qs))
+    rx, ry, rz = (stats.rankdata(v) for v in (x, y, z))
     obs = abs(partial_spearman(x, y, z))
+    if not np.isfinite(obs):
+        return 1.0
     rng = np.random.Generator(np.random.PCG64(seed))
-    y = np.asarray(y, float)
-    hits = 0
-    for _ in range(n_perm):
-        yp = y.copy()
-        for s in np.unique(strata):
-            idx = np.where(strata == s)[0]
-            yp[idx] = rng.permutation(y[idx])
-        v = abs(partial_spearman(x, yp, z))
-        hits += int(np.isfinite(v) and v >= obs - 1e-12)
+    Y = np.tile(ry, (n_perm, 1))
+    for s in np.unique(strata):
+        idx = np.where(strata == s)[0]
+        if len(idx) > 1:
+            Y[:, idx] = Y[:, idx][np.arange(n_perm)[:, None], np.argsort(rng.random((n_perm, len(idx))), axis=1)]
+    xc, zc = rx - rx.mean(), rz - rz.mean()
+    Yc = Y - Y.mean(axis=1, keepdims=True)
+    nx, nz, ny = np.linalg.norm(xc), np.linalg.norm(zc), np.linalg.norm(Yc, axis=1)
+    with np.errstate(invalid="ignore", divide="ignore"):
+        rxy = (Yc @ xc) / np.where(ny > 0, ny * nx, np.nan)
+        ryz = (Yc @ zc) / np.where(ny > 0, ny * nz, np.nan)
+        rxz = float(np.dot(xc, zc) / (nx * nz)) if nx > 0 and nz > 0 else np.nan
+        part = (rxy - rxz * ryz) / np.sqrt((1 - rxz**2) * (1 - ryz**2))
+    hits = int(np.sum(np.isfinite(part) & (np.abs(part) >= obs - 1e-12)))
     return (1 + hits) / (1 + n_perm)
 
 
