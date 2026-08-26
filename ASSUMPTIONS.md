@@ -67,3 +67,37 @@ implements tilt as in-plane rotation with exact corner tracking (no perspective 
 Handheld perspective distortion exists in reality; Gate 2's rectification is projective and will
 be additionally exercised with synthetic projective jitter when Phase 2 needs it. If Phase 2
 requires generator-level perspective, it is added as a knob then (a decisions.md entry).
+
+## A-009 · Determinism "two machines" is unavailable this build
+Gate 2 (and spec 03 §7.2.2 tier 1) call for identical hashes across two machines. This build has
+one machine (darwin/arm64). Evidence provided instead: two full in-process passes hash-identical
+plus reviewer re-runs in fresh processes byte-comparing the evidence files. Cross-machine tier-1
+verification is listed as not performed in EVALUATION.md; the committed GitHub Actions workflow
+(ubuntu-x86_64) becomes the second architecture the moment CI runs remotely.
+
+## A-010 · Rectification idempotency is evaluated at corners with recoverable evidence
+For a plate cut off by the photo frame (F2: four of seven original plates), the ideal-rectangle
+corners on the cut side lie outside the image; the rectified frame there contains clamped border
+smear, and a second detection pass honestly measures a different, cut object. Idempotency
+(re-warp is a no-op ≤ 0.5 px) is therefore checked at corners whose first-pass source position
+is ≥ 3 px interior to the source frame; corners at the frame boundary are reported as
+not-checkable with the reason, never silently passed. Plates fully inside the frame are checked
+at all four corners. This is a scoping of what is measurable, not a loosening: on checkable
+corners the 0.5 px bound stands.
+
+## A-011 · Result-schema interpretations (spec 03 §7.3 ambiguities)
+Resolved while freezing tlc/schemas/result.py (details in that module's docstring):
+1. Float canonicalisation: probabilities are not structurally distinguishable, so any Q with
+   unit "1" rounds to 4 dp; every other unit 6 dp; bare agreement/p-value floats 4 dp, other
+   bare floats 6 dp. Purpose (byte-stable canonical JSON) is preserved.
+2. The §7.3.6 worked example shows inferred quantities without `method`, which rule (b)
+   forbids; the normative rule wins — producers always set method on inferred values.
+3. `rf` is modeled `Q[float] | None`: omitted when the front is absent per the field table, but
+   a refused-Q form (as the worked example shows) is also legal.
+4. `Flag.evidence` admits list values (the example's per_lane_max); `Refusal.evidence` stays
+   `dict[str, float | str]` exactly.
+5. The Lane rule "`suppression` populated iff `quantified == false`" is enforced by validator.
+6. Densitogram previews: producer rounds to 5 dp; schema serialises at 6 dp (identity).
+7. Floats inside Any-typed payloads (VLM samples, config_document) are canonicalised by the
+   producer, not the schema — unreachable structurally.
+8. `created_at` is an ISO-8601 string (canonical-JSON stability), not a datetime object.

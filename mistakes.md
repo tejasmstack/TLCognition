@@ -62,3 +62,41 @@ seeing it pass. Lint errors fixed; phase commit amended before any push.
 **Lesson:** a process rule that depends on shell discipline should be made structurally
 un-bypassable; from now on the gate-commit sequence is two separate tool calls: (1) bare ci.sh,
 (2) commit only after reading its exit.
+
+## M-005 · Generator ground-truth corners were 1 px outside the rendered plate
+**Symptom:** Phase 2 corner recovery showed a floor of exactly sqrt(2) px error at tilt 0 — a
+(1,1) systematic offset, not noise. Separately, tilt >= 6 gave 35-55 px errors with measured
+tilt 0.00.
+**Wrong hypothesis:** the corner detector's line fits were imprecise.
+**Actual cause:** two independent bugs. (1) GroundTruth corners used the pixel-EDGE convention
+([[0,0],[w,0],[w,h],[0,h]]) while the renderer paints pixels whose centres satisfy
+0 <= x <= w-1 — the truth claimed corners ~1 px outside the physical plate. Gate 1's reviewer
+corner check (bright 4 px inside / dark 4 px outside) was too coarse to catch it. (2) The
+detection guard for "plate fills the frame" keyed on hue-mask coverage alone; the corrected teal
+background (D-006) shares the hue band, so on tilted scenes the guard kept the full-frame hue
+mask and the "plate" became the whole image, axis-aligned.
+**Fix:** (1) generator corners/rotation centre moved to the pixel-centre convention
+([[0,0],[w-1,0],...], centre ((w-1)/2,(h-1)/2)); test updated to expect side length w-1/h-1.
+(2) guard now keys on Otsu class-mean contrast: the brightness split is applied only when
+mean(bright)/mean(dark) >= 1.35 — a full-frame plate splits its own illumination gradient at
+ratio ~1.1, a plate-vs-bench split sits ~2.
+**Test added:** Gate 2 corner-recovery sweep across tilt 0-12 (scripts/gate2_check.py) plus
+tests asserting sub-0.5 px recovery at representative tilts.
+**Lesson:** a ground truth is code too — it can be wrong in ways a generous verification
+tolerance hides; and any guard keyed on a scene statistic must be re-derived when the scene
+model changes (D-006 changed the background and silently broke the guard's premise).
+
+## M-006 · EMG rendering produced NaN plates; three synthetic detections "failed"
+**Symptom:** Gate 2 sweep: 3 of 60 synthetic plates undetectable, with RuntimeWarnings
+(invalid value in multiply / cast) from the generator.
+**Wrong hypothesis (briefly):** the detector failing on unusual specs.
+**Actual cause:** the EMG profile used erfcx((k−z)/√2)·exp(−z²/2); far down the tail the erfcx
+argument is very negative and erfcx(x) ~ 2·exp(x²) overflows to inf, giving inf·0 = NaN, which
+poisoned the whole OD field and the emitted image.
+**Fix:** piecewise evaluation via the exact identity erfcx(x) = 2·exp(x²) − erfcx(−x): below
+x = −20 the profile is the pure exponential tail 2·exp(k²/2 − k·z). No approximation error at
+the switch point beyond float rounding.
+**Test added:** Gate 2 sweep re-run covers it (EMG specs among the 60); plus the generator's
+determinism tests would now catch NaN (array_equal fails on NaN).
+**Lesson:** special functions blow up exactly where a physical tail is "obviously negligible";
+evaluate tails in log/asymptotic form from the start.

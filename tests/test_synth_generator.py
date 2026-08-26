@@ -45,10 +45,11 @@ def test_ground_truth_geometry_consistent():
     bottom = np.linalg.norm(c[2] - c[3])
     left = np.linalg.norm(c[3] - c[0])
     right = np.linalg.norm(c[2] - c[1])
-    assert top == pytest.approx(gt.plate_w, abs=1e-6)
-    assert bottom == pytest.approx(gt.plate_w, abs=1e-6)
-    assert left == pytest.approx(gt.plate_h, abs=1e-6)
-    assert right == pytest.approx(gt.plate_h, abs=1e-6)
+    # Pixel-centre convention (M-005): corner-to-corner distance is plate_w-1 / plate_h-1.
+    assert top == pytest.approx(gt.plate_w - 1, abs=1e-6)
+    assert bottom == pytest.approx(gt.plate_w - 1, abs=1e-6)
+    assert left == pytest.approx(gt.plate_h - 1, abs=1e-6)
+    assert right == pytest.approx(gt.plate_h - 1, abs=1e-6)
     # Lane centres inside the plate, spots between origin and front.
     assert all(0 < x < gt.plate_w for x in gt.lane_centres_x)
     for s in gt.spots:

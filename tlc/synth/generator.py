@@ -79,10 +79,18 @@ def _emg_profile(y: np.ndarray, mu: float, sigma: float, tau: float) -> np.ndarr
         return np.exp(-((y - mu) ** 2) / (2.0 * sigma * sigma))
     z = (y - mu) / sigma
     k = sigma / tau
-    # log-domain erfc form for numerical stability
     from scipy.special import erfcx  # local import keeps module load cheap
 
-    val = erfcx((k - z) / math.sqrt(2.0)) * np.exp(-0.5 * z * z)
+    # erfcx(x)*exp(-z^2/2) overflows for x = (k-z)/sqrt(2) << 0 (far down the tail: erfcx(x)
+    # ~ 2 exp(x^2) -> inf). There, use the exact identity erfcx(x) = 2 exp(x^2) - erfcx(-x):
+    # val = 2 exp(k^2/2 - k z) - erfcx(-x) exp(-z^2/2), whose second term is negligible —
+    # i.e. the pure exponential tail. (M-006)
+    x = (k - z) / math.sqrt(2.0)
+    val = np.where(
+        x > -20.0,
+        erfcx(np.maximum(x, -20.0)) * np.exp(-0.5 * z * z),
+        2.0 * np.exp(0.5 * k * k - k * z),
+    )
     peak = float(val.max()) if val.size else 1.0
     return val / max(peak, 1e-300)
 
@@ -188,9 +196,11 @@ def _rotate_into_scene(plate_rgb: np.ndarray, spec: PlateSpec, rng: np.random.Ge
     th = math.radians(spec.tilt_deg)
     ct, st = math.cos(th), math.sin(th)
 
-    # Rotated bounding box of the plate.
-    corners_plate = np.array([[0, 0], [w, 0], [w, h], [0, h]], dtype=float)  # TL TR BR BL (x, y)
-    centre = np.array([w / 2.0, h / 2.0])
+    # Rotated bounding box of the plate. Pixel-CENTRE convention (M-005): the rendered plate
+    # is the set of pixels whose plate coords satisfy 0 <= x <= w-1, so its physical corners
+    # are at the outermost pixel centres, and rotation is about the centre of that grid.
+    corners_plate = np.array([[0, 0], [w - 1, 0], [w - 1, h - 1], [0, h - 1]], dtype=float)
+    centre = np.array([(w - 1) / 2.0, (h - 1) / 2.0])
     rot = np.array([[ct, -st], [st, ct]])
     rotated = (corners_plate - centre) @ rot.T
 

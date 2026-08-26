@@ -1,0 +1,2109 @@
+{
+  "$defs": {
+    "AnnotationBand": {
+      "additionalProperties": false,
+      "properties": {
+        "kind": {
+          "enum": [
+            "header",
+            "label_row",
+            "footer"
+          ],
+          "title": "Kind",
+          "type": "string"
+        },
+        "provenance": {
+          "enum": [
+            "vlm",
+            "operator",
+            "convention",
+            "refused"
+          ],
+          "title": "Provenance",
+          "type": "string"
+        },
+        "source_detail": {
+          "title": "Source Detail",
+          "type": "string"
+        },
+        "vlm_agreement": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Vlm Agreement"
+        },
+        "vlm_iqr_frac": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Vlm Iqr Frac"
+        },
+        "y0_frac": {
+          "$ref": "#/$defs/Q_float_"
+        },
+        "y1_frac": {
+          "$ref": "#/$defs/Q_float_"
+        }
+      },
+      "required": [
+        "kind",
+        "y0_frac",
+        "y1_frac",
+        "provenance",
+        "source_detail"
+      ],
+      "title": "AnnotationBand",
+      "type": "object"
+    },
+    "CaptureQCBlock": {
+      "additionalProperties": false,
+      "properties": {
+        "black_clip_frac_in_plate": {
+          "$ref": "#/$defs/Q_float_"
+        },
+        "channel_sat_frac": {
+          "$ref": "#/$defs/Q_float_"
+        },
+        "focus_metric": {
+          "$ref": "#/$defs/Q_float_"
+        },
+        "frame_overrun": {
+          "$ref": "#/$defs/FrameOverrun"
+        },
+        "gate_thresholds": {
+          "additionalProperties": {
+            "$ref": "#/$defs/Q_float_"
+          },
+          "title": "Gate Thresholds",
+          "type": "object"
+        },
+        "gates_fired": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Gates Fired",
+          "type": "array"
+        },
+        "green_clip_frac_frame": {
+          "$ref": "#/$defs/Q_float_"
+        },
+        "green_clip_frac_in_plate": {
+          "$ref": "#/$defs/Q_float_"
+        },
+        "mean_green_in_plate": {
+          "$ref": "#/$defs/Q_float_"
+        },
+        "plate_area_frac": {
+          "$ref": "#/$defs/Q_float_"
+        },
+        "tilt_deg": {
+          "$ref": "#/$defs/Q_float_"
+        },
+        "verdict": {
+          "enum": [
+            "ok",
+            "positions_only",
+            "unusable"
+          ],
+          "title": "Verdict",
+          "type": "string"
+        }
+      },
+      "required": [
+        "green_clip_frac_in_plate",
+        "green_clip_frac_frame",
+        "black_clip_frac_in_plate",
+        "channel_sat_frac",
+        "plate_area_frac",
+        "frame_overrun",
+        "tilt_deg",
+        "focus_metric",
+        "mean_green_in_plate",
+        "verdict",
+        "gates_fired",
+        "gate_thresholds"
+      ],
+      "title": "CaptureQCBlock",
+      "type": "object"
+    },
+    "CorrelationBlock": {
+      "additionalProperties": false,
+      "description": "Fixed, pre-registered hypothesis list; hiding the suppressed list is how an\nFDR control becomes theatre.",
+      "properties": {
+        "adjustment": {
+          "title": "Adjustment",
+          "type": "string"
+        },
+        "fdr_target": {
+          "title": "Fdr Target",
+          "type": "number"
+        },
+        "findings": {
+          "items": {
+            "$ref": "#/$defs/CorrelationFinding"
+          },
+          "title": "Findings",
+          "type": "array"
+        },
+        "hypotheses_tested": {
+          "title": "Hypotheses Tested",
+          "type": "integer"
+        },
+        "suppressed": {
+          "items": {
+            "$ref": "#/$defs/CorrelationFinding"
+          },
+          "title": "Suppressed",
+          "type": "array"
+        }
+      },
+      "required": [
+        "hypotheses_tested",
+        "adjustment",
+        "fdr_target",
+        "findings",
+        "suppressed"
+      ],
+      "title": "CorrelationBlock",
+      "type": "object"
+    },
+    "CorrelationFinding": {
+      "additionalProperties": false,
+      "properties": {
+        "adjustment": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Adjustment"
+        },
+        "ci95": {
+          "anyOf": [
+            {
+              "maxItems": 2,
+              "minItems": 2,
+              "prefixItems": [
+                {
+                  "type": "number"
+                },
+                {
+                  "type": "number"
+                }
+              ],
+              "type": "array"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Ci95"
+        },
+        "confounds_checked": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Confounds Checked",
+          "type": "array"
+        },
+        "confounds_unresolved": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Confounds Unresolved",
+          "type": "array"
+        },
+        "effect": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Effect"
+        },
+        "hypothesis_id": {
+          "title": "Hypothesis Id",
+          "type": "string"
+        },
+        "n_min_required": {
+          "title": "N Min Required",
+          "type": "integer"
+        },
+        "n_plates": {
+          "title": "N Plates",
+          "type": "integer"
+        },
+        "p_adjusted": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "P Adjusted"
+        },
+        "p_raw": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "P Raw"
+        },
+        "statement": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Statement"
+        },
+        "suppressed_reason": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/Refusal"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        },
+        "verdict": {
+          "enum": [
+            "supported",
+            "not_supported",
+            "insufficient_data"
+          ],
+          "title": "Verdict",
+          "type": "string"
+        }
+      },
+      "required": [
+        "hypothesis_id",
+        "n_plates",
+        "n_min_required",
+        "verdict",
+        "confounds_checked",
+        "confounds_unresolved"
+      ],
+      "title": "CorrelationFinding",
+      "type": "object"
+    },
+    "Densitogram": {
+      "additionalProperties": false,
+      "description": "The preview is non-authoritative (decimated block-mean, rounded by the\nproducer to 5 dp, for the frontend only). Nothing may be computed from it;\nthe full float32 trace behind ``ref`` is authoritative.",
+      "properties": {
+        "lane_index": {
+          "title": "Lane Index",
+          "type": "integer"
+        },
+        "n_valid_columns": {
+          "title": "N Valid Columns",
+          "type": "integer"
+        },
+        "preview": {
+          "items": {
+            "type": "number"
+          },
+          "maxItems": 512,
+          "title": "Preview",
+          "type": "array"
+        },
+        "ref": {
+          "title": "Ref",
+          "type": "string"
+        },
+        "sampling": {
+          "title": "Sampling",
+          "type": "string"
+        },
+        "sha256": {
+          "title": "Sha256",
+          "type": "string"
+        },
+        "unit": {
+          "enum": [
+            "px",
+            "frac",
+            "OD",
+            "OD*px",
+            "deg",
+            "1",
+            "USD",
+            "s",
+            "B"
+          ],
+          "title": "Unit",
+          "type": "string"
+        },
+        "y_px": {
+          "$ref": "#/$defs/DensitogramYAxis"
+        }
+      },
+      "required": [
+        "lane_index",
+        "y_px",
+        "unit",
+        "sampling",
+        "n_valid_columns",
+        "ref",
+        "sha256",
+        "preview"
+      ],
+      "title": "Densitogram",
+      "type": "object"
+    },
+    "DensitogramYAxis": {
+      "additionalProperties": false,
+      "description": "Implicit axis, not an array.",
+      "properties": {
+        "start": {
+          "title": "Start",
+          "type": "integer"
+        },
+        "step": {
+          "title": "Step",
+          "type": "integer"
+        },
+        "stop": {
+          "title": "Stop",
+          "type": "integer"
+        }
+      },
+      "required": [
+        "start",
+        "stop",
+        "step"
+      ],
+      "title": "DensitogramYAxis",
+      "type": "object"
+    },
+    "Flag": {
+      "additionalProperties": false,
+      "properties": {
+        "code": {
+          "title": "Code",
+          "type": "string"
+        },
+        "evidence": {
+          "additionalProperties": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "string"
+              },
+              {
+                "items": {
+                  "type": "number"
+                },
+                "type": "array"
+              }
+            ]
+          },
+          "default": {},
+          "title": "Evidence",
+          "type": "object"
+        },
+        "message": {
+          "title": "Message",
+          "type": "string"
+        },
+        "remedy": {
+          "title": "Remedy",
+          "type": "string"
+        },
+        "severity": {
+          "enum": [
+            "info",
+            "warn",
+            "block"
+          ],
+          "title": "Severity",
+          "type": "string"
+        }
+      },
+      "required": [
+        "code",
+        "severity",
+        "message",
+        "remedy"
+      ],
+      "title": "Flag",
+      "type": "object"
+    },
+    "FrameOverrun": {
+      "additionalProperties": false,
+      "description": "Per-edge overrun fractions; >0.02 on any edge means the plate is cropped in-camera.",
+      "properties": {
+        "bottom": {
+          "$ref": "#/$defs/Q_float_"
+        },
+        "left": {
+          "$ref": "#/$defs/Q_float_"
+        },
+        "right": {
+          "$ref": "#/$defs/Q_float_"
+        },
+        "top": {
+          "$ref": "#/$defs/Q_float_"
+        }
+      },
+      "required": [
+        "top",
+        "bottom",
+        "left",
+        "right"
+      ],
+      "title": "FrameOverrun",
+      "type": "object"
+    },
+    "GeometryBlock": {
+      "additionalProperties": false,
+      "properties": {
+        "corners_src_px": {
+          "maxItems": 4,
+          "minItems": 4,
+          "prefixItems": [
+            {
+              "maxItems": 2,
+              "minItems": 2,
+              "prefixItems": [
+                {
+                  "type": "number"
+                },
+                {
+                  "type": "number"
+                }
+              ],
+              "type": "array"
+            },
+            {
+              "maxItems": 2,
+              "minItems": 2,
+              "prefixItems": [
+                {
+                  "type": "number"
+                },
+                {
+                  "type": "number"
+                }
+              ],
+              "type": "array"
+            },
+            {
+              "maxItems": 2,
+              "minItems": 2,
+              "prefixItems": [
+                {
+                  "type": "number"
+                },
+                {
+                  "type": "number"
+                }
+              ],
+              "type": "array"
+            },
+            {
+              "maxItems": 2,
+              "minItems": 2,
+              "prefixItems": [
+                {
+                  "type": "number"
+                },
+                {
+                  "type": "number"
+                }
+              ],
+              "type": "array"
+            }
+          ],
+          "title": "Corners Src Px",
+          "type": "array"
+        },
+        "detection_method": {
+          "title": "Detection Method",
+          "type": "string"
+        },
+        "homography": {
+          "maxItems": 3,
+          "minItems": 3,
+          "prefixItems": [
+            {
+              "maxItems": 3,
+              "minItems": 3,
+              "prefixItems": [
+                {
+                  "type": "number"
+                },
+                {
+                  "type": "number"
+                },
+                {
+                  "type": "number"
+                }
+              ],
+              "type": "array"
+            },
+            {
+              "maxItems": 3,
+              "minItems": 3,
+              "prefixItems": [
+                {
+                  "type": "number"
+                },
+                {
+                  "type": "number"
+                },
+                {
+                  "type": "number"
+                }
+              ],
+              "type": "array"
+            },
+            {
+              "maxItems": 3,
+              "minItems": 3,
+              "prefixItems": [
+                {
+                  "type": "number"
+                },
+                {
+                  "type": "number"
+                },
+                {
+                  "type": "number"
+                }
+              ],
+              "type": "array"
+            }
+          ],
+          "title": "Homography",
+          "type": "array"
+        },
+        "idempotency_residual_px": {
+          "$ref": "#/$defs/Q_float_"
+        },
+        "rectified_shape": {
+          "maxItems": 2,
+          "minItems": 2,
+          "prefixItems": [
+            {
+              "type": "integer"
+            },
+            {
+              "type": "integer"
+            }
+          ],
+          "title": "Rectified Shape",
+          "type": "array"
+        },
+        "tilt_deg": {
+          "$ref": "#/$defs/Q_float_"
+        },
+        "valid_erosion_px": {
+          "$ref": "#/$defs/Q_int_"
+        },
+        "valid_frac": {
+          "$ref": "#/$defs/Q_float_"
+        }
+      },
+      "required": [
+        "corners_src_px",
+        "homography",
+        "rectified_shape",
+        "tilt_deg",
+        "idempotency_residual_px",
+        "valid_erosion_px",
+        "valid_frac",
+        "detection_method"
+      ],
+      "title": "GeometryBlock",
+      "type": "object"
+    },
+    "ImageBlock": {
+      "additionalProperties": false,
+      "description": "All measured from the bytes; no envelope needed.",
+      "properties": {
+        "bytes": {
+          "title": "Bytes",
+          "type": "integer"
+        },
+        "decoder": {
+          "title": "Decoder",
+          "type": "string"
+        },
+        "exif_orientation": {
+          "anyOf": [
+            {
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Exif Orientation"
+        },
+        "height_px": {
+          "title": "Height Px",
+          "type": "integer"
+        },
+        "mime": {
+          "title": "Mime",
+          "type": "string"
+        },
+        "original_filename": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Original Filename"
+        },
+        "sha256": {
+          "title": "Sha256",
+          "type": "string"
+        },
+        "width_px": {
+          "title": "Width Px",
+          "type": "integer"
+        }
+      },
+      "required": [
+        "sha256",
+        "bytes",
+        "mime",
+        "width_px",
+        "height_px",
+        "exif_orientation",
+        "decoder",
+        "original_filename"
+      ],
+      "title": "ImageBlock",
+      "type": "object"
+    },
+    "Lane": {
+      "additionalProperties": false,
+      "properties": {
+        "at_plate_edge": {
+          "title": "At Plate Edge",
+          "type": "boolean"
+        },
+        "half_width_px": {
+          "$ref": "#/$defs/Q_int_"
+        },
+        "index": {
+          "title": "Index",
+          "type": "integer"
+        },
+        "is_empty": {
+          "$ref": "#/$defs/Q_bool_"
+        },
+        "is_streaking": {
+          "$ref": "#/$defs/Q_bool_"
+        },
+        "label": {
+          "title": "Label",
+          "type": "string"
+        },
+        "label_agreement": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Label Agreement"
+        },
+        "label_provenance": {
+          "enum": [
+            "vlm",
+            "operator",
+            "refused"
+          ],
+          "title": "Label Provenance",
+          "type": "string"
+        },
+        "quantified": {
+          "title": "Quantified",
+          "type": "boolean"
+        },
+        "suppression": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/Refusal"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        },
+        "x_center_frac": {
+          "$ref": "#/$defs/Q_float_"
+        },
+        "x_center_px": {
+          "$ref": "#/$defs/Q_float_"
+        },
+        "x_seed_provenance": {
+          "enum": [
+            "vlm",
+            "operator",
+            "uniform_grid"
+          ],
+          "title": "X Seed Provenance",
+          "type": "string"
+        }
+      },
+      "required": [
+        "index",
+        "label",
+        "label_provenance",
+        "x_center_px",
+        "x_center_frac",
+        "half_width_px",
+        "x_seed_provenance",
+        "is_empty",
+        "is_streaking",
+        "quantified",
+        "at_plate_edge"
+      ],
+      "title": "Lane",
+      "type": "object"
+    },
+    "PhotometryBlock": {
+      "additionalProperties": false,
+      "properties": {
+        "background_model": {
+          "title": "Background Model",
+          "type": "string"
+        },
+        "background_radius_px": {
+          "$ref": "#/$defs/Q_int_"
+        },
+        "clipped_px_frac_in_analysable": {
+          "$ref": "#/$defs/Q_float_"
+        },
+        "od_transform": {
+          "title": "Od Transform",
+          "type": "string"
+        },
+        "photometry_mode": {
+          "enum": [
+            "full",
+            "positions_only",
+            "refused"
+          ],
+          "title": "Photometry Mode",
+          "type": "string"
+        },
+        "sigma_method": {
+          "title": "Sigma Method",
+          "type": "string"
+        },
+        "sigma_od": {
+          "$ref": "#/$defs/Q_float_"
+        },
+        "sigma_stability_across_radii": {
+          "$ref": "#/$defs/Q_float_"
+        },
+        "signal_channel": {
+          "title": "Signal Channel",
+          "type": "string"
+        }
+      },
+      "required": [
+        "signal_channel",
+        "background_model",
+        "background_radius_px",
+        "od_transform",
+        "sigma_od",
+        "sigma_method",
+        "sigma_stability_across_radii",
+        "clipped_px_frac_in_analysable",
+        "photometry_mode"
+      ],
+      "title": "PhotometryBlock",
+      "type": "object"
+    },
+    "ProvenanceBlock": {
+      "additionalProperties": false,
+      "description": "`config_document` is embedded verbatim, not by reference: a config file can\ngo missing; a run must remain reproducible from its own record alone.",
+      "properties": {
+        "code_fingerprint": {
+          "title": "Code Fingerprint",
+          "type": "string"
+        },
+        "config_document": {
+          "additionalProperties": true,
+          "title": "Config Document",
+          "type": "object"
+        },
+        "config_hash": {
+          "title": "Config Hash",
+          "type": "string"
+        },
+        "config_ref": {
+          "title": "Config Ref",
+          "type": "string"
+        },
+        "determinism_tier": {
+          "enum": [
+            "tier1",
+            "tier2"
+          ],
+          "title": "Determinism Tier",
+          "type": "string"
+        },
+        "env_fingerprint": {
+          "title": "Env Fingerprint",
+          "type": "string"
+        },
+        "git_commit": {
+          "title": "Git Commit",
+          "type": "string"
+        },
+        "git_dirty": {
+          "title": "Git Dirty",
+          "type": "boolean"
+        },
+        "libraries": {
+          "additionalProperties": {
+            "type": "string"
+          },
+          "title": "Libraries",
+          "type": "object"
+        },
+        "lock_hash": {
+          "title": "Lock Hash",
+          "type": "string"
+        },
+        "od_sha256": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Od Sha256"
+        },
+        "pipeline_version": {
+          "title": "Pipeline Version",
+          "type": "string"
+        },
+        "platform_tag": {
+          "title": "Platform Tag",
+          "type": "string"
+        },
+        "replay_of": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Replay Of"
+        },
+        "result_sha256": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Result Sha256"
+        },
+        "run_key": {
+          "title": "Run Key",
+          "type": "string"
+        },
+        "schema_version": {
+          "title": "Schema Version",
+          "type": "string"
+        },
+        "seed": {
+          "title": "Seed",
+          "type": "integer"
+        },
+        "seed_derivation": {
+          "title": "Seed Derivation",
+          "type": "string"
+        },
+        "superseded_by": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Superseded By"
+        }
+      },
+      "required": [
+        "pipeline_version",
+        "schema_version",
+        "config_hash",
+        "config_ref",
+        "config_document",
+        "code_fingerprint",
+        "git_commit",
+        "git_dirty",
+        "env_fingerprint",
+        "lock_hash",
+        "libraries",
+        "platform_tag",
+        "seed",
+        "seed_derivation",
+        "run_key",
+        "result_sha256",
+        "od_sha256",
+        "replay_of",
+        "superseded_by",
+        "determinism_tier"
+      ],
+      "title": "ProvenanceBlock",
+      "type": "object"
+    },
+    "Q_bool_": {
+      "additionalProperties": false,
+      "properties": {
+        "ci95": {
+          "anyOf": [
+            {
+              "maxItems": 2,
+              "minItems": 2,
+              "prefixItems": [
+                {
+                  "type": "number"
+                },
+                {
+                  "type": "number"
+                }
+              ],
+              "type": "array"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Ci95"
+        },
+        "method": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Method"
+        },
+        "n": {
+          "anyOf": [
+            {
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "N"
+        },
+        "note": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Note"
+        },
+        "provenance": {
+          "enum": [
+            "measured",
+            "chosen",
+            "inferred",
+            "refused"
+          ],
+          "title": "Provenance",
+          "type": "string"
+        },
+        "refusal": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/Refusal"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        },
+        "unit": {
+          "enum": [
+            "px",
+            "frac",
+            "OD",
+            "OD*px",
+            "deg",
+            "1",
+            "USD",
+            "s",
+            "B"
+          ],
+          "title": "Unit",
+          "type": "string"
+        },
+        "value": {
+          "anyOf": [
+            {
+              "type": "boolean"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Value"
+        }
+      },
+      "required": [
+        "value",
+        "unit",
+        "provenance"
+      ],
+      "title": "Q[bool]",
+      "type": "object"
+    },
+    "Q_float_": {
+      "additionalProperties": false,
+      "properties": {
+        "ci95": {
+          "anyOf": [
+            {
+              "maxItems": 2,
+              "minItems": 2,
+              "prefixItems": [
+                {
+                  "type": "number"
+                },
+                {
+                  "type": "number"
+                }
+              ],
+              "type": "array"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Ci95"
+        },
+        "method": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Method"
+        },
+        "n": {
+          "anyOf": [
+            {
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "N"
+        },
+        "note": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Note"
+        },
+        "provenance": {
+          "enum": [
+            "measured",
+            "chosen",
+            "inferred",
+            "refused"
+          ],
+          "title": "Provenance",
+          "type": "string"
+        },
+        "refusal": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/Refusal"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        },
+        "unit": {
+          "enum": [
+            "px",
+            "frac",
+            "OD",
+            "OD*px",
+            "deg",
+            "1",
+            "USD",
+            "s",
+            "B"
+          ],
+          "title": "Unit",
+          "type": "string"
+        },
+        "value": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Value"
+        }
+      },
+      "required": [
+        "value",
+        "unit",
+        "provenance"
+      ],
+      "title": "Q[float]",
+      "type": "object"
+    },
+    "Q_int_": {
+      "additionalProperties": false,
+      "properties": {
+        "ci95": {
+          "anyOf": [
+            {
+              "maxItems": 2,
+              "minItems": 2,
+              "prefixItems": [
+                {
+                  "type": "number"
+                },
+                {
+                  "type": "number"
+                }
+              ],
+              "type": "array"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Ci95"
+        },
+        "method": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Method"
+        },
+        "n": {
+          "anyOf": [
+            {
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "N"
+        },
+        "note": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Note"
+        },
+        "provenance": {
+          "enum": [
+            "measured",
+            "chosen",
+            "inferred",
+            "refused"
+          ],
+          "title": "Provenance",
+          "type": "string"
+        },
+        "refusal": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/Refusal"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        },
+        "unit": {
+          "enum": [
+            "px",
+            "frac",
+            "OD",
+            "OD*px",
+            "deg",
+            "1",
+            "USD",
+            "s",
+            "B"
+          ],
+          "title": "Unit",
+          "type": "string"
+        },
+        "value": {
+          "anyOf": [
+            {
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Value"
+        }
+      },
+      "required": [
+        "value",
+        "unit",
+        "provenance"
+      ],
+      "title": "Q[int]",
+      "type": "object"
+    },
+    "ReferenceBlock": {
+      "additionalProperties": false,
+      "properties": {
+        "front_absent_reason": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/Refusal"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        },
+        "front_provenance": {
+          "enum": [
+            "detected_line",
+            "vlm_confirmed",
+            "operator",
+            "absent"
+          ],
+          "title": "Front Provenance",
+          "type": "string"
+        },
+        "front_row_px": {
+          "$ref": "#/$defs/Q_float_"
+        },
+        "origin_dots_found": {
+          "$ref": "#/$defs/Q_int_"
+        },
+        "origin_provenance": {
+          "enum": [
+            "detected_dots",
+            "operator",
+            "vlm_proposed_confirmed",
+            "assumed_plate_bottom",
+            "refused"
+          ],
+          "title": "Origin Provenance",
+          "type": "string"
+        },
+        "origin_row_px": {
+          "$ref": "#/$defs/Q_float_"
+        },
+        "origin_support_sigma": {
+          "$ref": "#/$defs/Q_float_"
+        },
+        "rf_available": {
+          "title": "Rf Available",
+          "type": "boolean"
+        },
+        "rf_unavailable_reason": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/Refusal"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        },
+        "rst_anchor": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/RstAnchor"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        }
+      },
+      "required": [
+        "origin_row_px",
+        "origin_provenance",
+        "origin_support_sigma",
+        "origin_dots_found",
+        "front_row_px",
+        "front_provenance",
+        "rf_available"
+      ],
+      "title": "ReferenceBlock",
+      "type": "object"
+    },
+    "Refusal": {
+      "additionalProperties": false,
+      "description": "NN3: refusal is a value, not a null.",
+      "properties": {
+        "code": {
+          "title": "Code",
+          "type": "string"
+        },
+        "evidence": {
+          "additionalProperties": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "string"
+              }
+            ]
+          },
+          "default": {},
+          "title": "Evidence",
+          "type": "object"
+        },
+        "message": {
+          "title": "Message",
+          "type": "string"
+        },
+        "remedy": {
+          "title": "Remedy",
+          "type": "string"
+        }
+      },
+      "required": [
+        "code",
+        "message",
+        "remedy"
+      ],
+      "title": "Refusal",
+      "type": "object"
+    },
+    "RstAnchor": {
+      "additionalProperties": false,
+      "description": "NN: an Rst without a named anchor is not a measurement.",
+      "properties": {
+        "lane_index": {
+          "title": "Lane Index",
+          "type": "integer"
+        },
+        "lane_label": {
+          "title": "Lane Label",
+          "type": "string"
+        },
+        "provenance": {
+          "enum": [
+            "measured",
+            "chosen",
+            "inferred",
+            "refused"
+          ],
+          "title": "Provenance",
+          "type": "string"
+        },
+        "selection_rule": {
+          "title": "Selection Rule",
+          "type": "string"
+        },
+        "spot_id": {
+          "title": "Spot Id",
+          "type": "string"
+        },
+        "y_px": {
+          "$ref": "#/$defs/Q_float_"
+        }
+      },
+      "required": [
+        "spot_id",
+        "lane_index",
+        "lane_label",
+        "y_px",
+        "selection_rule",
+        "provenance"
+      ],
+      "title": "RstAnchor",
+      "type": "object"
+    },
+    "Spot": {
+      "additionalProperties": false,
+      "properties": {
+        "amplitude_od": {
+          "$ref": "#/$defs/Q_float_"
+        },
+        "area_frac_of_lane": {
+          "$ref": "#/$defs/Q_float_"
+        },
+        "area_od_px": {
+          "$ref": "#/$defs/Q_float_"
+        },
+        "calibration_version": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Calibration Version"
+        },
+        "confidence": {
+          "$ref": "#/$defs/Q_float_"
+        },
+        "emg_sigma_px": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/Q_float_"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        },
+        "emg_tau_px": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/Q_float_"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        },
+        "ensemble_agreement": {
+          "$ref": "#/$defs/Q_float_"
+        },
+        "ensemble_n_hit": {
+          "title": "Ensemble N Hit",
+          "type": "integer"
+        },
+        "ensemble_n_total": {
+          "title": "Ensemble N Total",
+          "type": "integer"
+        },
+        "ensemble_y_spread_px": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/Q_float_"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        },
+        "fit_residual_rms_od": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/Q_float_"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        },
+        "flags": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Flags",
+          "type": "array"
+        },
+        "fwhm_px": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/Q_float_"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        },
+        "id": {
+          "title": "Id",
+          "type": "string"
+        },
+        "lane_index": {
+          "title": "Lane Index",
+          "type": "integer"
+        },
+        "peak_model": {
+          "enum": [
+            "emg",
+            "gaussian",
+            "none"
+          ],
+          "title": "Peak Model",
+          "type": "string"
+        },
+        "rf": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/Q_float_"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        },
+        "rst": {
+          "$ref": "#/$defs/Q_float_"
+        },
+        "rst_reference_spot_id": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Rst Reference Spot Id"
+        },
+        "snr": {
+          "$ref": "#/$defs/Q_float_"
+        },
+        "status": {
+          "enum": [
+            "confirmed",
+            "candidate",
+            "rejected",
+            "proposed_unconfirmed",
+            "suppressed_streak"
+          ],
+          "title": "Status",
+          "type": "string"
+        },
+        "vlm_confirmation": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/VLMConfirmation"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        },
+        "vlm_proposed": {
+          "title": "Vlm Proposed",
+          "type": "boolean"
+        },
+        "y_frac": {
+          "$ref": "#/$defs/Q_float_"
+        },
+        "y_px": {
+          "$ref": "#/$defs/Q_float_"
+        }
+      },
+      "required": [
+        "id",
+        "lane_index",
+        "status",
+        "y_px",
+        "y_frac",
+        "rst",
+        "peak_model",
+        "amplitude_od",
+        "area_od_px",
+        "area_frac_of_lane",
+        "snr",
+        "ensemble_agreement",
+        "ensemble_n_total",
+        "ensemble_n_hit",
+        "confidence",
+        "vlm_proposed",
+        "flags"
+      ],
+      "title": "Spot",
+      "type": "object"
+    },
+    "StorageBlock": {
+      "additionalProperties": false,
+      "properties": {
+        "image": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Image"
+        },
+        "od_h5": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Od H5"
+        },
+        "preview_png": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Preview Png"
+        }
+      },
+      "required": [
+        "od_h5",
+        "image",
+        "preview_png"
+      ],
+      "title": "StorageBlock",
+      "type": "object"
+    },
+    "VLMBlock": {
+      "additionalProperties": false,
+      "properties": {
+        "attempts": {
+          "title": "Attempts",
+          "type": "integer"
+        },
+        "cache": {
+          "additionalProperties": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "string"
+              }
+            ]
+          },
+          "title": "Cache",
+          "type": "object"
+        },
+        "cost": {
+          "additionalProperties": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "number"
+              }
+            ]
+          },
+          "title": "Cost",
+          "type": "object"
+        },
+        "degraded": {
+          "title": "Degraded",
+          "type": "boolean"
+        },
+        "fields": {
+          "additionalProperties": {
+            "$ref": "#/$defs/VLMField"
+          },
+          "title": "Fields",
+          "type": "object"
+        },
+        "mode": {
+          "enum": [
+            "live",
+            "replay",
+            "off"
+          ],
+          "title": "Mode",
+          "type": "string"
+        },
+        "model_id": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Model Id"
+        },
+        "n_samples": {
+          "title": "N Samples",
+          "type": "integer"
+        },
+        "prompt_bundle": {
+          "additionalProperties": {
+            "type": "string"
+          },
+          "title": "Prompt Bundle",
+          "type": "object"
+        },
+        "retries": {
+          "title": "Retries",
+          "type": "integer"
+        },
+        "temperature": {
+          "title": "Temperature",
+          "type": "number"
+        }
+      },
+      "required": [
+        "mode",
+        "model_id",
+        "prompt_bundle",
+        "n_samples",
+        "temperature",
+        "fields",
+        "cache",
+        "cost",
+        "attempts",
+        "retries",
+        "degraded"
+      ],
+      "title": "VLMBlock",
+      "type": "object"
+    },
+    "VLMConfirmation": {
+      "additionalProperties": false,
+      "description": "F9: a VLM-proposed position and whether the pixels supported it.",
+      "properties": {
+        "confirmed": {
+          "title": "Confirmed",
+          "type": "boolean"
+        },
+        "pixel_support_sigma": {
+          "title": "Pixel Support Sigma",
+          "type": "number"
+        },
+        "proposed_y_frac": {
+          "title": "Proposed Y Frac",
+          "type": "number"
+        }
+      },
+      "required": [
+        "proposed_y_frac",
+        "pixel_support_sigma",
+        "confirmed"
+      ],
+      "title": "VLMConfirmation",
+      "type": "object"
+    },
+    "VLMField": {
+      "additionalProperties": false,
+      "description": "One structured field read by the VLM, with its self-consistency evidence.",
+      "properties": {
+        "agreement": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Agreement"
+        },
+        "disagreements": {
+          "anyOf": [
+            {
+              "items": {},
+              "type": "array"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Disagreements"
+        },
+        "flagged_for_review": {
+          "anyOf": [
+            {
+              "type": "boolean"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Flagged For Review"
+        },
+        "iqr_frac": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Iqr Frac"
+        },
+        "samples": {
+          "anyOf": [
+            {
+              "items": {},
+              "type": "array"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Samples"
+        },
+        "value": {
+          "title": "Value"
+        }
+      },
+      "required": [
+        "value"
+      ],
+      "title": "VLMField",
+      "type": "object"
+    }
+  },
+  "additionalProperties": false,
+  "properties": {
+    "annotation_bands": {
+      "items": {
+        "$ref": "#/$defs/AnnotationBand"
+      },
+      "title": "Annotation Bands",
+      "type": "array"
+    },
+    "capture_qc": {
+      "$ref": "#/$defs/CaptureQCBlock"
+    },
+    "correlations": {
+      "$ref": "#/$defs/CorrelationBlock"
+    },
+    "created_at": {
+      "title": "Created At",
+      "type": "string"
+    },
+    "densitograms": {
+      "items": {
+        "$ref": "#/$defs/Densitogram"
+      },
+      "title": "Densitograms",
+      "type": "array"
+    },
+    "flags": {
+      "items": {
+        "$ref": "#/$defs/Flag"
+      },
+      "title": "Flags",
+      "type": "array"
+    },
+    "geometry": {
+      "$ref": "#/$defs/GeometryBlock"
+    },
+    "image": {
+      "$ref": "#/$defs/ImageBlock"
+    },
+    "image_id": {
+      "title": "Image Id",
+      "type": "string"
+    },
+    "lanes": {
+      "items": {
+        "$ref": "#/$defs/Lane"
+      },
+      "title": "Lanes",
+      "type": "array"
+    },
+    "photometry": {
+      "$ref": "#/$defs/PhotometryBlock"
+    },
+    "provenance": {
+      "$ref": "#/$defs/ProvenanceBlock"
+    },
+    "reference": {
+      "$ref": "#/$defs/ReferenceBlock"
+    },
+    "refusals": {
+      "items": {
+        "$ref": "#/$defs/Refusal"
+      },
+      "title": "Refusals",
+      "type": "array"
+    },
+    "run_id": {
+      "title": "Run Id",
+      "type": "string"
+    },
+    "schema_version": {
+      "const": "1",
+      "default": "1",
+      "title": "Schema Version",
+      "type": "string"
+    },
+    "spots": {
+      "items": {
+        "$ref": "#/$defs/Spot"
+      },
+      "title": "Spots",
+      "type": "array"
+    },
+    "status": {
+      "enum": [
+        "succeeded",
+        "refused",
+        "degraded"
+      ],
+      "title": "Status",
+      "type": "string"
+    },
+    "storage": {
+      "$ref": "#/$defs/StorageBlock"
+    },
+    "vlm": {
+      "$ref": "#/$defs/VLMBlock"
+    }
+  },
+  "required": [
+    "run_id",
+    "image_id",
+    "created_at",
+    "status",
+    "image",
+    "capture_qc",
+    "geometry",
+    "annotation_bands",
+    "lanes",
+    "reference",
+    "photometry",
+    "densitograms",
+    "spots",
+    "flags",
+    "correlations",
+    "vlm",
+    "refusals",
+    "storage",
+    "provenance"
+  ],
+  "title": "Result",
+  "type": "object"
+}
