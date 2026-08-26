@@ -41,8 +41,11 @@ def _longest_run(mask: np.ndarray) -> int:
 
 def assess_streak(
     profile: np.ndarray, rows: tuple[int, int], sigma_prof: float, tail_ratios: list[float],
-    nominal_fwhm_px: float = 12.0,
+    nominal_fwhm_px: float = 12.0, peak_rows: list[float] | None = None,
 ) -> StreakVerdict:
+    """tail_ratios: ONLY the dominant peak's non-degenerate tau/sigma should be passed (M-014);
+    peak_rows: tiered peak positions — a long run containing >= 2 peaks is adjacent spots,
+    not a streak, unless it is also flat-topped."""
     r0, r1 = rows
     seg = profile[r0:r1]
     above = seg > STREAK_K * max(sigma_prof, 1e-12)
@@ -65,11 +68,14 @@ def assess_streak(
                 cur = 0
         seg_run = seg[bstart : bstart + best]
         plateau = float(np.mean(seg_run >= 0.5 * seg_run.max())) if seg_run.size else 0.0
+        n_peaks_in_run = sum(1 for pr in (peak_rows or []) if bstart <= pr - r0 < bstart + best)
+    else:
+        n_peaks_in_run = 0
     max_tail = max(tail_ratios) if tail_ratios else None
     reasons = []
     if frac > STREAK_FRACTION_LIMIT:
         reasons.append(f"{frac:.0%} of the lane is above 2 sigma (limit {STREAK_FRACTION_LIMIT:.0%})")
-    if run_fwhm > RUN_FWHM_LIMIT:
+    if run_fwhm > RUN_FWHM_LIMIT and (n_peaks_in_run <= 1 or plateau >= PLATEAU_FRAC_LIMIT):
         reasons.append(f"a contiguous run {run_fwhm:.1f} FWHM long is above 2 sigma (limit {RUN_FWHM_LIMIT})")
     elif run_fwhm >= PLATEAU_RUN_FWHM and plateau >= PLATEAU_FRAC_LIMIT:
         reasons.append(f"a flat-topped run ({plateau:.0%} of {run_fwhm:.1f} FWHM above half-max) — comet/streak, not a peak")

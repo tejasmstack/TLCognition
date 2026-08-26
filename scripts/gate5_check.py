@@ -32,7 +32,10 @@ from tlc.synth.generator import make_plate  # noqa: E402
 from tlc.synth.spec import Handwriting, PlateSpec, SpotShape, SpotSpec  # noqa: E402
 
 ROOT = Path(__file__).resolve().parent.parent
-CACHE = ROOT / "reports" / "gate5_cache"
+from tlc.core.hashing import tree_fingerprint  # noqa: E402
+
+_CODE_FP = tree_fingerprint(ROOT / "tlc" / "pipeline", ROOT / "tlc" / "synth")[:12]
+CACHE = ROOT / "reports" / "gate5_cache" / _CODE_FP   # M-012/M-014: stale caches never reused
 GRID = json.loads((ROOT / "config" / "ensemble" / "CONFIG_GRID_v1.json").read_text())
 OP = json.loads((ROOT / "config" / "ensemble" / "OPERATING_POINT_v2.json").read_text())
 from tlc.config.loader import load_pipeline  # noqa: E402
@@ -42,6 +45,9 @@ CONFIG_DOC = {**CONFIG_DOC, "grid_hash": GRID["hash"], "operating_point_id": OP[
               "gate_thresholds": {"green_clip_max": 0.15, "green_clip_unusable": 0.40, "frame_overrun_max": 0.02,
                                   "lane_clip_abstain": 0.20, "lane_clip_area_max": 0.02, "px_per_lane_min": 10.0,
                                   "vif_abstain": 6.0, "origin_ci90_max_frac": 0.08}}
+
+
+RESOLVED_FWHM = 1.0   # D-017 amendment: two bands closer than one FWHM are physically unresolved
 
 
 def run_config(n_lanes: int | None, labels: tuple[str, ...] | None) -> RunConfig:
@@ -162,7 +168,7 @@ def main() -> None:
         resolved = {}
         for i, t in enumerate(r["truths"]):
             nn = min([abs(o["y_mode"] - t["y_mode"]) for j, o in enumerate(r["truths"]) if j != i and o["lane"] == t["lane"]], default=1e9)
-            resolved[i] = nn >= 2.0 * fwhm_nom
+            resolved[i] = nn >= RESOLVED_FWHM * fwhm_nom
         n_truth_resolved += sum(resolved.values())
         n_truth_unresolved += sum(1 for v in resolved.values() if not v)
         for d in r["dets"]:
@@ -186,11 +192,35 @@ def main() -> None:
            "unresolved_pairs_rst_err_p95": round(float(np.percentile(eu, 95)), 5) if eu.size else None,
            "rule": "D-017: scored on truths with nearest same-lane neighbour >= 2 FWHM_nom",
            "pass": bool(errs.size and np.percentile(errs, 95) < 0.01)}
-    # 2. streak lanes
+    # 2. streak lanes — true positives AND the false-streak rate (M-014)
     total_streak = sum(len(r["streak_lanes_true"]) for r in synth)
     caught = sum(1 for r in synth for li in r["streak_lanes_true"]
                  if r["lanes"][li]["is_streaking"] and not r["lanes"][li]["quantified"])
-    streak = {"n_streak_lanes": total_streak, "flagged_and_unquantified": caught, "pass": caught == total_streak}
+    non_streak = [(r, L) for r in synth for L in r["lanes"] if L["index"] not in r["streak_lanes_true"]]
+    false_streak = sum(1 for _, L in non_streak if L["is_streaking"])
+    streak = {"n_streak_lanes": total_streak, "flagged_and_unquantified": caught,
+              "n_non_streak_lanes": len(non_streak), "false_streak_lanes": false_streak,
+              "false_streak_rate": round(false_streak / max(len(non_streak), 1), 4),
+              "pass": caught == total_streak and false_streak / max(len(non_streak), 1) <= 0.02}
+    # sensitivity of the position p95 to the resolved-spot threshold (D-017 amendment: visible)
+    sens = {}
+    for thr in (0.0, 0.5, 1.0, 1.5, 2.0):
+        e2 = []
+        for r in synth:
+            fwhm_nom = r["tol_px"] / 0.4
+            tol = max(r["tol_px"], 0.03 * r["migration"])
+            for d in r["dets"]:
+                if d["status"] != "confirmed" or d["rst"] is None:
+                    continue
+                m = [(i, t) for i, t in enumerate(r["truths"]) if t["lane"] == d["lane"] and abs(t["y_mode"] - d["y"]) <= tol]
+                if not m:
+                    continue
+                i, t = min(m, key=lambda it: abs(it[1]["y_mode"] - d["y"]))
+                nn = min([abs(o["y_mode"] - t["y_mode"]) for j, o in enumerate(r["truths"]) if j != i and o["lane"] == t["lane"]], default=1e9)
+                if nn >= thr * fwhm_nom:
+                    e2.append(abs(d["rst"] - t["rst_true"]))
+        sens[str(thr)] = round(float(np.percentile(e2, 95)), 5) if e2 else None
+    pos["p95_by_resolved_threshold_fwhm"] = sens
     # 3. real corpus totality
     silent = [r for r in real if r["silent_nulls"]]
     total = {"n_unique_images": len(real), "n_with_result_or_typed_refusal": sum(1 for r in real if r["schema_valid"]),

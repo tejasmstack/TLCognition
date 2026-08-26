@@ -206,7 +206,7 @@ def assemble(out: RunOutput, image_bytes: bytes, image_meta: dict, config_docume
             y_px=_q(sp.y_px, "px", method=("emg_fit_mode" if f.ok else "matched_filter_seed"), ci95=(sp.y_px - 1.96 * se, sp.y_px + 1.96 * se) if se is not None else None),
             y_frac=_q(sp.y_px / max(H, 1), "frac", "inferred", method="y_px_over_H"),
             rst=rst_q, rst_reference_spot_id=ref_id if sp.rst is not None else None,
-            rf=None,
+            rf=_refused("1", no_front) if no_front else None,
             peak_model=("emg" if f.ok and f.method == "emg_fit" else ("gaussian" if f.ok else "none")),
             emg_sigma_px=_q(f.sigma, "px") if f.ok else None, emg_tau_px=_q(f.tau, "px") if f.ok else None,
             fwhm_px=_q(f.fwhm, "px", "inferred", method="numeric_fwhm_of_fitted_curve") if f.ok and np.isfinite(f.fwhm) else None,

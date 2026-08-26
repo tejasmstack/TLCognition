@@ -299,13 +299,13 @@ def run_plate(rgb: np.ndarray, cfg: RunConfig, seed: int) -> RunOutput:
                                    seed=seed, n_surrogates=cfg.n_surrogates, od_cache=od_cache)
         tiered = [s for s in ens if s.agreement >= cfg.candidate_agreement_min and s.p_med <= cfg.p_med_max and s.z_med >= cfg.z_med_min]
         fits = []
-        tails = []
         for s in tiered:
-            f = fit_emg(den.profile, s.row, fwhm_nom, s.amplitude_med)
-            fits.append(f)
-            if f.ok and f.sigma > 0:
-                tails.append(f.tau / f.sigma)
-        streak = assess_streak(den.profile, band, sigma_prof, tails, fwhm_nom)
+            fits.append(fit_emg(den.profile, s.row, fwhm_nom, s.amplitude_med))
+        # tail statistic from the DOMINANT peak only, and only if its fit is non-degenerate (M-014)
+        sigma_nom_px = WIDTH_FRAC_NOMINAL * pitch
+        dom = max((f for f in fits if f.ok and f.sigma >= 0.5 * sigma_nom_px), key=lambda f: f.amp, default=None)
+        tails = [dom.tau / dom.sigma] if dom is not None else []
+        streak = assess_streak(den.profile, band, sigma_prof, tails, fwhm_nom, peak_rows=[s.row for s in tiered])
         is_empty = not tiered
         suppression = None
         quantified = photometry_mode == "full"

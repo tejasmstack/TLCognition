@@ -250,3 +250,25 @@ wrong; stop repairing and re-state what can be measured.
 **Evidence for M-013 (crop mode, no seams):** 15 phantoms at a >= 0.55 over 16 textured blanks;
 tile-row histogram {20-29: 6, 30-39: 9}, spread over lanes 0/1/3 — one row-coherent real feature
 of the PER-P19 region, invisible to a 3-MAD screen normalised by the plate's own residual.
+
+## M-014 · False streak flags hid mislocalised spots; degenerate EMG fits drove them
+**Symptom:** independent Gate 5 review: 20 of 221 non-streak synthetic lanes (9%) flagged as
+streaking, suppressing 33 real detections; re-scoring those detections lifts the position p95
+from 0.0085 to 0.0117 — over the bound. The self-check had not measured the false-streak rate.
+**Wrong hypothesis:** streak rules only needed to be sensitive enough (19/19 true streaks caught).
+**Actual cause:** (1) the contiguous-run rule treats two ordinary spots ~20 px apart as one
+> 2.5-FWHM run; (2) the tail-ratio rule took max(tau/sigma) over every tiered peak, and the
+EMG fitter returned degenerate solutions on plain Gaussians (sigma 2.7, tau 37 -> tau/sigma 14,
+mode 2.4 px off) — a lower-cost local optimum with no complexity penalty against the
+4-parameter Gaussian.
+**Fix:** fit_emg selects between an explicit Gaussian fit and the EMG multi-start by AIC
+(n ln(SS/n) + 2k) — EMG must earn its extra parameter; streak run rule ignores runs that
+contain >= 2 tiered peaks unless the plateau rule also holds; tail rule uses only the dominant
+peak and only when its fit is non-degenerate (sigma >= 0.5 sigma_nom); Gate 5 evidence reports
+the false-streak-lane rate and scores every non-streak-lane detection. D-017 threshold set to
+1 FWHM (the value its own context cited), no longer 2.
+**Test added:** tests/test_phase5.py — a clean Gaussian profile must fit as gaussian (no tail
+ratio > 3); two adjacent spots must not be flagged as a streak; gate5 evidence carries
+`false_streak_lanes`.
+**Lesson:** every suppression path needs its own false-positive metric in the gate evidence;
+a gate that only counts true positives of a suppressor is measuring half of it.

@@ -71,3 +71,26 @@ def test_rst_variance_budget_sums_to_one():
     assert r.budget["origin"] > r.budget["spot"]  # origin dominates when its variance is largest
     assert rst_with_interval(100.0, 0.1, 180.0, 0.1, 180.0, 0.1) is None
     assert combine_position_variance(1.0, 1.0, 4.0) == pytest.approx(1.0 + 1.25)
+
+
+def test_clean_gaussian_fits_as_gaussian_not_degenerate_emg():
+    """M-014: a plain Gaussian must not come back as sigma~2.7 / tau~37 (tail ratio 14)."""
+    y = np.arange(0, 120, dtype=float)
+    rng = np.random.Generator(np.random.PCG64(11))
+    for seed_row in (58.0, 60.0, 62.0):
+        prof = 0.06 * np.exp(-((y - 60.0) ** 2) / (2 * 6.0**2)) + rng.normal(0, 0.0015, y.size)
+        f = fit_emg(prof, seed_row=seed_row, seed_fwhm=14.0, seed_amp=0.06)
+        assert f.ok
+        assert f.method == "gaussian_limit_fit" or f.tau / f.sigma < 3.0
+        assert abs(f.mode - 60.0) < 1.0
+
+
+def test_two_adjacent_spots_are_not_a_streak():
+    """M-014: two ordinary peaks ~20 px apart form one long run above 2 sigma but are not a streak."""
+    y = np.arange(0, 200, dtype=float)
+    prof = 0.05 * np.exp(-((y - 90) ** 2) / (2 * 5.0**2)) + 0.04 * np.exp(-((y - 112) ** 2) / (2 * 5.0**2))
+    v = assess_streak(prof, (0, 200), 0.004, [1.0], nominal_fwhm_px=11.8, peak_rows=[90.0, 112.0])
+    assert not v.is_streaking, v.reason
+    v_single = assess_streak(prof, (0, 200), 0.004, [1.0], nominal_fwhm_px=11.8, peak_rows=[90.0])
+    # with only one peak claimed inside the same long run, the run rule may legitimately fire
+    assert isinstance(v_single.is_streaking, bool)

@@ -426,3 +426,9 @@ synthetic noise; real-plate phantom rate NOT MEASURED until solvent-only plates 
 explicitly synthetic-noise-only; EVALUATION.md lists the real phantom rate as not computed.
 **Revisit if:** >= 20 solvent-only blank plates are photographed under CAPTURE_PROTOCOL — the
 battery then runs with a real Null B and this entry is superseded.
+
+## D-017 amendment · Resolved-spot threshold is 1 nominal FWHM, not 2
+The independent Gate 5 review showed the 2-FWHM threshold was post hoc (chosen after the tail
+was inspected) and that 1 FWHM — the separation at which two bands are physically unresolved
+(spec 05 §12.6) — is the defensible value. Adopted; the scoring sensitivity across 0-2.5 FWHM
+is written into the Gate 5 evidence so the choice is visible.

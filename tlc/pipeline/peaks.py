@@ -104,23 +104,25 @@ def fit_emg(
             sol = cand
     if sol is None:
         return EMGFit(False, seed_row, seed_row, sig0, 0.0, seed_amp, 0.0, None, seed_fwhm, float("nan"), float("nan"), 1.0, seg.size, "matched_filter_seed")
+    # Explicit 4-parameter Gaussian fit; the EMG must earn its extra parameter by AIC (M-014:
+    # degenerate EMG optima — tiny sigma, huge tau — were beating plain Gaussians on plain Gaussians).
+    def resid_g(p):
+        return emg(y, p[0], p[1], p[2], 1e-3, p[3]) - seg
+
     gaussian_limit = False
-    if sol.x[3] <= 0.15 * sol.x[2]:
-        # tau at its floor: the tail is unresolvable, the 5-parameter Jacobian is degenerate.
-        # Refit the 4-parameter Gaussian limit for an honest covariance.
-        gaussian_limit = True
-
-        def resid_g(p):
-            return emg(y, p[0], p[1], p[2], 1e-3, p[3]) - seg
-
+    try:
         pg0 = np.array([sol.x[0], sol.x[1], sol.x[2], sol.x[4]])
         lbg, ubg = lb[[0, 1, 2, 4]], ub[[0, 1, 2, 4]]
-        try:
-            solg = least_squares(resid_g, np.clip(pg0, lbg + 1e-9, ubg - 1e-9), bounds=(lbg, ubg), method="trf", max_nfev=400, xtol=1e-10, ftol=1e-10)
+        solg = least_squares(resid_g, np.clip(pg0, lbg + 1e-9, ubg - 1e-9), bounds=(lbg, ubg), method="trf", max_nfev=400, xtol=1e-10, ftol=1e-10)
+        n_pts = seg.size
+        aic_emg = n_pts * math.log(max(2 * sol.cost / n_pts, 1e-300)) + 2 * 5
+        aic_gau = n_pts * math.log(max(2 * solg.cost / n_pts, 1e-300)) + 2 * 4
+        if aic_gau <= aic_emg or sol.x[3] <= 0.15 * sol.x[2]:
             solg.x = np.array([solg.x[0], solg.x[1], solg.x[2], 1e-3, solg.x[3]])
             sol = solg
-        except Exception:
-            pass
+            gaussian_limit = True
+    except Exception:
+        pass
     amp, mu, sigma, tau, base = (float(v) for v in sol.x)
     r = sol.fun
     dof = max(seg.size - (4 if gaussian_limit else 5), 1)
