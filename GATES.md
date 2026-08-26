@@ -50,3 +50,24 @@ guard test fails on a deliberately violated copy. Gate 0 closed.
   (6) clip knob delivers ~0.02–0.04 low on emitted images (effective 0.12–0.56).
 
 ---
+## Gate 2 · Deterministic geometry (+ frozen result schema)
+**Reviewed:** 2026-08-26, independent agent, at commit f009a61. **Verdict: PASS, two conditions
+recorded.**
+- CI exit 0 (72 tests). gate2_check.py byte-identical across two fresh-process runs and vs
+  committed (sha256 71116c5e…).
+- Corner sweep: p95 0.2078 px (bound 1.5), max 0.7725 px, 60/60 detected, tilt ≤0.48°.
+  Reviewer's independent 8-plate probe: p95 0.2446 px — consistent.
+- Real corpus 61/61 detected; all 4 known overrun cases flagged (0.26–0.31 vs 0.02).
+- Idempotency 0.0 px worst — **by construction via the 2 px frame snap** (see A-010 amendment);
+  raw re-detection repeatability ~0.8–1.5 px; 20/61 plates have no checkable corners (honest).
+- Adversarial probes: black image → typed refusal; uniform green → wrong-but-typed full-frame
+  plate with overrun flags (Phase 4 input gate carries the screen); rot90 → correct.
+- Schema: emit byte-stable; Q validators, closed units, frozen/extra-forbid, rst-anchor rule all
+  verified adversarially.
+**Conditions:** (1) cross-machine determinism is an OPEN ITEM until CI runs on a second
+architecture (A-009); (2) A-010 amended to attribute the idempotency 0.0 to the snap mechanism.
+**Flags outside the gate:** detection is not discriminative on uniform-green frames (Phase 4
+gate's burden); overrun false-positive sweep not required but cheap (deferred); dead code in
+gate2_check.py:170 (removed in the follow-up commit).
+
+---

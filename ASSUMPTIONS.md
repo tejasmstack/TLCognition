@@ -101,3 +101,19 @@ Resolved while freezing tlc/schemas/result.py (details in that module's docstrin
 7. Floats inside Any-typed payloads (VLM samples, config_document) are canonicalised by the
    producer, not the schema — unreachable structurally.
 8. `created_at` is an ISO-8601 string (canonical-JSON stability), not a datetime object.
+
+## A-010 amendment (Gate 2 review condition 2)
+The idempotency result (worst 0.0 px) is exact BY CONSTRUCTION: `_snap_to_frame` (SNAP_PX=2.0,
+shipped pipeline code) snaps corners within 2 px of the frame boundary onto it, and a rectified
+plate fills its frame exactly, so second-pass corners snap to the ideal frame corners whenever
+raw re-detection lands within 2 px. Raw pre-snap re-detection repeatability measured by the
+independent reviewer is ~0.8–1.5 px (one-sided edge evidence biases the 50%-crossing estimator
+inward at frame boundaries — the physical rationale for the snap). The gate's wording ("re-warp
+is a no-op") is met exactly; first-pass corner accuracy is proven independently by the sweep
+(p95 0.208 px with 21–43 px margins, snap out of play). Recorded so `worst_residual_px: 0.0`
+is never read as a sub-pixel re-detection claim.
+
+## A-009 amendment
+"EVALUATION.md" is the Phase 12 deliverable (forward reference): when written, it lists
+cross-machine tier-1 determinism as an open item until the committed CI workflow has run on a
+second architecture (ubuntu-x86_64).

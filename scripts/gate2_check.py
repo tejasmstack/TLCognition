@@ -167,8 +167,6 @@ def main() -> None:
         and h1 == h2
     )
     (ROOT / "reports" / "gate2_evidence.json").write_text(canonical_json(evidence) + "\n")
-    slim = {k: v for k, v in evidence.items() if k != "idempotency"}
-    slim["idempotency"] = {k: v for k, v in evidence["idempotency"].items() if k != "n" or True}
     print(canonical_json({
         "sweep": evidence["synthetic_corner_sweep"],
         "detection": {k: evidence["real_detection"][k] for k in ("n_unique", "n_detected", "pass")},
