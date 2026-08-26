@@ -385,3 +385,24 @@ silently: the evidence lists both populations.
 placement, not the detector.
 **Revisit if:** the runner gains a merged-spot flag (width vs FWHM_nom); then unresolved pairs
 become a scored behaviour ("flagged as merged") rather than an exclusion.
+
+## D-018 · Phase 6 review interface: server-rendered + HTMX, inline vanilla-JS island, no Node build
+**Date:** 2026-08-26
+**Status:** accepted
+**Context:** spec 04 §11.1 mandates FastAPI + Jinja2 + HTMX with three TypeScript islands built
+by Vite 7. This machine has no Node/npm (Phase 0 environment check), and Phase 6 needs only the
+review screen (§11.2e) to start producing labels.
+**Options considered:**
+  1. Install Node and the full Vite pipeline now — a system change outside the repo, and the
+     other two islands (QC analyser, layer stack) are Phase 11 work.
+  2. Build the Phase 6 review screen server-rendered (Jinja2 + HTMX) with the band-marking
+     canvas as an INLINE vanilla-JS module served as a static file (no build step), keeping the
+     same `<div data-island="review">` mount contract so the Vite/TypeScript island can replace
+     it in Phase 11 without touching templates or routes.
+**Decision:** option 2 for Phase 6. Routes, templates, the correction document (spec 03 §7.7.2),
+labels DB tables, agreement metric and partitioning are built to spec now; the TS/Vite build
+and the remaining islands are Phase 11, when Node availability is decided (an ASSUMPTIONS entry
+then).
+**Why:** the labelled set is the critical path (F12); the island toolchain is not.
+**Revisit if:** Node becomes available before Phase 11 — then the inline module is ported to the
+TS island and the mount contract is unchanged.
