@@ -1,0 +1,61 @@
+{% macro capability_bar(cap, compact=False) -%}
+<div class="capbar {{ 'compact' if compact }}">
+{% for seg in cap %}
+  <div class="seg state-{{ seg.state }}" title="{{ seg.key }}: {{ seg.word }}">
+    <span class="k">{{ seg.key if not compact else seg.key[:3]|lower }}</span>
+    <span class="fill"></span>
+    {% if not compact %}<span class="w">{{ seg.word }}</span>{% endif %}
+  </div>
+{% endfor %}
+</div>
+{%- endmacro %}
+
+{% macro tally(spot, K, thr, ceiling) -%}
+<details class="tally">
+  <summary><span class="n">{{ spot.ensemble_n_hit }} of {{ K }}</span>
+    <span class="cells">{% for i in range(K) %}<i class="{{ 'on' if i < spot.ensemble_n_hit }}{{ ' thr' if i == thr - 1 }}{{ ' ceil' if i == ceiling - 1 }}"></i>{% endfor %}</span>
+  </summary>
+  <div class="hover">
+    {% if spot.status == 'confirmed' %}
+    {{ spot.ensemble_n_hit }} of {{ K }} processing variants found a peak here.
+    {% if spot.ensemble_y_spread_px and spot.ensemble_y_spread_px.value is not none %}Position spread across those {{ spot.ensemble_n_hit }}: ±{{ spot.ensemble_y_spread_px.value|plain(1) }} px.{% endif %}
+    Threshold to count is {{ thr }}.
+    {% else %}
+    {{ spot.ensemble_n_hit }} of {{ K }} processing variants found a peak here — below the threshold of {{ thr }}, so it is not counted as a band.
+    On surrogate blanks built from this plate's own noise, features at this level appear routinely. That does not mean nothing is there; it means this photograph cannot tell you.
+    {% endif %}
+    <div class="muted">Best agreement ever observed on the cleanest plate: about {{ ceiling }} of {{ K }} (F6).</div>
+  </div>
+</details>
+{%- endmacro %}
+
+{% macro chip(q) -%}
+<span class="chip prov-{{ q.provenance }}" title="{{ q.provenance }}{% if q.method %} · {{ q.method }}{% endif %}">{{ {'measured':'m','chosen':'c','inferred':'i','refused':'r'}[q.provenance] }}</span>
+{%- endmacro %}
+
+{% macro refusal_card(c) -%}
+<article class="refusal" data-code="{{ c.code }}">
+  <h3>{{ c.title }}</h3>
+  {% if c.measured %}<p><b>Measured:</b> {{ c.measured }}</p>{% endif %}
+  {% if c.withheld %}<p><b>Not reported:</b> {{ c.withheld }}</p>{% endif %}
+  <p><b>Why:</b> {{ c.why }}</p>
+  <p><b>Next at the bench:</b> {{ c.remedy }}</p>
+  <div class="actions">
+    {% if 'retake' in c.actions %}<a class="btn" href="/upload">Retake and compare</a>{% endif %}
+    {% if 'review' in c.actions and run_id is defined %}<a class="btn" href="/runs/{{ run_id }}/review">Open review</a>{% endif %}
+    {% if 'method' in c.actions %}<a class="btn" href="/method#front">How scales work</a>{% endif %}
+    {% if 'labels' in c.actions %}<a class="btn" href="/labels/progress">Label progress</a>{% endif %}
+  </div>
+</article>
+{%- endmacro %}
+
+{% macro scale(spot, anchor) -%}
+{% if spot.rst.value is not none %}
+  <span class="scale rst">Rst {{ spot.rst|q }}</span>{{ chip(spot.rst) }}
+{% elif spot.rf and spot.rf.value is not none %}
+  <span class="scale rf">Rf {{ spot.rf|q }}</span>{{ chip(spot.rf) }}
+{% else %}
+  <span class="scale frac">{{ spot.y_frac|q }} of plate height</span>{{ chip(spot.y_frac) }}
+  <span class="muted">— no reference band; comparable within this plate only</span>
+{% endif %}
+{%- endmacro %}

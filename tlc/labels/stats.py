@@ -71,3 +71,22 @@ def label_stats(records: Sequence[LabelRecordDraft]) -> dict:
         "partition_counts": partition_counts,
         "match_tolerance_y_frac": 0.015,
     }
+
+
+def draft_from_row(row: dict) -> LabelRecordDraft:
+    """Rehydrate a ``label_records`` DB row (JSON columns) into a :class:`LabelRecordDraft`."""
+    import json
+
+    from tlc.labels.agreement import AgreementReport
+    from tlc.labels.truth import ReviewerTruth
+
+    agreement = json.loads(row["agreement_json"]) if row.get("agreement_json") else None
+    payload = json.loads(row["payload_json"]) if row.get("payload_json") else None
+    return LabelRecordDraft(
+        status=row["status"],
+        n_reviewers=int(row["n_reviewers"]),
+        agreement=AgreementReport.model_validate(agreement) if agreement else None,
+        payload=ReviewerTruth.model_validate(payload) if payload else None,
+        derived_from=json.loads(row["derived_from"]) if isinstance(row.get("derived_from"), str) else list(row.get("derived_from") or []),
+        partition=row.get("partition"),
+    )

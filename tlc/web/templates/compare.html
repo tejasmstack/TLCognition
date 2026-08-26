@@ -1,0 +1,20 @@
+{% extends "base.html" %}
+{% from "_macros.html" import capability_bar, scale %}
+{% block title %}Compare · TLC{% endblock %}
+{% block body %}
+<h1>Compare {{ cols|length }} runs</h1>
+{% if not cols %}<p class="muted">Select runs on the <a href="/runs">run list</a>.</p>{% endif %}
+<div class="densi">
+{% for c in cols %}
+  <div class="lanepanel" style="min-width:300px">
+    <h3><a href="/runs/{{ c.row.run_id }}" class="mono">#{{ c.row.run_id[4:12] }}</a> <span class="muted">{{ c.row.original_filename }}</span></h3>
+    {{ capability_bar(c.cap, compact=True) }}
+    <img src="/runs/{{ c.row.run_id }}/plate.png" style="width:100%;margin:6px 0" alt="plate">
+    <table class="spots"><tbody>
+    {% for s in c.spots %}<tr class="main"><td>L{{ s.lane_index + 1 }}</td><td>{{ scale(s, c.res.reference.rst_anchor) }}</td><td class="num">{{ s.ensemble_n_hit }}/{{ s.ensemble_n_total }}</td></tr>{% else %}<tr><td class="muted">no counted bands</td></tr>{% endfor %}
+    </tbody></table>
+    {% if not c.res.reference.rst_anchor %}<p class="muted small">No reference band: positions are plate-relative and not comparable across plates.</p>{% endif %}
+  </div>
+{% endfor %}
+</div>
+{% endblock %}

@@ -1,0 +1,28 @@
+{% extends "base.html" %}
+{% block title %}Method · TLC{% endblock %}
+{% block body %}
+<h1>How this system measures a plate</h1>
+<p>Pipeline <b>{{ version }}</b> · config <code>{{ config_ref }}</code> <code class="mono">{{ config_hash[:12] }}</code>. Every run embeds its full configuration; a run is reproducible from its own record alone.</p>
+<h2>What a number means here</h2>
+<ul>
+  <li><b>measured</b> (chip <span class="chip prov-measured">m</span>) — derived from this image's pixels by deterministic code. Same bytes, same result, byte for byte.</li>
+  <li><b>chosen</b> (<span class="chip prov-chosen">c</span>) — a configured constant or an operator input. A decision, not an observation.</li>
+  <li><b>inferred</b> (<span class="chip prov-inferred">i</span>) — derived from measured values under a stated model.</li>
+  <li><b>refused</b> (<span class="chip prov-refused">r</span>) — the system declined to produce the value; the reason and the remedy are shown in its place.</li>
+</ul>
+<h2 id="detection">Detection</h2>
+<p>A band is counted when at least <b>{{ (op.tiers.reported.agreement_min * 100)|round(0)|int }}%</b> of <b>{{ grid.configs|length }}</b> independent processing variants ({{ grid.id }}) find a peak within tolerance, and the median surrogate-null p-value is at most {{ op.tiers.reported.p_med_max }}. Bands between {{ (op.tiers.candidate.agreement_min * 100)|round(0)|int }}% and the threshold are listed <i>below the detection threshold — not counted</i>. The agreement tally is ordinal evidence, not a probability.</p>
+<p class="banner">Operating point {{ op.id }}: {{ op.honest_claim if op.honest_claim else 'recall and false-positive rates are measured on synthetic plates only; no accuracy claim is made on real plates until Gate 6/7 labels exist.' }}</p>
+<h2 id="front">Rst, Rf and the solvent front</h2>
+<p>No plate in this lab's corpus carries a drawn solvent front (F2), so <b>Rf is not reported</b>. Positions are reported as <b>Rst</b>: the distance from the origin relative to the highest confirmed band in the standard lane. Without a standard lane, positions are reported as a fraction of plate height and are comparable within that plate only.</p>
+<h2 id="photometry">Photometry and clipping</h2>
+<p>Areas are reported only when less than {{ '%.0f'|format(100 * 0.15) }}% of the in-plate green channel is saturated; above {{ '%.0f'|format(100 * 0.40) }}% nothing is measured. Optical density is log10(I0/I) against a poly3 background; noise σ is measured once on the raw analysable band before spot masking.</p>
+<h2 id="absence">Detection limit statement</h2>
+<p>For an empty lane, the faintest band that would have registered is reported as {{ z_limit|int }}σ of the lane's OD noise — a <i>chosen</i> factor, stated so a null result is a bounded statement.</p>
+<h2 id="gates">Open gates</h2>
+<ul>
+  <li>Gate 4 (detection recall ≥ 0.95 on synthetic plates): <b>not met</b> — recall ≈ 0.93; false-positive arm met on synthetic-noise blanks only.</li>
+  <li>Gate 5 (position p95 ≤ 1% of plate height; false-streak ≤ 2%): <b>not met</b> — 1.3% and 5%.</li>
+  <li>Gates 6–7 (human labels; calibration): <b>not started</b> — this is why no confidence is shown.</li>
+</ul>
+{% endblock %}

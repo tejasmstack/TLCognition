@@ -226,3 +226,11 @@ numbers, not the envelope. An identical replay supersedes the original run row (
    thread inside FastAPI).
 No VLM output is a measurement: positions are proposals only; no API keys exist in this
 environment, so live mode is untested end-to-end (A-004-class limitation).
+
+## A-020 — Detection-limit statement uses a chosen 5σ factor (2026-08-26)
+Spec 04 §11.3.H: "the detection limit comes from the lane's σ and the shipped threshold". The
+shipped threshold is an ensemble agreement fraction, not an amplitude, so no amplitude limit
+follows from it directly. The result view reports "about {5 × σ_od} OD" and states the factor
+as `chosen` on /method. Gate 4 data: recall ≈ 0.94–0.95 at ≥ 5σ, which is why 5 was chosen.
+**Verify by:** replacing the factor with the measured 95%-recall amplitude once Gate 4's recall
+curve is re-run at the shipped operating point.

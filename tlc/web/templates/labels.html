@@ -1,0 +1,11 @@
+{% extends "base.html" %}
+{% block title %}Labels · TLC{% endblock %}
+{% block body %}
+<h1>Label progress</h1>
+<p class="muted">Gate 6 needs 30 double-labelled plates with reviewer agreement measured before any accuracy figure may appear.</p>
+<pre class="mono">{{ stats|tojson(indent=2) }}</pre>
+<table class="spots"><thead><tr><th>Image</th><th>Status</th><th>Reviewers</th><th>Partition</th><th>Updated</th></tr></thead><tbody>
+{% for r in recs %}<tr><td class="mono">{{ r.image_id[4:12] }}</td><td>{{ r.status }}</td><td>{{ r.n_reviewers }}</td><td>{{ r.partition }}</td><td class="mono">{{ (r.created_at or '')[:16] }}</td></tr>
+{% else %}<tr><td colspan="5" class="muted">No labels yet. Open a run and press Review.</td></tr>{% endfor %}
+</tbody></table>
+{% endblock %}

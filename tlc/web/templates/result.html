@@ -1,0 +1,117 @@
+{% extends "base.html" %}
+{% from "_macros.html" import capability_bar, tally, chip, refusal_card, scale %}
+{% set run_id = res.run_id %}
+{% block title %}Run #{{ res.run_id[4:12] }} · TLC{% endblock %}
+{% block body %}
+{% if saved %}<p class="notice">Review saved · label status: {{ saved }}</p>{% endif %}
+<div class="result">
+<aside class="rail">
+  <h1>{{ res.image.original_filename or res.image.sha256[:8] }}</h1>
+  <div class="mono muted">#{{ res.run_id[4:12] }} · {{ res.created_at[:16] }} · result {{ sha8 }}</div>
+  <h2>Capability</h2>
+  {{ capability_bar(cap) }}
+  <h2>Flags ({{ flags|length }})</h2>
+  <ul class="flags">{% for f in flags %}<li class="sev-{{ f.severity }}"><b>{{ f.code }}</b> {{ f.message }} <span class="muted">{{ f.remedy }}</span></li>{% else %}<li class="muted">none</li>{% endfor %}</ul>
+  <h2>Provenance</h2>
+  <dl class="prov">
+    <dt>pipeline</dt><dd class="mono">{{ res.provenance.pipeline_version }} · config {{ res.provenance.config_hash[:8] }}</dd>
+    <dt>code</dt><dd class="mono">{{ res.provenance.code_fingerprint[:8] }} · git {{ res.provenance.git_commit[:8] }}{{ '*' if res.provenance.git_dirty }}</dd>
+    <dt>image</dt><dd class="mono">{{ res.image.sha256[:8] }} · {{ res.image.width_px }}×{{ res.image.height_px }}</dd>
+    <dt>VLM</dt><dd>{{ res.vlm.mode }}{% if res.vlm.model_id %} · {{ res.vlm.model_id }}{% endif %}</dd>
+    <dt>determinism</dt><dd>{{ res.provenance.determinism_tier }}</dd>
+  </dl>
+  <div class="actions">
+    <a class="btn" href="/runs/{{ res.run_id }}/review">Review</a>
+    <a class="btn" href="/runs/{{ res.run_id }}.json">JSON</a>
+    <a class="btn" href="/runs/{{ res.run_id }}/print">Print</a>
+  </div>
+</aside>
+
+<section class="plate">
+  {% if res.status == 'refused' and res.geometry.rectified_shape[0] == 0 %}
+    <img src="/runs/{{ res.run_id }}/plate.png" alt="uploaded image (no plate located)">
+  {% else %}
+  <div class="platestack" id="plate" data-h="{{ H }}" data-origin="{{ origin_px if origin_px is not none else '' }}">
+    <img src="/runs/{{ res.run_id }}/plate.png" alt="rectified plate" id="plateimg">
+    <svg id="overlay" viewBox="0 0 {{ res.geometry.rectified_shape[1] }} {{ res.geometry.rectified_shape[0] }}" preserveAspectRatio="none">
+      {% for L in lanes %}
+        {% set x = L.lane.x_center_px.value %}{% set hw = L.lane.half_width_px.value %}
+        {% if not L.lane.quantified %}<rect class="hatch" x="{{ x - hw }}" y="0" width="{{ 2*hw }}" height="{{ H }}"><title>{{ L.lane.suppression.message }}</title></rect>{% endif %}
+        {% for s in L.main %}
+          {% if s.y_px.ci95 %}<rect class="band" x="{{ x - hw }}" y="{{ s.y_px.ci95[0] }}" width="{{ 2*hw }}" height="{{ (s.y_px.ci95[1] - s.y_px.ci95[0])|abs }}"/>{% endif %}
+          <line class="tick" x1="{{ x - hw }}" x2="{{ x + hw }}" y1="{{ s.y_px.value }}" y2="{{ s.y_px.value }}"><title>{{ s.id }} {{ s.ensemble_n_hit }} of {{ K }}</title></line>
+        {% endfor %}
+        {% for s in L.below %}<line class="tick weak" x1="{{ x - hw*0.6 }}" x2="{{ x + hw*0.6 }}" y1="{{ s.y_px.value }}" y2="{{ s.y_px.value }}"><title>{{ s.id }} below threshold: {{ s.ensemble_n_hit }} of {{ K }}</title></line>{% endfor %}
+      {% endfor %}
+      {% if origin_px is not none %}<line class="origin" x1="0" x2="{{ res.geometry.rectified_shape[1] }}" y1="{{ origin_px }}" y2="{{ origin_px }}"><title>origin ({{ res.reference.origin_provenance }})</title></line>{% endif %}
+    </svg>
+  </div>
+  <div class="muted small">ticks = fitted centre; translucent band = 95% interval, to scale; hatched lane = not quantified; dotted line = origin ({{ res.reference.origin_provenance|replace('_',' ') }})</div>
+  {% endif %}
+</section>
+
+<section class="densi">
+  {% for L in lanes %}
+  <div class="lanepanel {{ 'refused' if not L.lane.quantified }}">
+    <h3>L{{ L.lane.index + 1 }} <span class="lbl">{{ L.lane.label }}</span> {{ chip({'provenance': 'chosen' if L.lane.label_provenance == 'operator' else L.lane.label_provenance if L.lane.label_provenance != 'vlm' else 'inferred', 'method': L.lane.label_provenance}) }}</h3>
+    {% if not L.lane.quantified %}<p class="reason">{{ L.lane.suppression.message }}</p>{% endif %}
+    {% if L.dens %}
+    <svg class="trace" viewBox="0 0 100 {{ L.dens.preview|length }}" preserveAspectRatio="none">
+      {% set mx = ([L.dens.preview|max, 0.02]|max) %}
+      <polyline points="{% for v in L.dens.preview %}{{ (100 * ([v,0]|max) / mx)|round(2) }},{{ loop.index0 }} {% endfor %}"/>
+      {% for s in L.main %}<line class="pk" x1="0" x2="100" y1="{{ (s.y_px.value - L.dens.y_px.start) / L.dens.y_px.step }}" y2="{{ (s.y_px.value - L.dens.y_px.start) / L.dens.y_px.step }}"/>{% endfor %}
+    </svg>
+    <div class="muted small">OD → (preview; not a measurement surface)</div>
+    {% endif %}
+    {% if not L.main and not L.streak and L.lane.quantified %}
+      <p class="absence">No bands detected in lane {{ L.lane.index + 1 }}.
+      {% if L.limit_od is not none %}At this exposure the faintest band that would have registered is about {{ L.limit_od|plain(3) }} OD ({{ '%.0f'|format(5) }}σ). Anything weaker would not appear here.{% endif %}</p>
+    {% endif %}
+  </div>
+  {% endfor %}
+</section>
+</div>
+
+<section class="table">
+  <h2>Bands <span class="muted">{{ n_confirmed }} counted · {{ n_below }} below threshold</span></h2>
+  <p class="banner">Agreement is an ensemble tally, not a probability. {{ uncalibrated.why }} {{ uncalibrated.remedy }}</p>
+  {% if anchor %}<p class="muted">Rst is relative to <b>{{ anchor.spot_id }}</b> in lane {{ anchor.lane_index + 1 }} ({{ anchor.lane_label }}), rule <code>{{ anchor.selection_rule }}</code>.</p>{% endif %}
+  <table class="spots">
+  <thead><tr><th>Lane</th><th>Band</th><th>Scale</th><th>Position (px)</th><th>Agreement</th><th>Area (OD·px)</th><th>Model</th><th>Flags</th></tr></thead>
+  <tbody>
+  {% for L in lanes %}
+    {% for s in L.main %}
+    <tr class="main">
+      <td>L{{ L.lane.index + 1 }} {{ L.lane.label }}</td><td class="mono">{{ s.id }}</td>
+      <td>{{ scale(s, anchor) }}</td>
+      <td class="num">{{ s.y_px|q }}{{ chip(s.y_px) }}{% if not s.y_px.ci95 %} <span class="chip prov-refused">no interval</span>{% endif %}</td>
+      <td>{{ tally(s, K, thr, ceiling) }}</td>
+      <td class="num">{% if s.area_od_px.value is not none %}{{ s.area_od_px|q }}{{ chip(s.area_od_px) }}{% else %}— <span class="chip prov-refused">not quantified</span>{% endif %}</td>
+      <td>{{ s.peak_model }}</td><td class="muted small">{{ s.flags|join(', ') }}</td>
+    </tr>
+    {% endfor %}
+    {% for s in L.streak %}
+    <tr class="streak"><td>L{{ L.lane.index + 1 }} {{ L.lane.label }}</td><td colspan="7">Streak — no discrete band position; lane not quantified. {{ L.lane.suppression.message if L.lane.suppression }}</td></tr>
+    {% endfor %}
+  {% endfor %}
+  </tbody></table>
+  {% if n_below %}
+  <h3 class="rule">Below the detection threshold — not counted</h3>
+  <table class="spots below"><tbody>
+  {% for L in lanes %}{% for s in L.below %}
+    <tr class="below">
+      <td>L{{ L.lane.index + 1 }} {{ L.lane.label }}</td><td class="mono">{{ s.id }}</td>
+      <td class="muted"><i>≈{{ s.rst.value|plain(2) if s.rst.value is not none else s.y_frac.value|plain(2) }}</i></td>
+      <td class="num muted">≈{{ s.y_px.value|plain(0) }}</td>
+      <td>{{ tally(s, K, thr, ceiling) }}</td>
+      <td>— <span class="chip prov-refused">not quantified</span></td><td>{{ s.peak_model }}</td><td class="muted small">{{ s.status }}</td>
+    </tr>
+  {% endfor %}{% endfor %}
+  </tbody></table>
+  {% endif %}
+</section>
+
+<section class="refusals">
+  {% for c in cards %}{{ refusal_card(c) }}{% endfor %}
+</section>
+{% endblock %}

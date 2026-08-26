@@ -10,9 +10,9 @@ from fastapi.responses import Response
 from tlc.api.deps import get_service
 from tlc.jobs.service import RunService
 from tlc.labels.corrections import CorrectionDoc
-from tlc.labels.partition import batch_key_for, effective_partition, partition_for
+from tlc.labels.partition import batch_key_for, effective_partition
 from tlc.labels.promote import promote
-from tlc.labels.stats import label_stats
+from tlc.labels.stats import draft_from_row, label_stats
 from tlc.labels.truth import apply_ops
 
 router = APIRouter(prefix="/api/v1")
@@ -66,9 +66,9 @@ def replay_run(run_id: str, svc: RunService = Depends(get_service)):  # noqa: B0
         raise _error(404, "E_NOT_FOUND", "No such run.", "Check the run id.") from e
 
 
-@router.post("/runs/{run_id}/corrections", status_code=201)
-def submit_correction(run_id: str, doc: CorrectionDoc, reviewer_id: str = "anonymous", display_name: str | None = None,
-                      svc: RunService = Depends(get_service)):  # noqa: B008
+def record_correction(svc: RunService, run_id: str, doc: CorrectionDoc, reviewer_id: str, display_name: str | None,
+                      source: str) -> dict:
+    """Persist a correction and run the promoter (spec 03 §7.7.3). Shared by the JSON API and the review screen."""
     row = svc.repo.get_run(run_id)
     if not row:
         raise _error(404, "E_NOT_FOUND", "No such run.", "Check the run id.")
@@ -80,29 +80,34 @@ def submit_correction(run_id: str, doc: CorrectionDoc, reviewer_id: str = "anony
     cid = f"cor_{uuid.uuid4().hex[:20]}"
     ops = [op.model_dump(mode="json") for op in doc.ops]
     svc.repo.insert_correction(cid, run_id, row["image_id"], reviewer_id, doc.viewed_result_sha256, doc.blind, ops,
-                               doc.review_seconds, "api-v1")
-    # promoter (spec 03 §7.7.3): materialise every reviewer's truth for this image, then promote
+                               doc.review_seconds, source)
     truths = []
     for c in svc.repo.corrections_for_image(row["image_id"]):
         res_c = json.loads(Path(svc.repo.get_run(c["run_id"])["result_path"]).read_text())
         truths.append(apply_ops(res_c, json.loads(c["ops_json"]), blind=bool(c["blind"]), correction_id=c["correction_id"],
                                 reviewer_id=c["reviewer_id"], review_seconds=c["review_seconds"]))
     draft = promote(truths)
-    sample_id = draft.payload.get("sample_id") if draft.payload else None
+    sample_id = getattr(draft.payload, "sample_id", None) if draft.payload else None
     key = batch_key_for(sample_id, capture_session=f"{result['created_at'][:10]}:{reviewer_id}")
-    part = effective_partition(partition_for(key, str(svc.config_doc.get("seed_salt", "salt"))), draft.status)
+    part = effective_partition(key, str(svc.config_doc.get("seed_salt", "salt")), draft.status)
     lid = f"lab_{uuid.uuid4().hex[:20]}"
     svc.repo.upsert_label_record(lid, row["image_id"], draft.status, draft.n_reviewers,
                                  draft.agreement.model_dump(mode="json") if draft.agreement else None,
-                                 draft.payload or {}, part, draft.derived_from)
+                                 draft.payload.model_dump(mode="json") if draft.payload else {}, part, draft.derived_from)
     return {"correction_id": cid, "label_status": draft.status,
             "adjudication_id": None if draft.adjudication is None else f"adj_{lid[4:]}", "partition": part}
+
+
+@router.post("/runs/{run_id}/corrections", status_code=201)
+def submit_correction(run_id: str, doc: CorrectionDoc, reviewer_id: str = "anonymous", display_name: str | None = None,
+                      svc: RunService = Depends(get_service)):  # noqa: B008
+    return record_correction(svc, run_id, doc, reviewer_id, display_name, "api-v1")
 
 
 @router.get("/labels/stats")
 def labels_stats(svc: RunService = Depends(get_service)):  # noqa: B008
     recs = svc.repo.label_records()
-    return label_stats([{**r, "agreement": json.loads(r["agreement_json"]) if r["agreement_json"] else None} for r in recs])
+    return label_stats([draft_from_row(r) for r in recs])
 
 
 @router.get("/health")

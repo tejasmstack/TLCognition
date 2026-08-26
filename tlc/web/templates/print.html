@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+{% from "_macros.html" import capability_bar, scale, refusal_card %}
+{% set run_id = res.run_id %}
+{% block title %}Print #{{ res.run_id[4:12] }}{% endblock %}
+{% block body %}
+<h1>{{ res.image.original_filename or res.image.sha256[:8] }} <span class="mono muted">#{{ res.run_id[4:12] }} · {{ res.created_at[:16] }}</span></h1>
+{{ capability_bar(cap) }}
+<div class="result">
+  <div><img src="/runs/{{ res.run_id }}/plate.png" style="max-width:100%" alt="rectified plate"></div>
+  <div>
+  <table class="spots"><thead><tr><th>Lane</th><th>Band</th><th>Scale</th><th>Agreement</th><th>Area</th></tr></thead><tbody>
+  {% for L in lanes %}{% for s in L.main %}
+  <tr class="main"><td>L{{ L.lane.index + 1 }} {{ L.lane.label }}</td><td class="mono">{{ s.id }}</td><td>{{ scale(s, anchor) }}</td>
+      <td class="num">{{ s.ensemble_n_hit }} of {{ K }} (threshold {{ thr }})</td><td class="num">{{ s.area_od_px|q if s.area_od_px.value is not none else '— not quantified' }}</td></tr>
+  {% endfor %}{% endfor %}
+  </tbody></table>
+  <p class="banner">Agreement is an ensemble tally, not a probability; confidence is not calibrated.</p>
+  </div>
+</div>
+{% for c in cards %}{{ refusal_card(c) }}{% endfor %}
+<footer class="muted small mono">result {{ res.provenance.result_sha256 }} · pipeline {{ res.provenance.pipeline_version }} · config {{ res.provenance.config_hash[:12] }} · code {{ res.provenance.code_fingerprint[:12] }} · image {{ res.image.sha256[:12] }} · {{ res.provenance.determinism_tier }}</footer>
+<script>window.print && setTimeout(()=>window.print(), 300)</script>
+{% endblock %}

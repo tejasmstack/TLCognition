@@ -1,0 +1,33 @@
+{% extends "base.html" %}
+{% from "_macros.html" import capability_bar %}
+{% block title %}Runs · TLC{% endblock %}
+{% block body %}
+<p class="corpus">Corpus: {{ items|length }} runs · {{ n_labelled }} labelled · accuracy not yet computed <a href="/method">/method</a></p>
+<form class="filters" method="get">
+  <select name="status" onchange="this.form.submit()">
+    <option value="" {{ 'selected' if not status }}>all</option>
+    {% for s in ['succeeded','degraded','refused','failed'] %}<option value="{{ s }}" {{ 'selected' if status == s }}>{{ s }}</option>{% endfor %}
+  </select>
+  <button type="button" id="cmp" class="btn">Compare selected</button>
+</form>
+<table class="runs">
+<thead><tr><th></th><th>Date</th><th>Run</th><th>File</th><th>Lanes</th><th>Bands</th><th>Capability</th><th>Status</th></tr></thead>
+<tbody>
+{% for it in items %}
+<tr>
+  <td><input type="checkbox" value="{{ it.row.run_id }}" class="sel"></td>
+  <td class="mono">{{ it.row.created_at[:16] }}</td>
+  <td><a href="/runs/{{ it.row.run_id }}" class="mono">#{{ it.row.run_id[4:12] }}</a>{% if it.row.superseded_by %} <span class="muted">superseded</span>{% endif %}</td>
+  <td>{{ it.row.original_filename or '—' }}</td>
+  <td>{{ it.labels|join(' ') or '—' }}</td>
+  <td>{% if it.row.status == 'refused' %}<span class="glyph">⌦ refused</span>{% else %}{{ it.row.n_spots_confirmed }}{% if it.n_below %} + {{ it.n_below }} marg{% endif %}{% endif %}</td>
+  <td>{% if it.cap %}{{ capability_bar(it.cap, compact=True) }}{% endif %}</td>
+  <td>{{ it.row.status }}</td>
+</tr>
+{% endfor %}
+</tbody></table>
+<script>
+document.getElementById('cmp').onclick=()=>{const ids=[...document.querySelectorAll('.sel:checked')].map(e=>e.value);
+  if(ids.length) location.href='/compare?runs='+ids.join(',');};
+</script>
+{% endblock %}

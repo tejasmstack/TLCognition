@@ -1,0 +1,20 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>{% block title %}TLC plate readout{% endblock %}</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" href="/static/app.css">
+</head>
+<body>
+<nav class="top">
+  <a href="/upload">Upload</a>
+  <a href="/runs">Runs</a>
+  <a href="/labels/progress">Labels</a>
+  <a href="/method">Method</a>
+  <span class="grow"></span>
+  <span class="muted">no accuracy claim is made until Gate 7 · confidence is not calibrated</span>
+</nav>
+<main>{% block body %}{% endblock %}</main>
+</body>
+</html>

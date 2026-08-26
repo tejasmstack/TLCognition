@@ -153,6 +153,9 @@ class Repo:
             prev = conn.execute(text("SELECT label_id FROM label_records WHERE image_id=:i AND superseded_by IS NULL"),
                                 {"i": image_id}).first()
             if prev:
+                # the old row must point at the new id before the insert (one-current-per-image index), but the new id
+                # does not exist yet: defer the FK check to commit for this transaction only (SQLite supports this).
+                conn.execute(text("PRAGMA defer_foreign_keys = ON"))
                 conn.execute(text("UPDATE label_records SET superseded_by=:n WHERE label_id=:p"), {"n": label_id, "p": prev[0]})
             conn.execute(text("INSERT INTO label_records(label_id, image_id, status, n_reviewers, agreement_json, payload_json,"
                               " partition, derived_from, created_at) VALUES (:l,:i,:s,:n,:a,:p,:pa,:d,:t)"),

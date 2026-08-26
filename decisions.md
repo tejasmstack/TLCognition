@@ -448,3 +448,16 @@ the real-plate phantom rate stays NOT MEASURED until blank plates exist.
 **Why:** a working end-to-end system produces the labelled set (F12, the critical path) and real
 feedback that no further synthetic iteration can.
 **Revisit if:** Phase 7 calibration or real labels change what the open arms mean.
+
+## D-021 — Web layer: number formatter follows the spec's worked examples, not its prose (2026-08-26)
+Spec 04 §11.3.B says "one decade finer than the first significant digit of the half-interval"
+but its own examples (`0.412 ±0.009`, never `0.4123 ±0.009`) place the last digit AT that
+decade. `tlc/web/format.py` follows the examples; every rendered number (HTML, print) goes
+through it; a value with no interval renders as `≈x.xx`, never bare.
+Also: refusal microcopy lives in `tlc/web/copy/refusals.py` (code -> title/measured/withheld/
+why/remedy); a CI test asserts every backend refusal code has copy and no copy contains
+"error", "sorry", "unfortunately", "failed to" or "!". The frontend is Jinja2 + one vanilla-JS
+review island (D-018); no HTMX dependency was needed for the vertical slice.
+**Why:** the example is what a chemist will compare against; a formatter with an extra digit
+reads as more precision than the interval supports (§11.10 screenshot test).
+**Revisit if:** the spec owner clarifies the prose.

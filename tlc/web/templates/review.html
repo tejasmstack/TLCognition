@@ -1,0 +1,55 @@
+{% extends "base.html" %}
+{% from "_macros.html" import tally %}
+{% block title %}Review #{{ res.run_id[4:12] }} · TLC{% endblock %}
+{% block body %}
+<h1>Review <span class="mono muted">#{{ res.run_id[4:12] }}</span></h1>
+<p class="muted">Pass A is blind: mark every band you see, before the system's marks are shown. Pass B: give a disposition to every system band. Silence is not assent — every row needs a choice.</p>
+{% if existing %}<p class="notice">{{ existing|length }} correction(s) already recorded for this image.</p>{% endif %}
+
+<div class="review" id="review" data-h="{{ H }}" data-w="{{ res.geometry.rectified_shape[1] }}" data-sha="{{ res.provenance.result_sha256 }}" data-run="{{ res.run_id }}">
+  <label>Reviewer initials <input id="reviewer" type="text" maxlength="12" placeholder="AK"></label>
+  <div class="progress"><span id="stepA" class="on">Pass A · blind</span><span id="stepB">Pass B · adjudication</span><span id="stepS">Saved</span></div>
+
+  <div class="platestack" id="rplate">
+    <img src="/runs/{{ res.run_id }}/plate.png" id="rimg" alt="rectified plate">
+    <svg id="roverlay" viewBox="0 0 {{ res.geometry.rectified_shape[1] }} {{ H }}" preserveAspectRatio="none">
+      {% for L in lanes %}{% set x = L.lane.x_center_px.value %}{% set hw = L.lane.half_width_px.value %}
+      <rect class="lanehit" data-lane="{{ L.lane.index }}" x="{{ x - hw }}" y="0" width="{{ 2*hw }}" height="{{ H }}"/>
+      {% endfor %}
+      <g id="mine"></g>
+      <g id="system" hidden>
+      {% for s in res.spots if s.status in ['confirmed','candidate'] %}{% set L = lanes[s.lane_index] %}
+        <line class="tick {{ 'weak' if s.status != 'confirmed' }}" data-spot="{{ s.id }}" x1="{{ L.lane.x_center_px.value - L.lane.half_width_px.value }}" x2="{{ L.lane.x_center_px.value + L.lane.half_width_px.value }}" y1="{{ s.y_px.value }}" y2="{{ s.y_px.value }}"/>
+      {% endfor %}
+      </g>
+    </svg>
+  </div>
+  <p class="muted small" id="hint">Pass A: click inside a lane to mark a band (click a mark to remove it). Then choose its strength.</p>
+
+  <div id="passA">
+    <table class="spots" id="mineTable"><thead><tr><th>Lane</th><th>Position</th><th>Strength</th><th></th></tr></thead><tbody></tbody></table>
+    <button type="button" id="finishA" class="btn">Finish Pass A</button>
+  </div>
+
+  <div id="passB" hidden>
+    <table class="spots"><thead><tr><th>Lane</th><th>Band</th><th>Position (px)</th><th>Agreement</th><th>Disposition</th><th>Reason</th></tr></thead><tbody>
+    {% for s in res.spots if s.status in ['confirmed','candidate'] %}
+      <tr data-spot="{{ s.id }}" data-y="{{ s.y_px.value }}" class="{{ 'below' if s.status != 'confirmed' }}">
+        <td>L{{ s.lane_index + 1 }}</td><td class="mono">{{ s.id }} <span class="muted small">{{ s.status }}</span></td>
+        <td class="num">{{ s.y_px|q }}</td><td>{{ tally(s, K, thr, ceiling) }}</td>
+        <td>
+          <label><input type="radio" name="d_{{ s.id }}" value="confirm"> confirm</label>
+          <label><input type="radio" name="d_{{ s.id }}" value="reject"> reject</label>
+          <label><input type="radio" name="d_{{ s.id }}" value="move"> move to my mark</label>
+        </td>
+        <td><select name="r_{{ s.id }}"><option value="artefact">artefact</option><option value="handwriting">handwriting</option><option value="background">background</option><option value="duplicate">duplicate</option><option value="edge">edge</option><option value="other">other</option></select></td>
+      </tr>
+    {% endfor %}
+    </tbody></table>
+    <p class="muted small">Bands you marked in Pass A that have no system band within 1.5% of the plate height are submitted as additions.</p>
+    <button type="button" id="save" class="btn">Save review</button>
+    <span id="err" class="fault"></span>
+  </div>
+</div>
+<script src="/static/review.js"></script>
+{% endblock %}

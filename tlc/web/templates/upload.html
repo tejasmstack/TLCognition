@@ -1,0 +1,47 @@
+{% extends "base.html" %}
+{% block title %}Upload · TLC{% endblock %}
+{% block body %}
+<h1>Upload a plate photograph</h1>
+<form class="card" method="post" action="/upload" enctype="multipart/form-data" id="upform">
+  <label>Photograph (PNG or JPEG; the original bytes are stored untouched)
+    <input type="file" name="file" accept="image/*" capture="environment" required id="file">
+  </label>
+  <div id="qc" class="qc" hidden>
+    <canvas id="thumb" width="240" height="320"></canvas>
+    <div>
+      <div>Green clipping (central 80%): <b id="clip">—</b> <span class="muted">threshold 15% for photometry, 40% for anything</span></div>
+      <div>Size: <b id="size">—</b></div>
+      <div>SHA-256: <code id="sha">—</code></div>
+      <div class="muted">Advisory, computed in the browser. The server measures the same quantity inside the plate outline and decides.</div>
+    </div>
+  </div>
+  <label>Lanes <input type="number" name="n_lanes" min="1" max="12" placeholder="e.g. 4"></label>
+  <label>Lane labels, left to right, comma separated <input type="text" name="labels" placeholder="S, co, R, sd"></label>
+  <p class="muted">ⓘ If you enter the lane labels here they are recorded as confirmed by the operator. Lane count never comes from the signal (F10).</p>
+  <button type="submit">Run</button>
+</form>
+<script>
+(function(){
+  const f=document.getElementById('file');
+  f.addEventListener('change', async ()=>{
+    const file=f.files[0]; if(!file) return;
+    const buf=await file.arrayBuffer();
+    const h=await crypto.subtle.digest('SHA-256', buf);
+    document.getElementById('sha').textContent=[...new Uint8Array(h)].map(b=>b.toString(16).padStart(2,'0')).join('').slice(0,8);
+    const img=new Image(); img.src=URL.createObjectURL(file);
+    await img.decode();
+    document.getElementById('size').textContent=img.naturalWidth+' × '+img.naturalHeight;
+    const c=document.getElementById('thumb'); const s=Math.min(c.width/img.naturalWidth, c.height/img.naturalHeight);
+    c.width=Math.round(img.naturalWidth*s); c.height=Math.round(img.naturalHeight*s);
+    const ctx=c.getContext('2d'); ctx.drawImage(img,0,0,c.width,c.height);
+    const d=ctx.getImageData(0,0,c.width,c.height); let n=0,clip=0;
+    const x0=c.width*0.1,x1=c.width*0.9,y0=c.height*0.1,y1=c.height*0.9;
+    for(let y=0;y<c.height;y++)for(let x=0;x<c.width;x++){const i=(y*c.width+x)*4;
+      if(x>=x0&&x<x1&&y>=y0&&y<y1){n++; if(d.data[i+1]>=254){clip++; d.data[i]=255;d.data[i+1]=0;d.data[i+2]=255;}}}
+    ctx.putImageData(d,0,0);
+    document.getElementById('clip').textContent=(100*clip/n).toFixed(1)+'% (thumbnail estimate, magenta = clipped)';
+    document.getElementById('qc').hidden=false;
+  });
+})();
+</script>
+{% endblock %}
