@@ -1,0 +1,375 @@
+{
+  "status": "OK",
+  "image_sha256": "b82a5effdfa9f8d78c1ca4be5cdddfc4eda7166574dc1dd982185881dc1d5bbf",
+  "pipeline_version": "0.1.0",
+  "params_hash": "c3783e58b85e",
+  "gate": {
+    "verdict": "PASS",
+    "quality": "OK",
+    "quality_reasons": [],
+    "checks": [
+      {
+        "name": "green_dominance",
+        "measured": 79.0,
+        "needed": ">= 5",
+        "passed": true
+      },
+      {
+        "name": "edge_density",
+        "measured": 0.0006761683791846204,
+        "needed": "<= 0.06",
+        "passed": true
+      },
+      {
+        "name": "dark_content",
+        "measured": 0.2965197215777262,
+        "needed": ">= 0.005",
+        "passed": true
+      },
+      {
+        "name": "lane_evidence",
+        "measured": 2.0,
+        "needed": ">= 1 (projection peaks or spotting dots)",
+        "passed": true
+      },
+      {
+        "name": "resolution_floor",
+        "measured": 164.0,
+        "needed": ">= 120 (cap only, never a rejection)",
+        "passed": true
+      }
+    ]
+  },
+  "plate": {
+    "warp": [
+      431,
+      700
+    ],
+    "src_height": 164,
+    "scale": 4.268,
+    "noise": 0.003467,
+    "sat_frac": 0.2173,
+    "method": "hsv_green_contour"
+  },
+  "structure": {
+    "lanes": [
+      7.3,
+      119.9,
+      232.5
+    ],
+    "n_dots": 2,
+    "origin": 615.3,
+    "origin_source": "virtual",
+    "front_source": "none",
+    "needs_user_confirmation": true,
+    "confirmation_reasons": [
+      "1 lane(s) inferred from the spotting pitch rather than detected directly",
+      "lane count (3) differs from the number of spotting dots (2)",
+      "a lane slot was refused for insufficient signal - a very lightly loaded lane may be missing"
+    ]
+  },
+  "roles": [
+    {
+      "index": 0,
+      "name_raw": "S",
+      "name_read_conf": 0.95,
+      "role": "SM_REFERENCE",
+      "role_source": "lexicon",
+      "role_conf": 0.95,
+      "notes": []
+    },
+    {
+      "index": 1,
+      "name_raw": "co",
+      "name_read_conf": 0.92,
+      "role": "COSPOT",
+      "role_source": "lexicon",
+      "role_conf": 0.95,
+      "notes": []
+    },
+    {
+      "index": 2,
+      "name_raw": "R",
+      "name_read_conf": 0.95,
+      "role": "REACTION",
+      "role_source": "lexicon",
+      "role_conf": 0.95,
+      "notes": []
+    }
+  ],
+  "lanes": [
+    {
+      "index": 0,
+      "name": "S",
+      "role": "SM_REFERENCE",
+      "streak_fraction": 0.26,
+      "is_streak": false,
+      "quantification_suppressed": false,
+      "total_od": 3.45,
+      "spots": [
+        {
+          "rel_pos": 0.763,
+          "rf": null,
+          "rf_err": null,
+          "y": 295.2,
+          "y_err": 0.44,
+          "sigma": 12.5,
+          "integral": 0.698,
+          "share_pct": 19.6,
+          "snr": 61.1,
+          "tier": "confirmed",
+          "bleed": null,
+          "near_text_band": false,
+          "confidence": {
+            "score": 0.2,
+            "band": "watchlist",
+            "factors": [
+              {
+                "name": "image_quality",
+                "value": 0.8,
+                "reason": "plate 164 source px tall"
+              },
+              {
+                "name": "saturation",
+                "value": 0.7826947298641034,
+                "reason": "21.7% of pixels clipped at 255"
+              },
+              {
+                "name": "origin_source",
+                "value": 0.7,
+                "reason": "origin from virtual"
+              },
+              {
+                "name": "lane_structure",
+                "value": 0.75,
+                "reason": "lane set needs user confirmation"
+              },
+              {
+                "name": "separation_hygiene",
+                "value": 0.6364400386810303,
+                "reason": "gutter contamination -> hygiene 0.64"
+              },
+              {
+                "name": "snr",
+                "value": 1.0,
+                "reason": "SNR 61.1 sigma"
+              },
+              {
+                "name": "role_source",
+                "value": 1.0,
+                "reason": "lane role via lexicon"
+              }
+            ]
+          }
+        },
+        {
+          "rel_pos": 0.135,
+          "rf": null,
+          "rf_err": null,
+          "y": 558.4,
+          "y_err": 0.23,
+          "sigma": 21.1,
+          "integral": 2.865,
+          "share_pct": 80.4,
+          "snr": 149.0,
+          "tier": "confirmed",
+          "bleed": null,
+          "near_text_band": false,
+          "confidence": {
+            "score": 0.2,
+            "band": "watchlist",
+            "factors": [
+              {
+                "name": "image_quality",
+                "value": 0.8,
+                "reason": "plate 164 source px tall"
+              },
+              {
+                "name": "saturation",
+                "value": 0.7826947298641034,
+                "reason": "21.7% of pixels clipped at 255"
+              },
+              {
+                "name": "origin_source",
+                "value": 0.7,
+                "reason": "origin from virtual"
+              },
+              {
+                "name": "lane_structure",
+                "value": 0.75,
+                "reason": "lane set needs user confirmation"
+              },
+              {
+                "name": "separation_hygiene",
+                "value": 0.6364400386810303,
+                "reason": "gutter contamination -> hygiene 0.64"
+              },
+              {
+                "name": "snr",
+                "value": 1.0,
+                "reason": "SNR 149.0 sigma"
+              },
+              {
+                "name": "role_source",
+                "value": 1.0,
+                "reason": "lane role via lexicon"
+              }
+            ]
+          }
+        }
+      ],
+      "resolution_pairs": [
+        {
+          "a": 0.763,
+          "b": 0.135,
+          "rs": 3.91,
+          "verdict": "baseline-resolved"
+        }
+      ]
+    },
+    {
+      "index": 1,
+      "name": "co",
+      "role": "COSPOT",
+      "streak_fraction": 0.663,
+      "is_streak": true,
+      "quantification_suppressed": true,
+      "total_od": 10.42,
+      "spots": [
+        {
+          "rel_pos": 0.585,
+          "rf": null,
+          "rf_err": null,
+          "y": 370.0,
+          "y_err": 2.51,
+          "sigma": 32.8,
+          "integral": 4.841,
+          "share_pct": 100.0,
+          "snr": 2.2,
+          "tier": "candidate",
+          "bleed": "wide - crosses the lane gutter",
+          "near_text_band": false,
+          "confidence": {
+            "score": 0.05,
+            "band": "watchlist",
+            "factors": [
+              {
+                "name": "image_quality",
+                "value": 0.8,
+                "reason": "plate 164 source px tall"
+              },
+              {
+                "name": "saturation",
+                "value": 0.7826947298641034,
+                "reason": "21.7% of pixels clipped at 255"
+              },
+              {
+                "name": "origin_source",
+                "value": 0.7,
+                "reason": "origin from virtual"
+              },
+              {
+                "name": "lane_structure",
+                "value": 0.75,
+                "reason": "lane set needs user confirmation"
+              },
+              {
+                "name": "separation_hygiene",
+                "value": 0.6364400386810303,
+                "reason": "gutter contamination -> hygiene 0.64"
+              },
+              {
+                "name": "snr",
+                "value": 0.3624902566233617,
+                "reason": "SNR 2.2 sigma"
+              },
+              {
+                "name": "role_source",
+                "value": 1.0,
+                "reason": "lane role via lexicon"
+              },
+              {
+                "name": "lane_bleed",
+                "value": 0.7,
+                "reason": "wide - crosses the lane gutter"
+              }
+            ]
+          }
+        }
+      ],
+      "resolution_pairs": []
+    },
+    {
+      "index": 2,
+      "name": "R",
+      "role": "REACTION",
+      "streak_fraction": 0.711,
+      "is_streak": true,
+      "quantification_suppressed": true,
+      "total_od": 11.12,
+      "spots": [],
+      "resolution_pairs": []
+    }
+  ],
+  "plate_metrics": {
+    "noise": 0.003467,
+    "sat_frac": 0.2173,
+    "separation_hygiene": 0.64,
+    "width_model": null,
+    "stacked": [],
+    "graph_span": [
+      267,
+      639
+    ],
+    "vmax": 0.1632
+  },
+  "cannot_conclude": [
+    {
+      "reason": "no_front_line",
+      "detail": "no solvent front drawn -> true Rf unavailable; positions are relative height. Fix: pencil the front before photographing."
+    },
+    {
+      "reason": "virtual_origin",
+      "detail": "origin inferred from the spotting-dot row, not a drawn line -> related confidences capped."
+    },
+    {
+      "reason": "clipped_background",
+      "detail": "21.7% of pixels clipped at 255 -> the unquenched reference is partly unknowable; area percentages are indicative only. Fix: lower the exposure."
+    },
+    {
+      "reason": "lane_map_unresolved",
+      "detail": "1 lane(s) inferred from the spotting pitch rather than detected directly; lane count (3) differs from the number of spotting dots (2); a lane slot was refused for insufficient signal - a very lightly loaded lane may be missing"
+    }
+  ],
+  "confidence": {
+    "score": 0.2,
+    "band": "watchlist",
+    "factors": [
+      {
+        "name": "image_quality",
+        "value": 0.8,
+        "reason": "plate 164 source px tall"
+      },
+      {
+        "name": "saturation",
+        "value": 0.7826947298641034,
+        "reason": "21.7% of pixels clipped at 255"
+      },
+      {
+        "name": "origin_source",
+        "value": 0.7,
+        "reason": "origin from virtual"
+      },
+      {
+        "name": "lane_structure",
+        "value": 0.75,
+        "reason": "lane set needs user confirmation"
+      },
+      {
+        "name": "separation_hygiene",
+        "value": 0.6364400386810303,
+        "reason": "gutter contamination -> hygiene 0.64"
+      }
+    ]
+  }
+}

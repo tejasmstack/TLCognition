@@ -1,0 +1,189 @@
+{
+  "meta": {
+    "pipeline_version": "0.1.0",
+    "params_hash": "c3783e58b85e"
+  },
+  "sections": [
+    {
+      "phase": "B_normalize",
+      "inputs": {
+        "path": "MEHQ-P31-4hr_30th July26.png"
+      },
+      "outputs": {
+        "warp": [
+          431,
+          700
+        ],
+        "src_height": 164,
+        "scale": 4.268,
+        "noise": 0.003467,
+        "sat_frac": 0.2173,
+        "method": "hsv_green_contour"
+      },
+      "decision": "plate warped and standardised to 700px height via hsv_green_contour",
+      "reasons": [
+        "OD noise floor 0.00347; every threshold below is a multiple of this",
+        "21.7% of plate pixels are clipped at 255 - the unquenched reference level I0 is partly unknowable, quantification confidence capped"
+      ],
+      "params": {
+        "std_height": 700
+      },
+      "artifacts": [
+        "b_warped.png"
+      ]
+    },
+    {
+      "phase": "B2_orientation",
+      "inputs": {},
+      "outputs": {
+        "flipped": false,
+        "source": "assumed"
+      },
+      "decision": "orientation unresolved - ask the user (recorded, not guessed)",
+      "reasons": [],
+      "params": {},
+      "artifacts": []
+    },
+    {
+      "phase": "A_gate",
+      "inputs": {},
+      "outputs": {
+        "verdict": "PASS",
+        "quality": "OK",
+        "quality_reasons": [],
+        "checks": [
+          {
+            "name": "green_dominance",
+            "measured": 79.0,
+            "needed": ">= 5",
+            "passed": true
+          },
+          {
+            "name": "edge_density",
+            "measured": 0.0006761683791846204,
+            "needed": "<= 0.06",
+            "passed": true
+          },
+          {
+            "name": "dark_content",
+            "measured": 0.2965197215777262,
+            "needed": ">= 0.005",
+            "passed": true
+          },
+          {
+            "name": "lane_evidence",
+            "measured": 2.0,
+            "needed": ">= 1 (projection peaks or spotting dots)",
+            "passed": true
+          },
+          {
+            "name": "resolution_floor",
+            "measured": 164.0,
+            "needed": ">= 120 (cap only, never a rejection)",
+            "passed": true
+          }
+        ]
+      },
+      "decision": "PASS",
+      "reasons": [
+        "green_dominance=79.0000 (needed >= 5) -> ok",
+        "edge_density=0.0007 (needed <= 0.06) -> ok",
+        "dark_content=0.2965 (needed >= 0.005) -> ok",
+        "lane_evidence=2.0000 (needed >= 1 (projection peaks or spotting dots)) -> ok",
+        "resolution_floor=164.0000 (needed >= 120 (cap only, never a rejection)) -> ok"
+      ],
+      "params": {},
+      "artifacts": []
+    },
+    {
+      "phase": "C_structure",
+      "inputs": {},
+      "outputs": {
+        "lanes": [
+          7.3,
+          119.9,
+          232.5
+        ],
+        "n_dots": 2,
+        "origin": 615.3,
+        "origin_source": "virtual",
+        "front_source": "none",
+        "needs_user_confirmation": true
+      },
+      "decision": "3 lanes, origin=virtual, front=none",
+      "reasons": [
+        "handwritten header block ends at 0.249h (16 stroke components); spot band starts at 0.280h",
+        "dot candidates: 6 kept; rejected 22 above the bottom 30%, 1 at the plate edge, 1 by roundness, 0 by solidity, 1 by area",
+        "row at y=0.935h has fill ratio 0.66 < 0.68 -> handwritten lane labels, not dots",
+        "spotting row at y=0.879h, 2 blobs -> 2 dots after merging fragments, x-spread 0.26w",
+        "projection peaks (0): []",
+        "origin-dot x (2): [0.278, 0.539]",
+        "pitch completion: pitch=0.261w, inferred 1 lane(s) at [0.017] (OD support confirmed) -> flagged for user confirmation",
+        "slot at 0.801w refused: OD support 0.0068 < 2.0x noise (0.0069) - no material there",
+        "lanes after union/merge/completion: [0.017, 0.278, 0.539]",
+        "gutter columns: 327; drawn-line candidates: [0.094, 0.206, 0.527]",
+        "no drawn origin line -> VIRTUAL origin from the dot row (confidence capped)",
+        "no solvent front line found -> true Rf disabled, relative height reported (SOP: mark the front before photographing to unlock Rf)"
+      ],
+      "params": {
+        "dot_noise_k": 12.0
+      },
+      "artifacts": []
+    },
+    {
+      "phase": "F_extract",
+      "inputs": {},
+      "outputs": {
+        "n_confirmed": 2,
+        "n_candidate": 1,
+        "streak_lanes": [
+          1,
+          2
+        ],
+        "separation_hygiene": 0.64,
+        "stacked": []
+      },
+      "decision": "",
+      "reasons": [
+        "gutter contamination 3.3-3.9x noise -> separation hygiene 0.64"
+      ],
+      "params": {},
+      "artifacts": []
+    },
+    {
+      "phase": "D_lane_roles",
+      "inputs": {},
+      "outputs": {
+        "roles": [
+          [
+            0,
+            "S",
+            "SM_REFERENCE",
+            "lexicon",
+            0.95
+          ],
+          [
+            1,
+            "co",
+            "COSPOT",
+            "lexicon",
+            0.95
+          ],
+          [
+            2,
+            "R",
+            "REACTION",
+            "lexicon",
+            0.95
+          ]
+        ]
+      },
+      "decision": "",
+      "reasons": [
+        "labels from claude-opus-5 (lane-labels-v1, cached): ['S', 'co', 'R']"
+      ],
+      "params": {},
+      "artifacts": []
+    }
+  ]
+}
