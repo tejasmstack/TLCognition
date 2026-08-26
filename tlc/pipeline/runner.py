@@ -266,9 +266,13 @@ def run_plate(rgb: np.ndarray, cfg: RunConfig, seed: int) -> RunOutput:
         lane_centres.append(xc)
         lane_methods.append(meth)
 
-    # --- origin
+    # --- origin (before the band is finalised: the band ends just above the detected origin so
+    # comet tails from the origin are seen whole while the spotting dots themselves stay out)
     zone = (int(cfg.origin_zone_frac[0] * h), int(cfg.origin_zone_frac[1] * h))
     origin = find_origin(odr.od, odr.od_valid, max(sigma_od, 1e-6), lane_centres, hw, zone)
+    if origin.found:
+        dot_r = max(1.0, pitch / 14.0)
+        band = (band[0], int(max(band[0] + 10, origin.row - 3.0 * dot_r)))
     origin_refusal = None
     if not origin.found:
         origin_refusal = F.e_no_origin(origin.n_dots, 2)
@@ -326,9 +330,13 @@ def run_plate(rgb: np.ndarray, cfg: RunConfig, seed: int) -> RunOutput:
             status = "suppressed_streak" if streak.is_streaking else ("confirmed" if s.agreement >= cfg.reported_agreement_min else "candidate")
             raw_spots.append((li, s, f, status))
 
-    if vif_max > VIF_ABSTAIN:
+    noise_structured = vif_max > VIF_ABSTAIN
+    if noise_structured:
         refusals.append(F.e_noise_structured(vif_max))
         gates.append("NOISE_STRUCTURED")
+        flags.append(F.Flag("noise_structured", "block", f"Structured residual (VIF {vif_max:.1f} > {VIF_ABSTAIN}); spots are reported as candidates only.",
+                            "Re-shoot in the cabinet at native resolution; check for glare or compression.", {"vif": round(vif_max, 3)}))
+        raw_spots = [(li, s, f, ("candidate" if st == "confirmed" else st)) for (li, s, f, st) in raw_spots]
 
     # --- Rst anchor: highest-agreement confirmed spot in the standard lane
     anchor = None
@@ -406,7 +414,7 @@ def run_plate(rgb: np.ndarray, cfg: RunConfig, seed: int) -> RunOutput:
         if origin.found and abs(y_px - origin.row) < 2 * fwhm_nom:
             sflags.append("near_origin")
         if st == "candidate":
-            sflags.append("below_confirm_agreement")
+            sflags.append("below_confirm_agreement" if not noise_structured else "noise_structured")
         spots_out.append(SpotOut(sid, li, st, s, f, float(y_px), float(y_var), rst_est, rst_ref, amp, area, area_frac,
                                  area_ref, snr, box_clip, tuple(sflags)))
 

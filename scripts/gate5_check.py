@@ -95,7 +95,8 @@ def process_synth(seed: int) -> dict:
         for s in gt.spots:
             if not s.quantifiable or anchor is None:
                 continue
-            truths.append({"lane": s.lane, "y_mode": s.y_mode, "amp": s.amplitude_sigma,
+            truths.append({"lane": s.lane, "y_mode": s.y_mode, "amp": s.amplitude_sigma, "shape": s.shape,
+                           "tau_over_sigma": round(s.tau / s.sigma_y, 2) if s.tau else 0.0,
                            "rst_true": (gt.origin_row - s.y_mode) / (gt.origin_row - anchor.y_mode)})
         dets = [{"lane": sp.lane_index, "y": sp.y_px, "status": sp.status, "rst": sp.rst.value if sp.rst else None,
                  "rst_refusal": sp.rst_refusal.code if sp.rst_refusal else None, "flags": list(sp.flags)} for sp in out.spots]

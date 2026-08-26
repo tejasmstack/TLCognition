@@ -186,3 +186,18 @@ per-column max |smoothed residual| in MAD) so a contaminated null is visible, no
 **Lesson:** when a null and a detector disagree, locate the disagreement in the null's own
 coordinates before theorising about the detector; and "by construction" claims about real
 data are hypotheses until measured.
+
+## M-011 · Rectified frame was one pixel too small (0.5% scale error), biasing every position
+**Symptom:** Gate 5 run 1: detected origin rows were 0.4-1.7 px ABOVE truth on every one of 60
+synthetic plates (median -0.9), anchors -0.7 px, and Rst errors clustered just over 0.01.
+**Wrong hypothesis:** origin-dot centroiding bias.
+**Actual cause:** geometry.rectified_size returned round(corner distance) as the pixel COUNT.
+Corners sit at pixel centres 0 and w-1 (distance w-1), so the rectified grid should have w
+pixels, not w-1; mapping the corners to (0, W-1) with W = w-1 compresses the plate by (w-2)/(w-1)
+and the error grows linearly with row: ~0.85 px at row 170 of 200.
+**Fix:** rectified_size = round(distance) + 1 for both axes. Gate 2 evidence re-generated
+(corner recovery is in source coordinates and unaffected; idempotency unchanged).
+**Test added:** tests/test_geometry.py asserts a synthetic plate's rectified shape equals its
+plate size and that a ground-truth row maps to the same row in the rectified frame within 0.3 px.
+**Lesson:** pixel-centre vs pixel-edge conventions bite twice (M-005 was the generator side);
+every resampling boundary needs an explicit round-trip test against ground truth.

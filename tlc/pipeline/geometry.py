@@ -245,7 +245,8 @@ def rectified_size(corners: np.ndarray) -> tuple[int, int]:
     tl, tr, br, bl = corners
     w = 0.5 * (np.linalg.norm(tr - tl) + np.linalg.norm(br - bl))
     h = 0.5 * (np.linalg.norm(bl - tl) + np.linalg.norm(br - tr))
-    return max(8, int(round(h))), max(8, int(round(w)))
+    # corners sit at pixel CENTRES 0 and n-1: a distance of n-1 means n pixels (M-011)
+    return max(8, int(round(h)) + 1), max(8, int(round(w)) + 1)
 
 
 def warp_rectify(

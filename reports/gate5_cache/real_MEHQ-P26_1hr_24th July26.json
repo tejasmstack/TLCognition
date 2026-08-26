@@ -1,1 +1,0 @@
-{"file": "MEHQ-P26_1hr_24th July26.png", "n_refusals": 4, "n_spots": 5, "refusal_codes": ["E_LANE_COUNT_UNKNOWN", "E_NO_FRONT", "E_NO_REFERENCE_LANE", "NOISE_STRUCTURED"], "schema_valid": true, "silent_nulls": [], "status": "degraded", "verdict": "ok"}

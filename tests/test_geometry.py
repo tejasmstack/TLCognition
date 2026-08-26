@@ -89,3 +89,20 @@ def test_not_a_plate_refuses():
     noise = rng.integers(0, 60, size=(120, 90, 3), dtype=np.uint8)  # dark non-green junk
     geo = analyse_geometry(noise)
     assert not geo.found
+
+
+def test_rectified_frame_matches_plate_size_and_rows_map_exactly():
+    """M-011: a plate w x h rectifies to w x h, and a ground-truth row lands on the same row."""
+    from tlc.pipeline.prep import rectify_and_mask
+
+    spec = PlateSpec(spots=(SpotSpec(lane=1, y_frac=0.5, amplitude_sigma=20.0),), tilt_deg=3.0)
+    img, gt = make_plate(spec, seed=77)
+    geo = analyse_geometry(img)
+    assert abs(geo.rectified_shape[0] - gt.plate_h) <= 1 and abs(geo.rectified_shape[1] - gt.plate_w) <= 1
+    pp = rectify_and_mask(img, geo)
+    s = gt.spots[0]
+    col = pp.green[:, int(round(s.x))]
+    r0, r1 = int(s.y_mode - 8), int(s.y_mode + 9)
+    seg = col[r0:r1]
+    i = int(np.argmin(seg))  # darkest row of the spot in the rectified frame
+    assert abs((r0 + i) - s.y_mode) <= 1.0
