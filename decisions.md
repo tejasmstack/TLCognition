@@ -576,3 +576,25 @@ detector needs work at 5-8 sigma, where `reports/exp_recall_miss.py` shows the m
 `scripts/exp_decision_rule.py` rules out the cheap fix: re-scoring the same ensemble evidence with a
 z-weighted score reaches at best 0.93 on tuning at ANY false-positive rate, so the gap is in
 detection, not in the decision rule.
+
+## D-030 — OPERATING_POINT_v3 and pipeline config v0.6.0 (2026-08-26)
+The 600-plate Gate 4 battery (D-029), scored against the corrected truth coordinate (M-017), selects
+on its TUNING split the point **agreement >= 0.50, median surrogate p <= 0.0656, z >= 0** — the
+highest-recall point whose false-positive rate stays inside the 0.2 bound:
+
+| split | recall at >=5 sigma | n spots | false bands / synthetic-noise blank |
+|---|---|---|---|
+| tuning (even seeds) | 0.9469 | 753 | 0.07 |
+| eval (odd seeds, held out) | 0.9630 | 756 | 0.14 |
+| **pooled** | **0.9549** | **1509** | — |
+
+Pooled 95% interval on recall: **[0.9433, 0.9643]**. The 0.95 bound lies inside it, so the recall arm
+is met on the point estimate and NOT met with confidence; the false-positive arm is met with room.
+That is the honest verdict, and it is what `EVALUATION.md` and `/method` now say.
+
+The candidate tier stays at 0.40, so a feature between 0.40 and 0.50 is still shown below a rule
+rather than hidden. Because a released pipeline config is immutable and hashed into `run_key`, the
+change ships as **`config/pipeline/v0.6.0.toml`** — one line different from v0.5.0 — and v0.5.0 stays
+on disk so its runs replay byte-for-byte (M-018 explains why this mattered more than it looked).
+**Revisit if:** the detector improves at 5-8 sigma, where the remaining misses live; Phase 7
+calibration replaces the raw agreement bar with a fitted p_spot that also uses z and the MC p-value.

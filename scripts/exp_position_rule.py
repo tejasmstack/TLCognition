@@ -35,7 +35,7 @@ RULES = ("mode", "consensus") + tuple(f"hybrid_{f}" for f in (0.05, 0.1, 0.15, 0
 
 
 def run_config(n_lanes, labels) -> RunConfig:
-    doc, _, _ = load_pipeline("0.5.0")
+    doc, _, _ = load_pipeline("0.6.0")
     grid_doc = json.loads((ROOT / doc["ensemble"]["grid_ref"]).read_text())
     op = json.loads((ROOT / doc["operating_point"]["ref"]).read_text())
     cfgs, ws = [], []

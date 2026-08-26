@@ -8,6 +8,7 @@ rather than reporting the largest rho it found.
 
 import numpy as np
 
+from tlc.assemble import PIPELINE_VERSION
 from tlc.insight import confounds as C
 from tlc.insight import estimators as E
 from tlc.insight import render
@@ -128,7 +129,7 @@ def analyse_cohort(plates: list[V.PlateVars], sigma_def: dict | None = None) -> 
     ts = max((p.created_at for p in plates), default="1970-01-01T00:00:00Z")
     n_plates = len(plates)
     n_campaigns = independent_units(plates, "campaign")
-    prov = {"pipeline_version": "0.5.0", "registry_version": doc["registry_version"], "registry_hash": rhash,
+    prov = {"pipeline_version": PIPELINE_VERSION, "registry_version": doc["registry_version"], "registry_hash": rhash,
             "sigma_definition": sigma_def, "position_coordinate": "Rst", "computed_at": ts,
             "run_ids": [p.run_id for p in plates]}
 

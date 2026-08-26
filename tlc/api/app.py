@@ -12,7 +12,7 @@ from fastapi.staticfiles import StaticFiles  # noqa: E402
 from tlc.api.routers import runs  # noqa: E402
 from tlc.web.views import router as web_router  # noqa: E402
 
-app = FastAPI(title="TLC plate readout", version="0.5.0")
+app = FastAPI(title="TLC plate readout", version="0.6.0")
 app.include_router(runs.router)
 app.include_router(web_router)
 _static = Path(__file__).resolve().parent.parent / "web" / "static"

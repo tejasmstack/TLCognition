@@ -24,6 +24,16 @@ ROOT = Path(__file__).resolve().parents[1]
 CACHE = ROOT / "reports" / "gate4_cache"
 
 
+def shipped_operating_point() -> dict:
+    """M-018: the operating point is whatever the SHIPPED pipeline config resolves to, never a
+    filename written into a harness."""
+    from tlc.config.loader import load_pipeline
+    from tlc.jobs.service import DEFAULT_PIPELINE_VERSION
+
+    doc, _, _ = load_pipeline(DEFAULT_PIPELINE_VERSION)
+    return json.loads((ROOT / doc["operating_point"]["ref"]).read_text())
+
+
 def latest_cache_dir() -> Path:
     dirs = [d for d in CACHE.iterdir() if d.is_dir()]
     if not dirs:
@@ -35,7 +45,7 @@ def main() -> int:
     ap = argparse.ArgumentParser()
     ap.add_argument("--split", choices=("eval", "tuning", "all"), default="eval")
     a = ap.parse_args()
-    op = json.loads((ROOT / "config" / "ensemble" / "OPERATING_POINT_v2.json").read_text())["tiers"]["reported"]
+    op = shipped_operating_point()["tiers"]["reported"]
     a_star, p_star, z_star = op["agreement_min"], op["p_med_max"], op["z_med_min"]
     cdir = latest_cache_dir()
 

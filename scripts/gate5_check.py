@@ -37,10 +37,11 @@ from tlc.core.hashing import tree_fingerprint  # noqa: E402
 _CODE_FP = tree_fingerprint(ROOT / "tlc" / "pipeline", ROOT / "tlc" / "synth")[:12]
 CACHE = ROOT / "reports" / "gate5_cache" / _CODE_FP   # M-012/M-014: stale caches never reused
 GRID = json.loads((ROOT / "config" / "ensemble" / "CONFIG_GRID_v1.json").read_text())
-OP = json.loads((ROOT / "config" / "ensemble" / "OPERATING_POINT_v2.json").read_text())
+OP = None  # resolved below, once the loader is importable
 from tlc.config.loader import load_pipeline  # noqa: E402
 
-CONFIG_DOC, CONFIG_HASH, CONFIG_REF = load_pipeline("0.5.0")
+CONFIG_DOC, CONFIG_HASH, CONFIG_REF = load_pipeline("0.6.0")
+OP = json.loads((ROOT / CONFIG_DOC["operating_point"]["ref"]).read_text())  # M-018
 CONFIG_DOC = {**CONFIG_DOC, "grid_hash": GRID["hash"], "operating_point_id": OP["id"],
               "gate_thresholds": {"green_clip_max": 0.15, "green_clip_unusable": 0.40, "frame_overrun_max": 0.02,
                                   "lane_clip_abstain": 0.20, "lane_clip_area_max": 0.02, "px_per_lane_min": 10.0,

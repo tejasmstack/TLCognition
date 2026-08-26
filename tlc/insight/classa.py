@@ -1,6 +1,7 @@
 """CLASS A — within-plate structural findings, H01–H10 (spec 02 §2). Unit = 1 plate.
 No correlation statistics: uncertainty comes from the ensemble, not from a p-value."""
 
+from tlc.assemble import PIPELINE_VERSION
 from tlc.insight import confounds as C
 from tlc.insight import variables as V
 from tlc.insight.findings import Effect, Finding, make
@@ -32,7 +33,7 @@ def _principal(bands: list[V.Band]) -> tuple[V.Band | None, str | None]:
 
 
 def _prov(pv: V.PlateVars, registry_hash: str, registry_version: str, sigma_def: dict) -> dict:
-    return {"pipeline_version": "0.5.0", "registry_version": registry_version, "registry_hash": registry_hash,
+    return {"pipeline_version": PIPELINE_VERSION, "registry_version": registry_version, "registry_hash": registry_hash,
             "sigma_definition": {**sigma_def, "sigma_value": pv.capture.get("sigma_od")},
             "position_coordinate": "Rst", "run_id": pv.run_id, "computed_at": pv.created_at}
 

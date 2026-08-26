@@ -33,7 +33,7 @@ from tlc.vlm.cache import SQLiteStore
 from tlc.vlm.read import read_plate_semantics
 
 ROOT = Path(__file__).resolve().parent.parent.parent
-DEFAULT_PIPELINE_VERSION = "0.5.0"
+DEFAULT_PIPELINE_VERSION = "0.6.0"
 
 
 @dataclass(frozen=True)

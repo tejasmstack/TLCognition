@@ -318,3 +318,26 @@ regenerated evidence.
 **The general lesson, third time in this build (M-005, M-011, now this).** When a measurement
 disagrees with the thing it measures, check the coordinate convention on both sides before changing
 the algorithm. Two of the three convention bugs so far were in the yardstick, not the pipeline.
+
+## M-018 — The shipped operating point was never wired into the pipeline config (2026-08-26)
+
+**What happened.** `OPERATING_POINT_v2` was created after Gate 4's third attempt and is cited in
+`decisions.md` (D-013 amendment, D-019), `GATES.md`, `EVALUATION.md`, the sentinel test and the
+method page as "the shipped operating point". But `config/pipeline/v0.5.0.toml` — the file the
+pipeline actually reads — still pointed at `OPERATING_POINT_v1.json`. Every run made since then used
+v1's reported tier (agreement >= 0.60), not v2's (>= 0.55). The written record and the running system
+disagreed for the whole of Phases 5-12.
+
+**Why it slipped.** v0.5.0 is immutable once released and hashed into `run_key`, so changing the
+reference needs a NEW version file — which is friction exactly where it should be. What was missing
+is the check that the file cited in prose is the file the loader resolves.
+
+**Fix.** `config/pipeline/v0.6.0.toml` (a one-line change from v0.5.0) points at
+`OPERATING_POINT_v3.json`, and the code default moves to 0.6.0. v0.5.0 stays on disk so its runs
+replay byte-for-byte, with a test asserting it still loads and still resolves to v1. The sentinel
+test now reads the operating point through the pipeline config instead of naming a file.
+
+**What it cost.** Nothing measured is wrong — the gate evidence was always computed at an explicit
+(a, p, z) triple rather than "whatever the config says". But every result JSON produced before this
+commit was made at agreement >= 0.60 while the documentation claimed 0.55, which would have been a
+real audit finding.

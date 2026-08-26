@@ -264,3 +264,50 @@ What changed: D-026 (position = the ensemble consensus row, chosen on the tuning
 dominant-peak bug the streak work exposed; M-016 records that the rule was designed on the gate's own
 seeds and re-measured on a fresh range (12000-12059: 1.32% false, 13/13 true streaks caught,
 `reports/exp_streak_rule_heldout.json`).
+
+## Gate 4 — Detection: NOT MET on the recall arm, but decidably so now (2026-08-26, attempt 4)
+
+Two things changed since attempt 3, neither of them a weakening:
+
+1. **M-017** — the gate had been matching detections to the EMG shape parameter `mu` instead of the
+   MODE, the position convention the pipeline reports (D-014) and Gate 5 scores. On tailed spots the
+   two differ by 3-7 px against a matching tolerance of 4-7 px, so correctly-found bands were scored
+   as misses. Every recall figure published before this is understated.
+2. **D-029** — the battery grew from 250 to 600 spotted plates (1509 observable >=5 sigma spots)
+   because at 250 the 95% interval on recall was [0.918, 0.956] and could not decide a 0.95 bound.
+
+At the tuning-selected point (agreement >= 0.50, p_med <= 0.0656, z >= 0 — now shipped as
+`OPERATING_POINT_v3` through `config/pipeline/v0.6.0.toml`, D-030):
+
+| split | recall at >=5 sigma | n | false bands / synthetic-noise blank (n=100) |
+|---|---|---|---|
+| tuning (even seeds) | 0.9469 | 753 | 0.07 |
+| eval (odd seeds, held out) | 0.9630 | 756 | 0.14 |
+| **pooled** | **0.9549** | **1509** | — |
+
+**Verdict.** The false-positive arm is **met** (0.07-0.14 against 0.2), on synthetic-noise blanks
+only — the phantom rate on genuine solvent-only plates remains NOT MEASURED (D-019, M-013). The
+recall arm is **met on the point estimate (0.955) and not met with confidence**: the pooled 95%
+interval [0.9433, 0.9643] contains the 0.95 bound, and the tuning split alone reaches only 0.9469.
+The gate script therefore reports `gate4_pass: false`, which is the honest reading.
+
+Where the missing recall lives (`reports/exp_recall_miss.json`): 0.83 at 5-6 sigma, 0.89 at 6-8,
+0.95 at 8-12, 0.98 above. `reports/exp_decision_rule.json` rules out a cheap fix — re-scoring the
+same ensemble evidence with any z-weighted rule reaches at best 0.93 on tuning at ANY false-positive
+rate, so the gap is in detection, not in the decision.
+
+## Gate 5 — re-run at OPERATING_POINT_v3 (2026-08-26): still PASS
+
+Changing the reported tier from agreement >= 0.60 (what the config actually resolved to, M-018) to
+>= 0.50 admits more bands — 195 confirmed spots instead of 178 — and the arms hold:
+
+| arm | value at v3 | gate |
+|---|---|---|
+| Rst error p95, resolved spots | **0.00984** (median 0.0022, max 0.0240, n = 174) | ≤ 0.01 |
+| false streak flags on clean lanes | **0.0%** (0 / 221) | ≤ 2% |
+| true streak lanes flagged and unquantified | **19 / 19** | all |
+| real corpus: result or typed refusal | **61 / 61**, 0 silent nulls | all |
+
+`scripts/gate5_check.py` had also named `OPERATING_POINT_v2.json` directly (the same M-018 pattern);
+it now resolves the operating point through the shipped pipeline config, as do the two Gate 4
+diagnostics and the per-commit sentinel.

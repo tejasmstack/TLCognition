@@ -1,0 +1,50 @@
+{
+  "chosen_on": "Gate 4 tuning split (even seeds) of the 600-plate battery; never on the evaluation split",
+  "grid": "CONFIG_GRID_v1",
+  "honest_claim": "Reported tier: recall at >=5 sigma is 0.947 on the tuning split and 0.963 on the held-out split, pooled 0.955 over 1509 spots with a 95% interval of [0.943, 0.964] \u2014 the 0.95 bound lies inside that interval, so the recall arm is met on the point estimate but not with confidence. False bands on synthetic-noise blanks: 0.07 (tuning) and 0.14 (eval) per plate against a 0.2 bound. The phantom rate on GENUINE solvent-only plates is still NOT MEASURED: no such plate exists in the corpus (D-019). Real-texture tiles are a diagnostic upper bound, never the gate's null (M-013).",
+  "id": "OPERATING_POINT_v3",
+  "measured": {
+    "battery": {
+      "spotted_plates": 600,
+      "synthetic_noise_blanks": 200,
+      "textured_tiles_diagnostic_only": 80
+    },
+    "bounds": {
+      "fp_per_blank": 0.2,
+      "recall_5sigma": 0.95
+    },
+    "fp_per_blank_synthetic_noise": {
+      "eval": 0.14,
+      "tuning": 0.07
+    },
+    "recall_5sigma": {
+      "ci95": [
+        0.9433,
+        0.9643
+      ],
+      "eval": 0.963,
+      "n_eval": 756,
+      "n_pooled": 1509,
+      "n_tuning": 753,
+      "pooled": 0.9549,
+      "tuning": 0.9469
+    }
+  },
+  "notes": [
+    "Positions and areas are unaffected by this choice; it decides only which features are counted as bands.",
+    "The candidate tier exists so a feature between 0.40 and the reported bar is shown below a rule, never hidden."
+  ],
+  "supersedes": "OPERATING_POINT_v2 (never wired into a pipeline config; see M-018)",
+  "tiers": {
+    "candidate": {
+      "agreement_min": 0.4,
+      "p_med_max": 0.0656,
+      "z_med_min": 0.0
+    },
+    "reported": {
+      "agreement_min": 0.5,
+      "p_med_max": 0.0656,
+      "z_med_min": 0.0
+    }
+  }
+}

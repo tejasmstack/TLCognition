@@ -33,6 +33,16 @@ Z0, Z1 = 5.0, 20.0
 FP_BOUND, RECALL_BOUND = 0.2, 0.95
 
 
+def shipped_operating_point() -> dict:
+    """M-018: the operating point is whatever the SHIPPED pipeline config resolves to, never a
+    filename written into a harness."""
+    from tlc.config.loader import load_pipeline
+    from tlc.jobs.service import DEFAULT_PIPELINE_VERSION
+
+    doc, _, _ = load_pipeline(DEFAULT_PIPELINE_VERSION)
+    return json.loads((ROOT / doc["operating_point"]["ref"]).read_text())
+
+
 def latest_cache_dir(name: str | None = None) -> Path:
     if name:
         return CACHE / name
@@ -79,7 +89,7 @@ def main() -> int:
     a = ap.parse_args()
     cdir = latest_cache_dir(a.cache)
     spotted, blanks = load(cdir)
-    op = json.loads((ROOT / "config" / "ensemble" / "OPERATING_POINT_v2.json").read_text())["tiers"]["reported"]
+    op = shipped_operating_point()["tiers"]["reported"]
     p_star = op["p_med_max"]
 
     def conjunction(a_star: float):

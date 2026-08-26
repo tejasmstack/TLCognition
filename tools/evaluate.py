@@ -76,7 +76,15 @@ def build(data_dir: Path) -> str:
     g4, g5, g9 = _load(REPORTS / "gate4_evidence.json"), _load(REPORTS / "gate5_evidence.json"), _load(REPORTS / "gate9.json")
     g10 = _load(REPORTS / "gate10.json")
     corpus = _load(REPORTS / "corpus_stats.json")
-    op = _load(ROOT / "config" / "ensemble" / "OPERATING_POINT_v2.json")
+    # the shipped operating point is whatever the shipped pipeline config resolves to — never a
+    # hard-coded filename (M-018)
+    try:
+        from tlc.config.loader import load_pipeline
+        from tlc.jobs.service import DEFAULT_PIPELINE_VERSION
+        _cfg, _, _ = load_pipeline(DEFAULT_PIPELINE_VERSION)
+        op = _load(ROOT / _cfg["operating_point"]["ref"])
+    except Exception:  # noqa: BLE001 - the report must still generate without the package importable
+        op = None
     grid = _load(ROOT / "config" / "ensemble" / "CONFIG_GRID_v1.json")
     labels = label_counts(data_dir)
     commit, dirty = git_state()

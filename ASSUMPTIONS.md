@@ -234,6 +234,11 @@ follows from it directly. The result view reports "about {5 × σ_od} OD" and st
 as `chosen` on /method. Gate 4 data: recall ≈ 0.94–0.95 at ≥ 5σ, which is why 5 was chosen.
 **Verify by:** replacing the factor with the measured 95%-recall amplitude once Gate 4's recall
 curve is re-run at the shipped operating point.
+**Update (2026-08-26, after D-029/D-030):** measured on 756 held-out spots at OPERATING_POINT_v3 the
+detection rate is 87.5% at 5-6 sigma, 94.8% at 6-8, 98.7% at 8-12 and 100% above 12. The 95%-recall
+amplitude is therefore about 6-7 sigma, not 5. The 5-sigma factor is kept because it is the same
+number the reporting gate uses everywhere else, and `/method` now prints the measured curve beside it
+so the statement is not read as a guarantee.
 
 ## A-021 — Class B series metadata is not yet collected (2026-08-26)
 Spec 02's Class B hypotheses need `reaction_time_h`, `campaign_id`, `solvent_system_id`,

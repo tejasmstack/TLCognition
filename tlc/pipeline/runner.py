@@ -4,7 +4,8 @@ Result). Every quantity carries its provenance tag as data so NN2 is structural 
 
 Order: geometry -> capture QC gates -> rectify/mask -> annotation bands (convention or operator)
 -> lanes (operator map or uniform grid; NEVER from signal, F10) -> noise unit -> OD
--> densitograms -> origin -> ensemble detection (CONFIG_GRID_v1, OPERATING_POINT_v1 tiers)
+-> densitograms -> origin -> ensemble detection (grid and tiers come from the RunConfig the caller
+   built from the shipped pipeline config; this module names no config file)
 -> EMG fits -> streak -> Rst against the standard-lane anchor -> refusals/flags.
 """
 

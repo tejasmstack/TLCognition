@@ -1,50 +1,26 @@
 {
   "all_clip_p50": 0.0,
-  "cache": "66b9234e71c0",
+  "cache": "37d0a41581e7_v2_mode_truth",
   "miss_reasons": {
-    "agreement below the bar": 12,
-    "no cluster within tolerance": 11
+    "agreement below the bar": 18,
+    "no cluster within tolerance": 10
   },
-  "missed_agreement_p50": 0.345,
+  "missed_agreement_p50": 0.2747,
   "missed_clip_p50": 0.0,
-  "n_missed": 23,
-  "n_true_5s": 315,
+  "n_missed": 28,
+  "n_true_5s": 756,
   "near_misses": [
     {
       "amp": 5.0,
-      "best_a": 0.5342,
-      "best_p": 0.0164,
-      "best_z": 7.62,
-      "box_clip": 0.034,
-      "found": false,
-      "lane": 1,
-      "n_near": 1,
-      "seed": 9161,
-      "y": 182.29
-    },
-    {
-      "amp": 5.0,
-      "best_a": 0.5061,
-      "best_p": 0.0164,
-      "best_z": 8.34,
-      "box_clip": 0.0,
-      "found": false,
-      "lane": 1,
-      "n_near": 1,
-      "seed": 9225,
-      "y": 219.39
-    },
-    {
-      "amp": 8.0,
-      "best_a": 0.5061,
+      "best_a": 0.4891,
       "best_p": 0.0328,
-      "best_z": 11.31,
-      "box_clip": 0.0,
+      "best_z": 3.55,
+      "box_clip": 0.162,
       "found": false,
-      "lane": 1,
+      "lane": 2,
       "n_near": 1,
-      "seed": 9249,
-      "y": 124.94
+      "seed": 9557,
+      "y": 97.93
     },
     {
       "amp": 6.0,
@@ -68,7 +44,7 @@
       "lane": 3,
       "n_near": 1,
       "seed": 9241,
-      "y": 115.02
+      "y": 118.59
     },
     {
       "amp": 5.0,
@@ -81,6 +57,54 @@
       "n_near": 1,
       "seed": 9021,
       "y": 62.37
+    },
+    {
+      "amp": 5.0,
+      "best_a": 0.397,
+      "best_p": 0.0164,
+      "best_z": 9.39,
+      "box_clip": 0.033,
+      "found": false,
+      "lane": 3,
+      "n_near": 1,
+      "seed": 9535,
+      "y": 150.75
+    },
+    {
+      "amp": 5.0,
+      "best_a": 0.3165,
+      "best_p": 0.0164,
+      "best_z": 12.06,
+      "box_clip": 0.0,
+      "found": false,
+      "lane": 3,
+      "n_near": 1,
+      "seed": 9299,
+      "y": 142.29
+    },
+    {
+      "amp": 6.0,
+      "best_a": 0.3027,
+      "best_p": 0.0164,
+      "best_z": 15.18,
+      "box_clip": 0.0,
+      "found": false,
+      "lane": 1,
+      "n_near": 1,
+      "seed": 9321,
+      "y": 151.48
+    },
+    {
+      "amp": 6.0,
+      "best_a": 0.2974,
+      "best_p": 0.0164,
+      "best_z": 11.62,
+      "box_clip": 0.0,
+      "found": false,
+      "lane": 3,
+      "n_near": 1,
+      "seed": 9321,
+      "y": 128.44
     },
     {
       "amp": 5.0,
@@ -104,7 +128,19 @@
       "lane": 3,
       "n_near": 1,
       "seed": 9231,
-      "y": 224.36
+      "y": 230.13
+    },
+    {
+      "amp": 5.0,
+      "best_a": 0.2474,
+      "best_p": 0.0164,
+      "best_z": 8.59,
+      "box_clip": 0.0,
+      "found": false,
+      "lane": 2,
+      "n_near": 1,
+      "seed": 9405,
+      "y": 80.86
     },
     {
       "amp": 5.0,
@@ -128,7 +164,7 @@
       "lane": 3,
       "n_near": 1,
       "seed": 9249,
-      "y": 76.19
+      "y": 81.38
     },
     {
       "amp": 6.0,
@@ -140,47 +176,47 @@
       "lane": 3,
       "n_near": 1,
       "seed": 9027,
-      "y": 169.62
+      "y": 172.77
     },
     {
-      "amp": 5.0,
-      "best_a": 0.064,
+      "amp": 6.0,
+      "best_a": 0.0915,
       "best_p": 0.0492,
-      "best_z": 9.32,
+      "best_z": 8.02,
       "box_clip": 0.0,
       "found": false,
       "lane": 1,
       "n_near": 1,
-      "seed": 9023,
-      "y": 154.81
+      "seed": 9591,
+      "y": 171.26
     }
   ],
   "operating_point": {
-    "a": 0.55,
-    "p": 0.0164,
+    "a": 0.5,
+    "p": 0.0656,
     "z": 0.0
   },
-  "recall": 0.927,
+  "recall": 0.963,
   "recall_by_amplitude": {
     "12+": {
-      "missed": 2,
-      "n": 132,
-      "recall": 0.9848
+      "missed": 0,
+      "n": 319,
+      "recall": 1.0
     },
     "5-6": {
-      "missed": 12,
-      "n": 71,
-      "recall": 0.831
+      "missed": 19,
+      "n": 152,
+      "recall": 0.875
     },
     "6-8": {
-      "missed": 6,
-      "n": 56,
-      "recall": 0.8929
+      "missed": 7,
+      "n": 135,
+      "recall": 0.9481
     },
     "8-12": {
-      "missed": 3,
-      "n": 56,
-      "recall": 0.9464
+      "missed": 2,
+      "n": 150,
+      "recall": 0.9867
     }
   },
   "split": "eval"

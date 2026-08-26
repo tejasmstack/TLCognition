@@ -18,7 +18,7 @@ from tlc.pipeline.runner import RunOutput
 from tlc.schemas import result as S
 
 ROOT = Path(__file__).resolve().parent.parent
-PIPELINE_VERSION = "0.5.0"
+PIPELINE_VERSION = "0.6.0"
 
 
 def _q(value, unit, provenance="measured", method=None, ci95=None, n=None, note=None):
@@ -233,7 +233,7 @@ def assemble(out: RunOutput, image_bytes: bytes, image_meta: dict, config_docume
     storage = storage or S.StorageBlock(od_h5=None, image=None, preview_png=None)
     provenance = S.ProvenanceBlock(
         pipeline_version=PIPELINE_VERSION, schema_version="1", config_hash=config_hash,
-        config_ref=str(config_document.get("config_ref", "config/pipeline/v0.5.0.toml")), config_document=config_document,
+        config_ref=str(config_document.get("config_ref", "config/pipeline/v0.6.0.toml")), config_document=config_document,
         code_fingerprint=code_fp, git_commit=commit, git_dirty=dirty, env_fingerprint=env_hash, lock_hash=lock_hash,
         libraries=libs, platform_tag=platform_tag, seed=seed, seed_derivation="int(image_sha256[:16],16) ^ config.seed_salt",
         run_key=sha256_canonical({"image_sha256": image_sha, "config_hash": config_hash, "code_fingerprint": code_fp, "env_fingerprint": env_hash, "vlm_bundle_hash": None}),

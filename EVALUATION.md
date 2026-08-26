@@ -1,6 +1,6 @@
 # EVALUATION
 
-Generated 2026-08-26T17:15:50Z from committed evidence at commit `bf4c39681543` (dirty tree) by `tools/evaluate.py`. Regenerate rather than edit.
+Generated 2026-08-26T17:31:29Z from committed evidence at commit `ab52eda50ca4` (dirty tree) by `tools/evaluate.py`. Regenerate rather than edit.
 
 **The contract of this document:** every number carries an n and an interval. Every metric that cannot be computed is listed as `not computed`, with the reason and what would unblock it — never omitted, never replaced by a plausible-looking figure.
 
@@ -30,34 +30,34 @@ Generated 2026-08-26T17:15:50Z from committed evidence at commit `bf4c39681543` 
 
 Ensemble: `CONFIG_GRID_v1`, K = 24 configurations, K_eff on null bins = 9.671. Battery: 250 spotted plates, 200 synthetic-noise blanks, 80 real-texture tiles (diagnostic, **not** a null — M-013/D-019).
 
-Shipped operating point `OPERATING_POINT_v2`: reported at agreement ≥ **0.55**, candidates at ≥ **0.4**, median surrogate p ≤ 0.0164.
+Shipped operating point `OPERATING_POINT_v3`: reported at agreement ≥ **0.5**, candidates at ≥ **0.4**, median surrogate p ≤ 0.0656.
 
 | agreement ≥ | recall at ≥5σ (n spots) | FP per synthetic-noise blank (n blanks) |
 |---|---|---|
-| 0.3 | 95.9% (315) [93.1%, 97.6%] | 0.53 (100) |
-| 0.4 | 95.9% (315) [93.1%, 97.6%] | 0.22 (100) |
-| 0.45 | 95.6% (315) [92.7%, 97.3%] | 0.17 (100) |
-| 0.5 | 95.2% (315) [92.3%, 97.1%] | 0.14 (100) |
-| 0.55 | 94.6% (315) [91.5%, 96.6%] | 0.11 (100) |
-| 0.6 | 94.0% (315) [90.8%, 96.1%] | 0.1 (100) |
-| 0.65 | 94.0% (315) [90.8%, 96.1%] | 0.1 (100) |
-| 0.7 | 93.7% (315) [90.4%, 95.9%] | 0.1 (100) |
-| 0.75 | 91.8% (315) [88.2%, 94.3%] | 0.08 (100) |
-| 0.8 | 90.8% (315) [87.1%, 93.5%] | 0.07 (100) |
-| 0.85 | 89.5% (315) [85.7%, 92.4%] | 0.05 (100) |
-| 0.9 | 84.1% (315) [79.7%, 87.7%] | 0.04 (100) |
+| 0.3 | 97.2% (756) [95.8%, 98.2%] | 0.53 (100) |
+| 0.4 | 96.8% (756) [95.3%, 97.9%] | 0.22 (100) |
+| 0.45 | 96.7% (756) [95.2%, 97.8%] | 0.17 (100) |
+| 0.5 | 96.3% (756) [94.7%, 97.4%] | 0.14 (100) |
+| 0.55 | 95.8% (756) [94.1%, 97.0%] | 0.11 (100) |
+| 0.6 | 95.2% (756) [93.5%, 96.5%] | 0.1 (100) |
+| 0.65 | 95.0% (756) [93.2%, 96.3%] | 0.1 (100) |
+| 0.7 | 94.0% (756) [92.1%, 95.5%] | 0.1 (100) |
+| 0.75 | 92.6% (756) [90.5%, 94.3%] | 0.08 (100) |
+| 0.8 | 91.9% (756) [89.8%, 93.7%] | 0.07 (100) |
+| 0.85 | 88.5% (756) [86.0%, 90.6%] | 0.05 (100) |
+| 0.9 | 84.3% (756) [81.5%, 86.7%] | 0.04 (100) |
 
-At the tuning-chosen point (agreement ≥ 0.5): tuning recall **92.7%** (n = 316), evaluation recall **95.2%** (n = 315), **pooled 94.0%** (n = 631) with a 95% interval of [91.8%, 95.6%]. The bound is 95%: if the interval contains it, this battery cannot decide the arm — which is why the battery size is itself reported.
+At the tuning-chosen point (agreement ≥ 0.5): tuning recall **94.7%** (n = 753), evaluation recall **96.3%** (n = 756), **pooled 95.5%** (n = 1509) with a 95% interval of [94.3%, 96.4%]. The bound is 95%: if the interval contains it, this battery cannot decide the arm — which is why the battery size is itself reported.
 
 **Gate 4 verdict: NOT MET** — targets were recall ≥ 0.95 and ≤ 0.2 false bands per blank. The false-positive arm is met on synthetic-noise blanks; the recall arm sits at the boundary (~0.94–0.95 at the shipped point). See `reports/GATE4_FINDING.md`.
 
-> reported tier: ~0.2 false spots per blank plate on synthetic noise (0.17) and an UPPER BOUND of ~0.2-0.3 on the rule-selected corpus region (dominated by a tiling artefact, M-012); ~94-95% recall on observable spots >= 5 sigma; real-plate phantom rate on genuine solvent-only blanks NOT MEASURED
+> Reported tier: recall at >=5 sigma is 0.947 on the tuning split and 0.963 on the held-out split, pooled 0.955 over 1509 spots with a 95% interval of [0.943, 0.964] — the 0.95 bound lies inside that interval, so the recall arm is met on the point estimate but not with confidence. False bands on synthetic-noise blanks: 0.07 (tuning) and 0.14 (eval) per plate against a 0.2 bound. The phantom rate on GENUINE solvent-only plates is still NOT MEASURED: no such plate exists in the corpus (D-019). Real-texture tiles are a diagnostic upper bound, never the gate's null (M-013).
 
 ## 4. Position and streak (Gate 5) — synthetic plates only
 
-- Rst error on resolved spots (nearest same-lane neighbour ≥ 2 FWHM, D-017): median **0.00217**, p95 **0.00984**, max 0.02402 over n = 173 matched spots (of 183 resolved truths). Gate: p95 ≤ 0.01 of plate height.
+- Rst error on resolved spots (nearest same-lane neighbour ≥ 2 FWHM, D-017): median **0.00216**, p95 **0.00984**, max 0.02402 over n = 174 matched spots (of 183 resolved truths). Gate: p95 ≤ 0.01 of plate height.
 - Unresolved pairs (closer than 2 FWHM): median 0.02, p95 0.07177 over 28 pairs — reported separately because a merged pair has no single true position.
-- p95 as a function of the resolution threshold: {'0.0': 0.01755, '0.5': 0.01351, '1.0': 0.00984, '1.5': 0.00888, '2.0': 0.009}
+- p95 as a function of the resolution threshold: {'0.0': 0.01754, '0.5': 0.01346, '1.0': 0.00984, '1.5': 0.00885, '2.0': 0.009}
 - False streak flags: **0 of 221** clean lanes = 0.0% [0.0%, 1.7%]; gate ≤ 2%.
 - True streak lanes flagged and unquantified: 19 of 19.
 
