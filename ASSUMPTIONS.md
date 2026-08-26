@@ -134,3 +134,9 @@ Per §3.4 the grid selection is a fitted quantity: when real labels exist (Phase
 is re-run inside the CV loop and the synthetic-selected grid is treated as version 1, never as
 evidence of real-data performance. The synthetic dev seeds are disjoint from every seed used in
 gate evidence elsewhere.
+
+## A-014 · Analysable-band convention on real plates (pre-VLM)
+Until the VLM/operator annotation bands exist (Phase 8/6), real-plate photometry evidence uses a
+chosen convention band of rows 0.25h–0.80h (below the header ink, above the label row/origin on
+every corpus plate). Provenance is `chosen`; gate3_check.py's P33 case uses it. Superseded per
+plate by measured bands once the semantic layer runs.

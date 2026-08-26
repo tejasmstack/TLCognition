@@ -71,3 +71,31 @@ gate's burden); overrun false-positive sweep not required but cheap (deferred); 
 gate2_check.py:170 (removed in the follow-up commit).
 
 ---
+## Gate 3 · Photometry and the noise unit
+**Reviewed:** 2026-08-26, independent agent, at commit 61ab44b (review interrupted once by an
+org spend limit and resumed; all items completed). **Verdict: PASS.**
+- CI exit 0 (79 tests). gate3_check.py byte-identical across two runs and vs committed.
+- Exposure invariance: worst drift 0.00102 ≤ 0.005 (margin 4.9×); reviewer's own plate at
+  k=0.75 drifted 0.00479 — still passing.
+- Monotonicity: Spearman ρ 0.99554 > 0.98 (n=30); reviewer verified nothing else lies inside
+  the measurement window (no leakage).
+- σ stability: worst spread 9.7% ≤ 15% (worst = real P33); reviewer's iterative@12 vs @55:
+  1.92%. Consumption trace: sigma_od_prespot is the ONLY noise unit; residual-based σ appears
+  solely as stability evidence. Kubelka–Munk exists only as prohibitions. Clip mask computed on
+  raw source pixels pre-warp; clipped pixels inform no fit (verified at clip=0.5: fit weight
+  9092 vs 20903, od_valid ∩ clipped = 0).
+**Flags recorded for later phases:**
+1. `strongest_peak_row` (explicitly temporary) has metamorphic edge cases: a 1-px argmax flip
+   under re-quantisation (drift 0.0072 on one probe plate) and origin-dot leakage for faint
+   spots near the band edge. The exposure-invariance property MUST be re-verified at Gate 4/5
+   with the real matched-filter/EMG detector.
+2. The D-008 unit reads ~0.41× the per-pixel σ under corpus-texture correlation — internally
+   consistent, but it drifts if noise correlation varies across captures; spec 01 §2.1's
+   autocovariance machinery (Phase 4) is the structural fix.
+3. Plate detection has a silent domain hole at base_green ≈ 0.60 (below the corpus 0.78–0.95):
+   the Otsu class-ratio guard (1.35) sits in its gap and the whole scene passes as the plate.
+   Phase 4's input gate (VIF / NOISE_STRUCTURED, capture QC) carries the screen; noted as a
+   known limitation for darker future captures.
+4. gate3_check.py's real-P33 analysable band (0.25h–0.80h) is a chosen convention → A-014.
+
+---
