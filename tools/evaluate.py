@@ -181,8 +181,10 @@ def build(data_dir: Path) -> str:
         add("")
         add(f"**Gate 4 verdict: {'PASS' if g4.get('gate4_pass') else 'NOT MET'}** — targets were recall ≥ "
             f"{g4.get('bounds', {}).get('recall_5sigma')} and ≤ {g4.get('bounds', {}).get('fp_per_blank')} false bands per blank. "
-            "The false-positive arm is met on synthetic-noise blanks; the recall arm sits at the boundary "
-            "(~0.94–0.95 at the shipped point). See `reports/GATE4_FINDING.md`.")
+            "The false-positive arm is met on synthetic-noise blanks. The recall arm is met on the pooled point "
+            "estimate and not met with confidence: its interval contains the bound, and the tuning split alone "
+            "stays below it. Where the misses live, by amplitude, is in `reports/exp_recall_miss.json`; "
+            "`reports/GATE4_FINDING.md` carries the attempt history.")
         add(f"\n> {op['honest_claim']}\n" if op and op.get("honest_claim") else "")
     else:
         add(f"{NC} — `reports/gate4_evidence.json` is absent.\n")
@@ -202,9 +204,10 @@ def build(data_dir: Path) -> str:
         k, n = st["false_streak_lanes"], st["n_non_streak_lanes"]
         add(f"- False streak flags: **{k} of {n}** clean lanes = {pct(k / n)} {ci_str(k, n)}; gate ≤ 2%.")
         add(f"- True streak lanes flagged and unquantified: {st['flagged_and_unquantified']} of {st['n_streak_lanes']}.")
-        add(f"\n**Gate 5 verdict: {'PASS' if g5.get('gate5_pass') else 'NOT MET'}** — the real-corpus arm passes "
-            "(every plate yields a result or a typed refusal, zero silent nulls); the position tail and the "
-            "false-streak rate do not.\n")
+        arms = {"position p95 ≤ 0.01": bool(p.get("pass")), "false streaks ≤ 2%": bool(st.get("pass")),
+                "real corpus: no silent nulls": bool(g5["real_corpus"].get("pass"))}
+        add(f"\n**Gate 5 verdict: {'PASS' if g5.get('gate5_pass') else 'NOT MET'}** — "
+            + "; ".join(f"{name} {'met' if ok else 'NOT met'}" for name, ok in arms.items()) + ".\n")
     else:
         add(f"{NC}\n")
 

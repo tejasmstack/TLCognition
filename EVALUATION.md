@@ -1,6 +1,6 @@
 # EVALUATION
 
-Generated 2026-08-26T17:36:42Z from committed evidence at commit `febdc593b926` (dirty tree) by `tools/evaluate.py`. Regenerate rather than edit.
+Generated 2026-08-26T17:39:02Z from committed evidence at commit `e7a94d36f5b8` (dirty tree) by `tools/evaluate.py`. Regenerate rather than edit.
 
 **The contract of this document:** every number carries an n and an interval. Every metric that cannot be computed is listed as `not computed`, with the reason and what would unblock it — never omitted, never replaced by a plausible-looking figure.
 
@@ -49,7 +49,7 @@ Shipped operating point `OPERATING_POINT_v3`: reported at agreement ≥ **0.5**,
 
 At the tuning-chosen point (agreement ≥ 0.5): tuning recall **94.7%** (n = 753), evaluation recall **96.3%** (n = 756), **pooled 95.5%** (n = 1509) with a 95% interval of [94.3%, 96.4%]. The bound is 95%: if the interval contains it, this battery cannot decide the arm — which is why the battery size is itself reported.
 
-**Gate 4 verdict: NOT MET** — targets were recall ≥ 0.95 and ≤ 0.2 false bands per blank. The false-positive arm is met on synthetic-noise blanks; the recall arm sits at the boundary (~0.94–0.95 at the shipped point). See `reports/GATE4_FINDING.md`.
+**Gate 4 verdict: NOT MET** — targets were recall ≥ 0.95 and ≤ 0.2 false bands per blank. The false-positive arm is met on synthetic-noise blanks. The recall arm is met on the pooled point estimate and not met with confidence: its interval contains the bound, and the tuning split alone stays below it. Where the misses live, by amplitude, is in `reports/exp_recall_miss.json`; `reports/GATE4_FINDING.md` carries the attempt history.
 
 > Reported tier: recall at >=5 sigma is 0.947 on the tuning split and 0.963 on the held-out split, pooled 0.955 over 1509 spots with a 95% interval of [0.943, 0.964] — the 0.95 bound lies inside that interval, so the recall arm is met on the point estimate but not with confidence. False bands on synthetic-noise blanks: 0.07 (tuning) and 0.14 (eval) per plate against a 0.2 bound. The phantom rate on GENUINE solvent-only plates is still NOT MEASURED: no such plate exists in the corpus (D-019). Real-texture tiles are a diagnostic upper bound, never the gate's null (M-013).
 
@@ -61,7 +61,7 @@ At the tuning-chosen point (agreement ≥ 0.5): tuning recall **94.7%** (n = 753
 - False streak flags: **0 of 221** clean lanes = 0.0% [0.0%, 1.7%]; gate ≤ 2%.
 - True streak lanes flagged and unquantified: 19 of 19.
 
-**Gate 5 verdict: PASS** — the real-corpus arm passes (every plate yields a result or a typed refusal, zero silent nulls); the position tail and the false-streak rate do not.
+**Gate 5 verdict: PASS** — position p95 ≤ 0.01 met; false streaks ≤ 2% met; real corpus: no silent nulls met.
 
 ## 5. Human labels, calibration and VLM accuracy
 
