@@ -157,3 +157,15 @@ def test_refusal_copy_matches_what_the_pipeline_actually_does(client):
     withheld = copy.COPY["E_FRAME_OVERRUN"].withheld.lower()
     if positions_reported:
         assert "position" not in withheld, "the card claims positions are withheld while the result reports them"
+
+
+def test_vlm_layer_runs_in_off_mode_and_fabricates_nothing(client, run_id):
+    """NN1: the semantic layer is wired in, and in `off` mode every field is a typed abstention."""
+    v = client.get(f"/runs/{run_id}.json").json()["vlm"]
+    assert v["mode"] == "off" and v["model_id"] is None
+    assert v["cost"]["usd"] == 0.0 and not v["degraded"]
+    assert v["fields"], "the block must carry the fields the layer was asked for, not be empty"
+    assert all(f["value"] is None for f in v["fields"].values()), "off mode may not produce a value"
+    # the lane labels a chemist sees came from the operator, never from the model
+    lanes = client.get(f"/runs/{run_id}.json").json()["lanes"]
+    assert {L["label_provenance"] for L in lanes} == {"operator"}

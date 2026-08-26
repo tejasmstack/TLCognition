@@ -539,3 +539,16 @@ nothing this generator produces. Four changes, each measured:
 
 Result — gate seeds 11000-11059: 0 false flags in 221 clean lanes, 19 of 19 true streaks caught.
 Held-out seeds 12000-12059 (never used in the design, M-016): 1.32% false (3 of 227), 13 of 13 caught.
+
+## D-028 — The semantic layer runs on every run, in `off` mode by default (2026-08-26)
+`RunService` now calls `read_plate_semantics` on the rectified plate for every run and puts the real
+`SemanticRead` into the result's VLM block, instead of a hard-coded empty stub. In `off` mode that
+means the Null provider: every field comes back `null` with a typed abstention code and its own
+self-consistency agreement, no network, no cost. `replay` mode reads the SQLite response cache and
+degrades (never crashes) on a miss. Live modes stay unreachable until credentials exist.
+The **run key** now includes the VLM mode and a fingerprint of the committed prompt/schema files —
+not the result's `bundle_hash`, which is an output (the hash of the responses actually used) and
+cannot be known before the run.
+**Why:** a block that says `mode: off` because nothing ran is indistinguishable, in the JSON, from a
+block that says `off` because the layer ran and abstained. Only the second is a measurement of
+anything, and NN2 requires the difference to be visible.
