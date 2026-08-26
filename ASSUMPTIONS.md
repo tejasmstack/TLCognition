@@ -160,3 +160,11 @@ battery runs at 60 (Davison-Hinkley floor 1/61 = 0.016, below the BH first-rank 
 typical candidate counts); production runs use 100. The per-commit CI battery is a reduced
 SENTINEL (top-weighted grid subset on ~40 blanks) whose job is regression detection, not the
 gate; the full 200-blank battery is the committed Gate 4 evidence and the nightly artifact.
+
+## A-017 · Real-texture null source
+The brief's Null B ("actual residual field from a blank band of plate 7") is implemented as
+the poly3 residual of P33's inter-lane gutter strips over rows 0.25h-0.80h (42 columns x 163
+rows), mirror-tiled with a seeded phase shift over a synthetic illumination surface. Gutters
+are chemistry-free by construction; the original full-width "empty band" tile was not (M-009).
+Broad row structure in the tile (illumination residual) is absorbed by the pipeline's own
+background models; sub-spot-scale texture (correlation, compression) is preserved untouched.

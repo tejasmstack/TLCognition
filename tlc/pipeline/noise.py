@@ -203,6 +203,10 @@ def prepare_templates(
         cmat = c_prof[lags]
         sig_a2 = float(k @ cmat @ k) / (ksum2 * ksum2)
         white = (sigma0_prof**2) / ksum2
+        # Estimated C can carry negative lobes (finite-sample, compression texture); a matched
+        # filter's noise cannot fall far below its white-noise level, so clamp (found as a
+        # z ~ 4e7 blow-up on a real-texture blank).
+        sig_a2 = max(sig_a2, 0.25 * white)
         out.append(
             PreparedTemplate(
                 k=k,

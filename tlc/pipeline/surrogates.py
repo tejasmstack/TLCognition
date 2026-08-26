@@ -55,15 +55,22 @@ def s1_gutter_profile(
         if i == gutters.size or gutters[i] != gutters[i - 1] + 1:
             runs.append(gutters[start:i])
             start = i
+    # ONE flip and ONE roll per surrogate, applied to every strip: keeps the plate's
+    # row-coherent texture (sensor/compression rows, residual illumination) aligned across the
+    # assembled band exactly as it is across a real lane. A spot is lane-local; a row-coherent
+    # bump is plate-wide and must be present in the null too (found on real-texture blanks:
+    # independent per-strip rolls made the null anti-conservatively light).
     cols_parts: list[np.ndarray] = []
+    flip_all = bool(rng.uniform() < 0.5)
+    shift_all = int(rng.integers(0, n_rows))
     flips: list[bool] = []
     shifts: list[int] = []
     total = 0
     while total < band_width:
         run = runs[int(rng.integers(0, len(runs)))]
         cols_parts.append(run)
-        flips.append(bool(rng.uniform() < 0.5))
-        shifts.append(int(rng.integers(0, n_rows)))
+        flips.append(flip_all)
+        shifts.append(shift_all)
         total += run.size
     band = np.empty((n_rows, total))
     bandv = np.empty((n_rows, total), dtype=bool)

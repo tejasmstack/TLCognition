@@ -38,7 +38,7 @@ ROOT = Path(__file__).resolve().parent.parent
 CACHE_DIR = ROOT / "reports" / "grid_sweep_cache"
 K_SELECT = 24
 N_SURR = 30
-MIN_RECALL = 0.50
+MIN_RECALL = 0.70   # D-012: spec 01 §2.5 item 2 — systematically blind configs exit
 MAX_FP_PER_BLANK = 1.0
 TRUE_AMP_MIN = 4.0     # spots below 4 sigma are not counted against recall (marginal by design)
 

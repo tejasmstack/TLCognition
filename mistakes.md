@@ -137,3 +137,28 @@ reports/grid_sweep_cache/ and skips finished plates on re-run.
 cached vs uncached detection asserted in tests/test_detection.py.
 **Lesson:** estimate compute by counting the innermost call, not the outer loop; and any job
 longer than a few minutes checkpoints to disk from the start.
+
+## M-009 · The real-texture null was contaminated with real structure; Gate 4 attempt 1 failed
+**Symptom:** Gate 4 battery: no operating point met both arms. Decomposed: synthetic blanks
+0.00-0.07 phantoms/plate at a>=0.6, but real-texture blanks 0.90/plate with z_med 15-41 —
+far too strong to be noise. Recall at a>=0.6 was 0.79 at 5 sigma and still only 0.92 at
+20 sigma.
+**Wrong hypothesis:** header ink bleeding into the chemistry zone of synthetic blanks.
+Measured: handwriting-on synthetic blanks gave 0.07/plate — negligible.
+**Actual cause:** (1) the P33 "empty band" tile (lowest-p95 eighth, full width, 36 rows) still
+carried lane-ghost column structure (+/-1 sigma column means); mirror-tiling it every 36 rows
+produced periodic, column-coherent bands at spot scale in every lane — real structure that
+every config agrees on, so agreement could not suppress it. (2) Recall misses: spots on
+clip=0.14 plates under clipped regions are unobservable by construction (recall 0.70 there vs
+0.915 unclipped); and EMG truths (mu) sat 0.94-1.03 sigma_y from the detected intensity peak
+with a matching tolerance of 0.94 sigma_y (the D-006 convention tension, now explicit).
+**Fix:** tile from P33's gutter strips over the analysable band (no chemistry by definition,
+163 rows so tiling repeats <= 2x — no spot-scale periodicity), verified noise-like at spot
+scale; truth matching per spec 05 §12.6 (|dRst| <= 0.03, i.e. max(0.4 FWHM, 0.03 x migration
+length)) with an observability filter (spot box >= 50% source-clipped => not observable, reported
+separately, never counted as a miss); grid pruning tightened to recall >= 0.7 (D-012).
+**Test added:** textured-null sanity check in the battery (mean phantoms on textured blanks
+reported per family, so a contaminated tile is visible, not pooled away).
+**Lesson:** a null built from real data must be shown to be signal-free BEFORE it is used to
+judge a detector; "lowest-p95 band" is a heuristic for calibration statistics, not a proof of
+emptiness.

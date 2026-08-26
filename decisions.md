@@ -264,3 +264,23 @@ variants (unmasked_mad did not survive diversity selection), 3 extractions, 3 pe
 families and median@32/64; 78 for recall < 0.5 — the R=8 families).
 **Revisit if:** the Gate 4 battery shows phantom agreement clustering (many blank-plate
 ensemble spots with a > 0.5) — that would mean the null K_eff overstates independence.
+
+## D-012 · Gate 4 attempt 2: matching tolerance, observability, and grid pruning threshold
+**Date:** 2026-08-26
+**Status:** accepted
+**Context:** attempt 1 failed (M-009). Three parameters had been chosen without spec anchoring.
+**Decision:**
+  1. Truth matching for recall uses spec 05 §12.6's evaluation tolerance |dRst| <= 0.03,
+     implemented in px as max(0.4 x nominal FWHM, 0.03 x (origin_row - front_row)); the 0.4 FWHM
+     figure stays as the ENSEMBLE clustering tolerance (spec 01 §2.3), which is a different job.
+  2. A true spot whose peak box (+/-2 sigma_y, lane window) is >= 50% source-clipped is
+     "unobservable": reported in a separate count, never a miss and never a hit. F1 says
+     clipped pixels carry no information; a recall metric that penalises the detector for
+     obeying F1 measures the wrong thing.
+  3. Grid pruning MIN_RECALL raised 0.5 -> 0.7 on the synthetic dev set, per spec 01 §2.5
+     item 2: configs "systematically blind to real spots ... are also measured-bad and should
+     exit". Greedy diversity had been selecting weak-but-different members whose weights capped
+     achievable agreement on faint true spots (median a = 0.68 for true 5-6 sigma spots).
+**Why:** none of the three loosens the gate's numbers (FP <= 0.2, recall >= 0.95 at >= 5 sigma);
+they fix what is being counted.
+**Revisit if:** the re-selected grid's null-bin K_eff falls below 4 (G10).

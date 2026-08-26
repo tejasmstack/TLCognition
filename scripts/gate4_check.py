@@ -33,15 +33,16 @@ from tlc.pipeline.geometry import analyse_geometry  # noqa: E402
 from tlc.pipeline.noise import estimate_noise, prepass_exclusion_mask  # noqa: E402
 from tlc.pipeline.photometry import compute_od  # noqa: E402
 from tlc.pipeline.prep import rectify_and_mask  # noqa: E402
+from tlc.pipeline.surrogates import gutter_columns  # noqa: E402
 from tlc.synth.generator import make_plate, make_textured_blank  # noqa: E402
 from tlc.synth.spec import Handwriting, PlateSpec, SpotShape, SpotSpec  # noqa: E402
-from tlc.synth.stats import measure_plate_stats  # noqa: E402
 
 ROOT = Path(__file__).resolve().parent.parent
 GRID_PATH = ROOT / "config" / "ensemble" / "CONFIG_GRID_v1.json"
 N_SURR = 60
 A_GRID = [0.30, 0.40, 0.50, 0.60, 0.70, 0.80]
-P_GRID = [0.0164, 0.033, 0.0492, 0.0656]  # multiples of the 1/61 floor at N_SURR=60
+P_GRID = [0.0164, 0.0656]  # 1/61 floor and 4x floor at N_SURR=60 (p barely moves the curve)
+Z_GRID = [0.0, 6.0, 8.0, 10.0]  # spec 01 §2.4: agreement alone is low-resolution; combine with z_med
 FP_BOUND = 0.2
 RECALL_BOUND = 0.95
 
@@ -58,19 +59,23 @@ def load_grid() -> tuple[list[Config], np.ndarray]:
 
 
 def p33_residual_tile() -> np.ndarray:
-    """Real residual from P33's empty band (normalised green minus poly3 surface)."""
+    """Real noise texture from P33's inter-lane GUTTER strips over the analysable band (A-017).
+
+    Gutters carry no chemistry by construction; the earlier full-width 'empty band' tile did
+    (M-009). 163 rows tall, so tiling repeats <= 2x on any battery plate — no spot-scale
+    periodicity is manufactured.
+    """
     img = iio.imread(ROOT / "dataset" / "MEHQ-P33 4hr_31st July26.png")
-    st = measure_plate_stats(img)
     geo = analyse_geometry(img)
     pp = rectify_and_mask(img, geo)
     odr = compute_od(pp.green, pp.valid, "poly3", 0)
-    r0, r1 = st.empty_band_row_range
-    # residual in normalised-green units, restricted to the empty band's valid interior
     resid = np.where(odr.od_valid, pp.green - odr.i0, 0.0)
-    h = pp.green.shape[0]
-    r0 = int(np.clip(r0, 0, h - 8))
-    r1 = int(np.clip(max(r1, r0 + 8), r0 + 8, h))
-    tile = resid[r0:r1, 6:-6]
+    h, w = pp.green.shape
+    pitch = w / 4.0
+    centres = [(i + 0.5) * pitch for i in range(4)]
+    gutters = gutter_columns(w, centres, 0.275 * pitch)
+    band = (int(0.25 * h), int(0.80 * h))
+    tile = resid[band[0] : band[1]][:, gutters]
     return tile - float(np.median(tile))
 
 
@@ -166,7 +171,12 @@ def _process_one(job: tuple[str, str, int]) -> dict:
     )
     noise = estimate_noise(pp.green, pp.valid, excl)
     grid, weights = load_grid()
-    tol = 0.4 * 2.355 * max(1.0, 0.18 * gt.lane_pitch)
+    # Truth-matching tolerance per spec 05 §12.6 (|dRst| <= 0.03), in px (D-012).
+    migration = gt.origin_row - spec.front_row_frac * gt.plate_h
+    tol = max(0.4 * 2.355 * max(1.0, 0.18 * gt.lane_pitch), 0.03 * migration)
+    clip_src = (img[:, :, 1] >= 254).astype(np.float64)
+    from tlc.pipeline.geometry import warp_rectify
+    clip_rect, _ = warp_rectify(clip_src, geo.homography, geo.rectified_shape)
 
     rows = []
     od_cache: dict = {}  # one per plate: 16 distinct background fits, not 24 x lanes (M-008)
@@ -184,24 +194,36 @@ def _process_one(job: tuple[str, str, int]) -> dict:
             rows.append({"lane": lane, "row": round(s.row, 2), "a": round(s.agreement, 4),
                          "p_med": round(s.p_med, 4), "z_med": round(s.z_med, 2),
                          "true_amp": true_amp})
-    truths_5s = [
-        {"lane": t.lane, "y": round(t.y, 2), "amp": t.amplitude_sigma}
-        for t in gt.spots if t.quantifiable and t.amplitude_sigma >= 5.0
-    ]
+    truths_5s = []
+    unobservable = 0
+    hw = 0.275 * gt.lane_pitch
+    for tr in gt.spots:
+        if not tr.quantifiable or tr.amplitude_sigma < 5.0:
+            continue
+        y0, y1 = int(max(0, tr.y - 2 * tr.sigma_y)), int(min(clip_rect.shape[0], tr.y + 2 * tr.sigma_y + 1))
+        x0, x1 = int(max(0, tr.x - hw)), int(min(clip_rect.shape[1], tr.x + hw + 1))
+        box = clip_rect[y0:y1, x0:x1]
+        box_clip = float((box >= 0.5).mean()) if box.size else 1.0
+        if box_clip >= 0.5:
+            unobservable += 1  # F1: nobody can see a spot under saturated pixels (D-012)
+            continue
+        truths_5s.append({"lane": tr.lane, "y": round(tr.y, 2), "amp": tr.amplitude_sigma,
+                          "box_clip": round(box_clip, 3)})
     return {"kind": kind, "family": family, "seed": seed, "spots": rows,
-            "truths_5s": truths_5s, "tol": tol}
+            "truths_5s": truths_5s, "n_unobservable_5s": unobservable, "tol": tol}
 
 
 def sweep_operating_points(plates: list[dict]) -> list[dict]:
     curve = []
     for a_star in A_GRID:
+      for z_star in Z_GRID:
         for p_star in P_GRID:
             fp_n = 0
             blanks = 0
             hit = 0
             total_true = 0
             for pl in plates:
-                accepted = [s for s in pl["spots"] if s["a"] >= a_star and s["p_med"] <= p_star]
+                accepted = [s for s in pl["spots"] if s["a"] >= a_star and s["p_med"] <= p_star and s["z_med"] >= z_star]
                 if pl["kind"] == "blank":
                     blanks += 1
                     fp_n += len(accepted)
@@ -211,10 +233,15 @@ def sweep_operating_points(plates: list[dict]) -> list[dict]:
                         if any(s["lane"] == t["lane"] and abs(s["row"] - t["y"]) <= pl["tol"] for s in accepted):
                             hit += 1
                     fp_n += sum(1 for s in accepted if s["true_amp"] is None)
+            fam_fp = {}
+            for fam in ("synth", "textured"):
+                fam_plates = [pl for pl in plates if pl["kind"] == "blank" and pl["family"] == fam]
+                fam_fp[fam] = round(sum(len([s for s in pl["spots"] if s["a"] >= a_star and s["p_med"] <= p_star and s["z_med"] >= z_star]) for pl in fam_plates) / max(len(fam_plates), 1), 4)
             curve.append({
-                "a_star": a_star, "p_star": p_star,
+                "a_star": a_star, "p_star": p_star, "z_star": z_star, "fp_per_blank_by_family": fam_fp,
+                "n_unobservable_5s": sum(pl.get("n_unobservable_5s", 0) for pl in plates if pl["kind"] != "blank"),
                 "fp_per_blank": round(fp_n and fp_n / max(blanks + sum(1 for p in plates if p["kind"] != "blank"), 1) or 0.0, 4),
-                "fp_per_blank_blanksonly": round((sum(len([s for s in pl["spots"] if s["a"] >= a_star and s["p_med"] <= p_star]) for pl in plates if pl["kind"] == "blank")) / max(blanks, 1), 4),
+                "fp_per_blank_blanksonly": round((sum(len([s for s in pl["spots"] if s["a"] >= a_star and s["p_med"] <= p_star and s["z_med"] >= z_star]) for pl in plates if pl["kind"] == "blank")) / max(blanks, 1), 4),
                 "recall_5s": round(hit / max(total_true, 1), 4),
                 "n_blanks": blanks, "n_true_5s": total_true,
             })
@@ -240,13 +267,13 @@ def main() -> None:
         op = min(tune_curve, key=lambda c: (max(0, c["fp_per_blank_blanksonly"] - FP_BOUND) * 5 + max(0, RECALL_BOUND - c["recall_5s"])))
 
     eval_curve = sweep_operating_points(evalp)
-    ev = next(c for c in eval_curve if c["a_star"] == op["a_star"] and c["p_star"] == op["p_star"])
+    ev = next(c for c in eval_curve if c["a_star"] == op["a_star"] and c["p_star"] == op["p_star"] and c["z_star"] == op["z_star"])
     fp_eval = ev["fp_per_blank_blanksonly"]
     rc_eval = ev["recall_5s"]
     gate4_pass = bool(feasible) and fp_eval <= FP_BOUND and rc_eval >= RECALL_BOUND
 
     evidence = {
-        "operating_point": {"a_star": op["a_star"], "p_star": op["p_star"],
+        "operating_point": {"a_star": op["a_star"], "p_star": op["p_star"], "z_star": op["z_star"],
                             "chosen_on": "tuning split (even seeds)"},
         "tuning": {"curve": tune_curve, "feasible_points": len(feasible)},
         "eval": {"fp_per_blank": fp_eval, "recall_5sigma": rc_eval,
