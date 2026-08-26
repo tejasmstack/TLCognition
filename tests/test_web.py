@@ -131,3 +131,29 @@ def test_number_formatter_rule():
     assert fmt_interval(118.37, (116.4, 120.4)) == "118 ±2"
     assert fmt_q({"value": None, "provenance": "refused"}) == "—"
     assert fmt_q({"value": 0.5, "provenance": "inferred"}).startswith("≈")
+
+
+def test_refusal_copy_matches_what_the_pipeline_actually_does(client):
+    """A refusal card that claims more is withheld than really is teaches the chemist to ignore it."""
+    import io as _io
+
+    from PIL import Image as _Image
+
+    from tlc.synth.generator import make_plate as _mk
+    from tlc.synth.spec import Overrun
+    from tlc.synth.spec import PlateSpec as _PS
+    from tlc.synth.spec import SpotSpec as _SS
+
+    img, _ = _mk(_PS(spots=(_SS(lane=1, y_frac=0.55, amplitude_sigma=14.0),), frame_overrun=Overrun.BOTH,
+                     tilt_deg=1.0), seed=515)
+    buf = _io.BytesIO()
+    _Image.fromarray(img).save(buf, format="PNG")
+    r = client.post("/upload", files={"file": ("cut.png", buf.getvalue(), "image/png")},
+                    data={"labels": "S,R,co,sd"}, follow_redirects=False)
+    res = client.get(f"/runs/{r.headers['location'].rsplit('/', 1)[1]}.json").json()
+    codes = {x["code"] for x in res["refusals"]}
+    assert "E_FRAME_OVERRUN" in codes
+    positions_reported = any(s["y_px"]["value"] is not None for s in res["spots"])
+    withheld = copy.COPY["E_FRAME_OVERRUN"].withheld.lower()
+    if positions_reported:
+        assert "position" not in withheld, "the card claims positions are withheld while the result reports them"

@@ -1,0 +1,209 @@
+{
+  "false_flag_cases": [
+    {
+      "dom": {
+        "mu": 99.3,
+        "sig": 4.6,
+        "tau": 30.8
+      },
+      "fits": [
+        {
+          "amp": 0.0743,
+          "sig": 4.59,
+          "tau_over_sig": 6.71
+        }
+      ],
+      "flagged": true,
+      "frac": 0.2595,
+      "lane": 2,
+      "n_confirmed_spots": 0,
+      "n_peaks_in_run": 1,
+      "peak_rows": [
+        106.9
+      ],
+      "plateau": 0.5,
+      "quantified": false,
+      "reason": "tail ratio tau/sigma 6.7 > 3.0 with 3.1 FWHM of unexplained elevation",
+      "resid_run": 3.081,
+      "run_fwhm": 3.081,
+      "seed": 12023,
+      "tail": 6.71,
+      "true_streak": false
+    },
+    {
+      "dom": {
+        "mu": 126.7,
+        "sig": 3.1,
+        "tau": 16.8
+      },
+      "fits": [
+        {
+          "amp": 0.0742,
+          "sig": 3.09,
+          "tau_over_sig": 5.43
+        }
+      ],
+      "flagged": true,
+      "frac": 0.2131,
+      "lane": 1,
+      "n_confirmed_spots": 0,
+      "n_peaks_in_run": 2,
+      "peak_rows": [
+        132.1,
+        152.8
+      ],
+      "plateau": 0.333,
+      "quantified": false,
+      "reason": "tail ratio tau/sigma 5.4 > 3.0 with 3.4 FWHM of unexplained elevation",
+      "resid_run": 3.439,
+      "run_fwhm": 3.439,
+      "seed": 12045,
+      "tail": 5.433,
+      "true_streak": false
+    },
+    {
+      "dom": {
+        "mu": 100.6,
+        "sig": 3.6,
+        "tau": 32.3
+      },
+      "fits": [
+        {
+          "amp": 0.0648,
+          "sig": 3.61,
+          "tau_over_sig": 8.96
+        }
+      ],
+      "flagged": true,
+      "frac": 0.2722,
+      "lane": 2,
+      "n_confirmed_spots": 0,
+      "n_peaks_in_run": 1,
+      "peak_rows": [
+        107.3
+      ],
+      "plateau": 0.463,
+      "quantified": false,
+      "reason": "tail ratio tau/sigma 9.0 > 3.0 with 2.8 FWHM of unexplained elevation",
+      "resid_run": 2.804,
+      "run_fwhm": 2.804,
+      "seed": 12049,
+      "tail": 8.958,
+      "true_streak": false
+    }
+  ],
+  "false_flag_rate": 0.0132,
+  "false_flag_rate_eval": 0.0177,
+  "false_flag_rate_tuning": 0.0088,
+  "false_flags_by_rule": {
+    "tail_ratio": 3
+  },
+  "missed_cases": [],
+  "missed_true_streaks": 0,
+  "n_clean": 227,
+  "n_lanes": 240,
+  "n_plates": 60,
+  "n_true_streak": 13,
+  "split": {
+    "eval_seeds": [
+      12030,
+      12059
+    ],
+    "tuning_seeds": [
+      12000,
+      12029
+    ]
+  },
+  "stats": {
+    "frac_clean": {
+      "max": 0.3989,
+      "n": 227,
+      "p50": 0.1392,
+      "p90": 0.2787
+    },
+    "frac_false_flags": {
+      "max": 0.2722,
+      "n": 3,
+      "p50": 0.2595,
+      "p90": 0.2697
+    },
+    "frac_true_streak": {
+      "max": 0.407,
+      "n": 13,
+      "p50": 0.3063,
+      "p90": 0.3716
+    },
+    "plateau_clean": {
+      "max": 1.0,
+      "n": 227,
+      "p50": 0.577,
+      "p90": 0.7658
+    },
+    "plateau_false_flags": {
+      "max": 0.5,
+      "n": 3,
+      "p50": 0.463,
+      "p90": 0.4926
+    },
+    "plateau_true_streak": {
+      "max": 1.0,
+      "n": 13,
+      "p50": 0.981,
+      "p90": 1.0
+    },
+    "resid_run_clean": {
+      "max": 3.707,
+      "n": 227,
+      "p50": 0.0,
+      "p90": 1.7912
+    },
+    "resid_run_false_flags": {
+      "max": 3.439,
+      "n": 3,
+      "p50": 3.081,
+      "p90": 3.3674
+    },
+    "resid_run_true_streak": {
+      "max": 5.879,
+      "n": 13,
+      "p50": 3.326,
+      "p90": 5.1516
+    },
+    "run_fwhm_clean": {
+      "max": 3.79,
+      "n": 227,
+      "p50": 1.573,
+      "p90": 2.459
+    },
+    "run_fwhm_false_flags": {
+      "max": 3.439,
+      "n": 3,
+      "p50": 3.081,
+      "p90": 3.3674
+    },
+    "run_fwhm_true_streak": {
+      "max": 5.879,
+      "n": 13,
+      "p50": 3.326,
+      "p90": 5.1516
+    },
+    "tail_clean": {
+      "max": 11.531,
+      "n": 163,
+      "p50": 0.0,
+      "p90": 1.4944
+    },
+    "tail_false_flags": {
+      "max": 8.958,
+      "n": 3,
+      "p50": 6.71,
+      "p90": 8.5084
+    },
+    "tail_true_streak": {
+      "max": 12.267,
+      "n": 10,
+      "p50": 0.7305,
+      "p90": 4.6512
+    }
+  }
+}

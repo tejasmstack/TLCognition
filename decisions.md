@@ -503,3 +503,39 @@ variables vary over the real corpus's measured ranges, then permutes the metadat
 **Why:** the gate tests the analysis pipeline's leak rate, which is a property of the code and the
 design, not of these particular pixels.
 **Revisit if:** real series metadata is collected, at which point the battery should run on it too.
+
+## D-026 — Reported band position is the ensemble consensus row, not the primary fit's mode (2026-08-26)
+Measured on the Gate 5 tuning half (`reports/exp_position_rule.json`, 60 plates, 147 resolved spots,
+tuning = seeds 11000-11029):
+
+| estimator | median | p95 | max | over the 0.01 gate |
+|---|---|---|---|---|
+| fit mode (was) | 0.0007 | 0.0105 | 0.0310 | 6.6% |
+| ensemble consensus row | 0.0022 | **0.0091** | **0.0174** | 3.9% |
+| hybrid (mode unless it disagrees with the consensus) | identical to the mode at every threshold tried |
+
+The consensus trades a 3x worse median — 0.002 Rst, forty times smaller than the 0.05 that is the
+smallest difference of chemical interest — for a tail that clears the gate. The eval half confirms it
+(p95 0.0068, max 0.0098). Below 3 detecting configs there is no consensus to average and the fit is
+used. The position CONVENTION is unchanged (D-014, the darkest row); only its estimator changed.
+**Revisit if:** a per-config sub-pixel mode becomes available, which would let the ensemble average
+modes rather than matched-filter rows.
+
+## D-027 — A streak is unexplained, flat-topped elevation (2026-08-26)
+The false-streak rate was 5.0% against a 2% gate; every false flag came from the run-length rule
+(8 cases) or the tail-ratio rule (3 cases), never from the ported fraction rule — which fires on
+nothing this generator produces. Four changes, each measured:
+
+1. **Residual, not raw.** The run rule is evaluated after subtracting the peaks the ensemble already
+   fitted, but only the SPOT-LIKE ones (sigma <= 1.5x nominal, tau <= 2 sigma). A streak-shaped fit
+   is not an explanation of a streak — it is the streak — so it stays in the residual.
+2. **Flat-topped or nothing.** A long run counts only when >= 85% of it sits above half its maximum.
+   Measured: every clean lane <= 0.75, every true streak 1.00. Two adjacent spots make a long run
+   with a dip; a smear does not. This replaced the "<= 1 peak in the run" escape hatch.
+3. **A tail must not be another spot.** The tail rule is vetoed when another detected peak lies
+   between one nominal FWHM and one tail constant beyond the tailed peak's centre.
+4. **A tail must be supported.** A fitted tau longer than the elevated region itself is extrapolation
+   (the EMG degenerating into "Gaussian plus baseline ramp"), and does not count.
+
+Result — gate seeds 11000-11059: 0 false flags in 221 clean lanes, 19 of 19 true streaks caught.
+Held-out seeds 12000-12059 (never used in the design, M-016): 1.32% false (3 of 227), 13 of 13 caught.

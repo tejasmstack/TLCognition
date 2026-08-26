@@ -272,3 +272,28 @@ ratio > 3); two adjacent spots must not be flagged as a streak; gate5 evidence c
 `false_streak_lanes`.
 **Lesson:** every suppression path needs its own false-positive metric in the gate evidence;
 a gate that only counts true positives of a suppressor is measuring half of it.
+
+## M-015 — The dominant peak for the tail statistic was the tallest, not the largest (2026-08-26)
+
+**What happened.** On a synthetic streak lane (seed 11044, lane 2) the streak went unflagged: the
+lane held two streak-shaped fits (tau/sigma 6.5 and 5.2) and one narrow spike (sigma 2.5, tau 0)
+whose amplitude was higher. M-014's rule — "tail statistic from the dominant peak only" — selected
+the spike by amplitude, so the tail statistic was 0 and the lane read as quantifiable.
+
+**Why it matters.** A streak that is not flagged is quantified, and every area in that lane is then a
+number derived from a smear. That is the exact failure the streak rule exists to prevent.
+
+**Fix.** Dominance is by fitted AREA, not amplitude: the lane's material is what decides whether it
+can be quantified, and a narrow spike can be taller than a smear that holds ten times the material.
+
+## M-016 — The streak rule was designed on the same 60 seeds the gate scores (2026-08-26)
+
+**What happened.** The false-streak rate was 5.0% against a 2% gate. Diagnosing it
+(`scripts/exp_streak_rule.py`) and fixing it used the gate's own seed range (11000-11059), so a rule
+that merely memorised those plates would have shown 0% and passed.
+
+**Fix, and how it was caught before it mattered.** The rule was re-measured on a fresh seed range
+(12000-12059) that never informed the design: false 1.32% (3 of 227 clean lanes), 0 of 13 true
+streaks missed. Both numbers are recorded in `reports/exp_streak_rule_heldout.json`, and the gate
+evidence now cites the held-out run alongside its own. Any future streak-rule change must repeat the
+held-out measurement; a fix validated only on the gate's seeds is not a fix.

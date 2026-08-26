@@ -26,7 +26,7 @@ from tlc.pipeline.noise import (
     profile_autocovariance,
 )
 from tlc.pipeline.origin import OriginEstimate, find_origin
-from tlc.pipeline.peaks import EMGFit, fit_emg
+from tlc.pipeline.peaks import EMGFit, emg, fit_emg
 from tlc.pipeline.photometry import (
     LANE_HALFWIDTH_FRAC,
     compute_od,
@@ -39,6 +39,23 @@ from tlc.pipeline.streak import StreakVerdict, assess_streak
 
 WIDTH_FRAC_NOMINAL = 0.18
 STANDARD_LABELS = ("sd", "s")   # reference lane candidates, in preference order
+POSITION_MIN_HITS = 3           # D-026: below this the ensemble average is one or two configs, not a consensus
+SPOTLIKE_SIGMA_MAX = 1.5        # D-027: a fit wider than 1.5x nominal is not a spot explanation
+SPOTLIKE_TAIL_MAX = 2.0         # D-027: nor is one with a tail longer than 2 sigma
+
+
+def position_estimate(fit, ensemble) -> float:
+    """The reported band position (D-014 convention: the darkest row; D-026 estimator).
+
+    The weighted average of the rows found by every config that detected the band beats the primary
+    config's EMG mode in the tail (Gate 5 tuning split: p95 0.0091 vs 0.0105 Rst, max 0.017 vs 0.031)
+    at the cost of a slightly larger median error (0.0022 vs 0.0007) — far below the 0.05 Rst that is
+    the smallest difference of chemical interest. With fewer than POSITION_MIN_HITS configs there is
+    no consensus to average, so the fit is used.
+    """
+    if ensemble.n_hit >= POSITION_MIN_HITS:
+        return float(ensemble.row)
+    return float(fit.mode if fit.ok else ensemble.row)
 
 
 @dataclass(frozen=True)
@@ -301,11 +318,24 @@ def run_plate(rgb: np.ndarray, cfg: RunConfig, seed: int) -> RunOutput:
         fits = []
         for s in tiered:
             fits.append(fit_emg(den.profile, s.row, fwhm_nom, s.amplitude_med))
-        # tail statistic from the DOMINANT peak only, and only if its fit is non-degenerate (M-014)
+        # Tail statistic from the DOMINANT peak only, and only if its fit is non-degenerate (M-014).
+        # Dominant = largest AREA, not largest amplitude (M-015): a streak's smear carries the lane's
+        # material while a narrow spike can be taller, and it is the material that decides whether the
+        # lane can be quantified at all.
         sigma_nom_px = WIDTH_FRAC_NOMINAL * pitch
-        dom = max((f for f in fits if f.ok and f.sigma >= 0.5 * sigma_nom_px), key=lambda f: f.amp, default=None)
+        dom = max((f for f in fits if f.ok and f.sigma >= 0.5 * sigma_nom_px), key=lambda f: f.area, default=None)
         tails = [dom.tau / dom.sigma] if dom is not None else []
-        streak = assess_streak(den.profile, band, sigma_prof, tails, fwhm_nom, peak_rows=[s.row for s in tiered])
+        # D-027: subtract only the peaks that look like SPOTS (narrow, untailed); a streak-shaped fit
+        # is not an explanation of a streak, it is the streak, so it stays in the residual.
+        fitted_sum = np.zeros_like(den.profile)
+        yy = np.arange(den.profile.shape[0], dtype=float)
+        for f in fits:
+            if f.ok and f.sigma <= SPOTLIKE_SIGMA_MAX * sigma_nom_px and f.tau <= SPOTLIKE_TAIL_MAX * f.sigma:
+                fitted_sum += emg(yy, f.amp, f.mu, f.sigma, f.tau, 0.0)
+        streak = assess_streak(den.profile, band, sigma_prof, tails, fwhm_nom, peak_rows=[s.row for s in tiered],
+                               fitted_peaks=fitted_sum,
+                               dominant_mu=dom.mu if dom is not None else None,
+                               dominant_tau=dom.tau if dom is not None else None)
         is_empty = not tiered
         suppression = None
         quantified = photometry_mode == "full"
@@ -348,7 +378,8 @@ def run_plate(rgb: np.ndarray, cfg: RunConfig, seed: int) -> RunOutput:
             anchor_refusal = F.e_no_reference(labels)
         else:
             li, s, f = max(cands, key=lambda t: (t[1].agreement, t[1].z_med))
-            anchor = {"lane_index": li, "lane_label": labels[li], "y_px": f.mode, "var": (f.mu_se or 0.0) ** 2, "ensemble": s}
+            anchor = {"lane_index": li, "lane_label": labels[li], "y_px": position_estimate(f, s),
+                      "var": (f.mu_se or 0.0) ** 2, "ensemble": s}
     if anchor_refusal is not None:
         refusals.append(anchor_refusal)
         gates.append("E_NO_REFERENCE_LANE")
@@ -374,7 +405,7 @@ def run_plate(rgb: np.ndarray, cfg: RunConfig, seed: int) -> RunOutput:
     for idx, (li, s, f, st) in enumerate(ordered):
         sid = f"sp_{idx + 1:02d}"
         lane = lanes_out[li]
-        y_px = f.mode if f.ok else s.row
+        y_px = position_estimate(f, s)
         within = (f.mu_se or 0.0) ** 2 if f.ok else float("nan")
         between = s.row_spread**2
         y_var = combine_position_variance(within if np.isfinite(within) else between, between, max(1.0, s.n_hit))

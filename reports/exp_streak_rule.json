@@ -1,0 +1,115 @@
+{
+  "false_flag_cases": [],
+  "false_flag_rate": 0.0,
+  "false_flag_rate_eval": 0.0,
+  "false_flag_rate_tuning": 0.0,
+  "false_flags_by_rule": {},
+  "missed_cases": [],
+  "missed_true_streaks": 0,
+  "n_clean": 221,
+  "n_lanes": 240,
+  "n_plates": 60,
+  "n_true_streak": 19,
+  "split": {
+    "eval_seeds": [
+      11030,
+      11059
+    ],
+    "tuning_seeds": [
+      11000,
+      11029
+    ]
+  },
+  "stats": {
+    "frac_clean": {
+      "max": 0.3833,
+      "n": 221,
+      "p50": 0.1538,
+      "p90": 0.2538
+    },
+    "frac_false_flags": {
+      "max": null,
+      "n": 0,
+      "p50": null,
+      "p90": null
+    },
+    "frac_true_streak": {
+      "max": 0.4591,
+      "n": 19,
+      "p50": 0.3226,
+      "p90": 0.4305
+    },
+    "plateau_clean": {
+      "max": 1.0,
+      "n": 221,
+      "p50": 0.588,
+      "p90": 0.769
+    },
+    "plateau_false_flags": {
+      "max": null,
+      "n": 0,
+      "p50": null,
+      "p90": null
+    },
+    "plateau_true_streak": {
+      "max": 1.0,
+      "n": 19,
+      "p50": 1.0,
+      "p90": 1.0
+    },
+    "resid_run_clean": {
+      "max": 4.529,
+      "n": 221,
+      "p50": 0.0,
+      "p90": 1.503
+    },
+    "resid_run_false_flags": {
+      "max": null,
+      "n": 0,
+      "p50": null,
+      "p90": null
+    },
+    "resid_run_true_streak": {
+      "max": 5.325,
+      "n": 19,
+      "p50": 3.306,
+      "p90": 4.8088
+    },
+    "run_fwhm_clean": {
+      "max": 4.529,
+      "n": 221,
+      "p50": 1.542,
+      "p90": 2.133
+    },
+    "run_fwhm_false_flags": {
+      "max": null,
+      "n": 0,
+      "p50": null,
+      "p90": null
+    },
+    "run_fwhm_true_streak": {
+      "max": 5.325,
+      "n": 19,
+      "p50": 3.306,
+      "p90": 4.8088
+    },
+    "tail_clean": {
+      "max": 12.142,
+      "n": 159,
+      "p50": 0.0,
+      "p90": 1.2728
+    },
+    "tail_false_flags": {
+      "max": null,
+      "n": 0,
+      "p50": null,
+      "p90": null
+    },
+    "tail_true_streak": {
+      "max": 5.489,
+      "n": 16,
+      "p50": 0.7825,
+      "p90": 5.143
+    }
+  }
+}

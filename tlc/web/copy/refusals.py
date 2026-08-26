@@ -109,8 +109,9 @@ COPY: dict[str, Copy] = {
     ),
     "E_FRAME_OVERRUN": Copy(
         "The plate is cut off at the {edge} edge",
-        "The visible part of the plate was located.",
-        "Positions and Rst are not reported.",
+        "Positions and Rst are measured on the part of the plate that is inside the frame.",
+        "Nothing is reported about the part outside the frame: bands there are missing from this result, "
+        "and the band count is a lower bound.",
         "{overrun} of the {edge} border touches the frame; the limit is {gate}.",
         "Re-shoot with the whole plate, including the origin line, inside the frame.",
     ),
@@ -136,11 +137,12 @@ COPY: dict[str, Copy] = {
         "Check for glare, fingerprints or heavy compression; re-shoot in the cabinet with a clean plate.",
     ),
     "E_LANE_COUNT_UNKNOWN": Copy(
-        "Lane count not read",
-        "The plate outline is measured.",
-        "Lanes and bands are not reported.",
-        "The number of lanes could not be read from the plate.",
-        "Enter the number of lanes on the upload screen and re-run.",
+        "Lane count not read — lanes are assumed, not measured",
+        "Band positions are measured, and densitograms are drawn over an assumed four-lane grid.",
+        "Lane labels, the standard-lane anchor and therefore Rst are not reported; which lane a band "
+        "belongs to is provisional.",
+        "The number of lanes could not be read from the plate, and it is never inferred from the signal.",
+        "Enter the number of lanes and their labels on the upload screen and re-run.",
         ("upload",),
     ),
     "IN_ANNOTATION_BAND": Copy(

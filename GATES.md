@@ -246,3 +246,21 @@ synthetic ground truth and mark every accuracy field as not computed:
 - No calibration map is shipped in `config/`, and a test asserts that (a shipped map would imply a
   passed Gate 7). Confidence remains `provenance: refused` with `E_UNCALIBRATED` in every result.
 - The VLM layer runs in `off`/`replay` only; no API credentials exist in this environment.
+
+## Gate 5 — Position, streaks, real corpus: PASS (2026-08-26, re-run after D-026/D-027)
+
+`uv run python scripts/gate5_check.py` → `reports/gate5_evidence.json` (cache rebuilt at the new code
+fingerprint).
+
+| arm | before | now | gate |
+|---|---|---|---|
+| Rst error p95, resolved spots | 0.0132 | **0.00984** (median 0.0022, max 0.0240, n = 173) | ≤ 0.01 |
+| false streak flags on clean lanes | 5.0% (11/221) | **0.0%** (0/221) | ≤ 2% |
+| true streak lanes flagged and unquantified | 19/19 | **19/19** | all |
+| real corpus: result or typed refusal | 61/61, 0 silent nulls | **61/61, 0 silent nulls** | all |
+
+What changed: D-026 (position = the ensemble consensus row, chosen on the tuning half) and D-027
+(a streak is unexplained, flat-topped elevation; four measured changes to the rule). M-015 records the
+dominant-peak bug the streak work exposed; M-016 records that the rule was designed on the gate's own
+seeds and re-measured on a fresh range (12000-12059: 1.32% false, 13/13 true streaks caught,
+`reports/exp_streak_rule_heldout.json`).

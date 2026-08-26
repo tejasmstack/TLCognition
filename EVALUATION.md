@@ -1,6 +1,6 @@
 # EVALUATION
 
-Generated 2026-08-26T16:17:12Z from committed evidence at commit `93efb8c50d88` (dirty tree) by `tools/evaluate.py`. Regenerate rather than edit.
+Generated 2026-08-26T16:56:43Z from committed evidence at commit `202be5b3f114` (dirty tree) by `tools/evaluate.py`. Regenerate rather than edit.
 
 **The contract of this document:** every number carries an n and an interval. Every metric that cannot be computed is listed as `not computed`, with the reason and what would unblock it — never omitted, never replaced by a plausible-looking figure.
 
@@ -53,13 +53,13 @@ Shipped operating point `OPERATING_POINT_v2`: reported at agreement ≥ **0.55**
 
 ## 4. Position and streak (Gate 5) — synthetic plates only
 
-- Rst error on resolved spots (nearest same-lane neighbour ≥ 2 FWHM, D-017): median **0.00053**, p95 **0.01316**, max 0.03102 over n = 156 matched spots (of 183 resolved truths). Gate: p95 ≤ 0.01 of plate height.
-- Unresolved pairs (closer than 2 FWHM): median 0.02477, p95 0.0757 over 28 pairs — reported separately because a merged pair has no single true position.
-- p95 as a function of the resolution threshold: {'0.0': 0.02269, '0.5': 0.01804, '1.0': 0.01316, '1.5': 0.01266, '2.0': 0.01116}
-- False streak flags: **11 of 221** clean lanes = 5.0% [2.8%, 8.7%]; gate ≤ 2%.
+- Rst error on resolved spots (nearest same-lane neighbour ≥ 2 FWHM, D-017): median **0.00217**, p95 **0.00984**, max 0.02402 over n = 173 matched spots (of 183 resolved truths). Gate: p95 ≤ 0.01 of plate height.
+- Unresolved pairs (closer than 2 FWHM): median 0.02, p95 0.07177 over 28 pairs — reported separately because a merged pair has no single true position.
+- p95 as a function of the resolution threshold: {'0.0': 0.01755, '0.5': 0.01351, '1.0': 0.00984, '1.5': 0.00888, '2.0': 0.009}
+- False streak flags: **0 of 221** clean lanes = 0.0% [0.0%, 1.7%]; gate ≤ 2%.
 - True streak lanes flagged and unquantified: 19 of 19.
 
-**Gate 5 verdict: NOT MET** — the real-corpus arm passes (every plate yields a result or a typed refusal, zero silent nulls); the position tail and the false-streak rate do not.
+**Gate 5 verdict: PASS** — the real-corpus arm passes (every plate yields a result or a typed refusal, zero silent nulls); the position tail and the false-streak rate do not.
 
 ## 5. Human labels, calibration and VLM accuracy
 
@@ -101,7 +101,7 @@ Within-plate (Class A) findings are emitted for every run — 10 registered hypo
 | 2 | Geometry / rectification | PASS | `reports/gate2_evidence.json` |
 | 3 | Photometry and the noise unit | PASS | `reports/gate3_evidence.json` |
 | 4 | Detection recall / false positives | NOT MET | `reports/gate4_evidence.json`, `reports/GATE4_FINDING.md` |
-| 5 | Position, streaks, real corpus | NOT MET (real-corpus arm passes) | `reports/gate5_evidence.json` |
+| 5 | Position, streaks, real corpus | PASS | `reports/gate5_evidence.json` |
 | 6 | Labelled set (≥30 plates) | NOT STARTED — needs a chemist | review screen built (`/runs/{id}/review`) |
 | 7 | Calibration (ECE ≤ 0.10) | BLOCKED by Gate 6 | `tlc/calibration/`, `tests/test_calibration.py` |
 | 8 | VLM field accuracy | BLOCKED by Gate 6 and by credentials | `tlc/vlm/`, `tests/test_vlm.py` (offline) |
