@@ -181,3 +181,16 @@ def test_findings_api_and_cohort_endpoint(client, run_id):
     assert coh.status_code == 200
     verdicts = {f["verdict"] for f in coh.json()}
     assert verdicts <= {"insufficient_data", "suppressed", "anomaly"}, "two plates can support no trend"
+
+
+def test_method_page_gate_table_comes_from_the_evidence(client):
+    """A gate status typed into a template goes stale the day after it is written."""
+    import json as _json
+    from pathlib import Path as _Path
+
+    html = client.get("/method").text
+    assert "Gate status" in html
+    root = _Path(__file__).resolve().parents[1]
+    g5 = _json.loads((root / "reports" / "gate5_evidence.json").read_text())
+    assert f"{g5['position']['rst_err_p95']}" in html
+    assert ("PASS" if g5["gate5_pass"] else "not met") in html

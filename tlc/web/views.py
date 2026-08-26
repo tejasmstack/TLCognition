@@ -23,6 +23,7 @@ from tlc.web.copy import refusals as copy
 
 router = APIRouter(include_in_schema=False)
 _here = Path(__file__).resolve().parent
+ROOT = _here.parents[1]
 templates = Jinja2Templates(directory=str(_here / "templates"))
 templates.env.filters.update({"q": nf.fmt_q, "pct": nf.fmt_pct, "plain": nf.fmt_plain, "interval": nf.fmt_interval})
 templates.env.globals.update({"refusal_copy": copy.render})
@@ -276,11 +277,51 @@ def compare(request: Request, runs: str = "", svc: RunService = Depends(get_serv
                                        "standing": INSIGHT_RECOMMENDATION})
 
 
+def gate_status() -> list[dict]:
+    """Read the committed gate evidence rather than restating it in prose that can go stale."""
+    rep = ROOT / "reports"
+
+    def load(name: str) -> dict | None:
+        try:
+            return json.loads((rep / name).read_text())
+        except (OSError, ValueError):
+            return None
+
+    g4, g5, g9, g10 = (load(f"gate{i}{s}.json") for i, s in ((4, "_evidence"), (5, "_evidence"), (9, ""), (10, "")))
+    out = []
+    if g4:
+        ev = g4.get("eval", {})
+        out.append({"gate": "4 · detection", "passed": bool(g4.get("gate4_pass")),
+                    "detail": f"recall {ev.get('recall_5sigma')} at >=5 sigma on {ev.get('n_true_spots_5s')} spots, "
+                              f"{ev.get('fp_per_blank')} false bands per blank (bound 0.95 / 0.2), evaluation split"})
+    if g5:
+        p, st = g5["position"], g5["streak"]
+        out.append({"gate": "5 · position and streaks", "passed": bool(g5.get("gate5_pass")),
+                    "detail": f"Rst error p95 {p['rst_err_p95']} on {p['n_matched_resolved']} resolved spots (bound 0.01); "
+                              f"false streak flags {st['false_streak_rate']:.1%} (bound 2%); "
+                              f"{st['flagged_and_unquantified']}/{st['n_streak_lanes']} true streaks caught"})
+    out.append({"gate": "6 · labelled set", "passed": False, "detail": "not started — needs a chemist through 30 plates"})
+    out.append({"gate": "7 · calibration", "passed": False,
+                "detail": "blocked by Gate 6; no confidence probability is shown anywhere until it passes"})
+    out.append({"gate": "8 · semantic layer accuracy", "passed": False,
+                "detail": "blocked by Gate 6 and by credentials; the layer runs in off/replay only"})
+    if g9:
+        out.append({"gate": "9 · null battery", "passed": bool(g9.get("passed")),
+                    "detail": f"{g9['surfaced_finding_rate']:.1%} of {g9['shuffles']} label-shuffled cohorts surfaced a "
+                              f"finding (nominal q = {g9['nominal_q']})"})
+    if g10:
+        out.append({"gate": "10 · API and replay", "passed": bool(g10.get("passed")),
+                    "detail": f"schema {g10['schema_valid_frac']:.0%}, replay reproduced the result hash on "
+                              f"{g10['replay_identical_frac']:.0%} of {g10['n_runs']} runs"})
+    out.append({"gate": "11 · a chemist, unaided", "passed": False, "detail": "not tested — needs a person at a bench"})
+    return out
+
+
 @router.get("/method", response_class=HTMLResponse)
 def method(request: Request, svc: RunService = Depends(get_service)):  # noqa: B008
     return templates.TemplateResponse(request, "method.html", {
         "request": request, "config_hash": svc.config_hash, "config_ref": svc.config_ref, "version": svc.pipeline_version,
-        "grid": svc.grid_doc, "op": svc.op_doc, "z_limit": Z_LIMIT})
+        "grid": svc.grid_doc, "op": svc.op_doc, "z_limit": Z_LIMIT, "gates": gate_status()})
 
 
 @router.get("/labels/progress", response_class=HTMLResponse)

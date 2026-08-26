@@ -154,6 +154,22 @@ def build(data_dir: Path) -> str:
                 n_t, n_b = c.get("n_true_5s", 0), c.get("n_blanks_synth", 0)
                 k = int(round(c["recall_5s"] * n_t))
                 add(f"| {a} | {pct(c['recall_5s'])} ({n_t}) {ci_str(k, n_t)} | {c.get('fp_per_blank_by_family', {}).get('synth')} ({n_b}) |")
+        # pooled recall with its interval: the eval split alone cannot decide a 0.95 bound at this n
+        try:
+            tc = [c for c in g4["tuning"]["curve"] if c["a_star"] == g4["operating_point"]["a_star"]
+                  and c["p_star"] == g4["operating_point"]["p_star"] and c["z_star"] == g4["operating_point"]["z_star"]][0]
+            ec = [c for c in rows if c["a_star"] == g4["operating_point"]["a_star"]][0]
+            k = round(tc["recall_5s"] * tc["n_true_5s"] + ec["recall_5s"] * ec["n_true_5s"])
+            npool = tc["n_true_5s"] + ec["n_true_5s"]
+            lo, hi = wilson(k, npool)
+            add("")
+            add(f"At the tuning-chosen point (agreement ≥ {g4['operating_point']['a_star']}): tuning recall "
+                f"**{pct(tc['recall_5s'])}** (n = {tc['n_true_5s']}), evaluation recall **{pct(ec['recall_5s'])}** "
+                f"(n = {ec['n_true_5s']}), **pooled {pct(k / npool)}** (n = {npool}) with a 95% interval of "
+                f"[{100 * lo:.1f}%, {100 * hi:.1f}%]. The bound is 95%: if the interval contains it, this battery "
+                f"cannot decide the arm — which is why the battery size is itself reported.")
+        except (KeyError, IndexError, ZeroDivisionError):
+            pass
         add("")
         add(f"**Gate 4 verdict: {'PASS' if g4.get('gate4_pass') else 'NOT MET'}** — targets were recall ≥ "
             f"{g4.get('bounds', {}).get('recall_5sigma')} and ≤ {g4.get('bounds', {}).get('fp_per_blank')} false bands per blank. "

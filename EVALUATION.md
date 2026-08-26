@@ -1,6 +1,6 @@
 # EVALUATION
 
-Generated 2026-08-26T16:56:43Z from committed evidence at commit `202be5b3f114` (dirty tree) by `tools/evaluate.py`. Regenerate rather than edit.
+Generated 2026-08-26T17:15:50Z from committed evidence at commit `bf4c39681543` (dirty tree) by `tools/evaluate.py`. Regenerate rather than edit.
 
 **The contract of this document:** every number carries an n and an interval. Every metric that cannot be computed is listed as `not computed`, with the reason and what would unblock it — never omitted, never replaced by a plausible-looking figure.
 
@@ -34,18 +34,20 @@ Shipped operating point `OPERATING_POINT_v2`: reported at agreement ≥ **0.55**
 
 | agreement ≥ | recall at ≥5σ (n spots) | FP per synthetic-noise blank (n blanks) |
 |---|---|---|
-| 0.3 | 94.0% (315) [90.8%, 96.1%] | 0.53 (100) |
-| 0.4 | 94.0% (315) [90.8%, 96.1%] | 0.22 (100) |
-| 0.45 | 93.7% (315) [90.4%, 95.9%] | 0.17 (100) |
-| 0.5 | 93.3% (315) [90.0%, 95.6%] | 0.14 (100) |
-| 0.55 | 92.7% (315) [89.3%, 95.1%] | 0.11 (100) |
-| 0.6 | 92.1% (315) [88.5%, 94.6%] | 0.1 (100) |
-| 0.65 | 92.1% (315) [88.5%, 94.6%] | 0.1 (100) |
-| 0.7 | 92.1% (315) [88.5%, 94.6%] | 0.1 (100) |
-| 0.75 | 90.2% (315) [86.4%, 93.0%] | 0.08 (100) |
-| 0.8 | 89.5% (315) [85.7%, 92.4%] | 0.07 (100) |
-| 0.85 | 88.2% (315) [84.2%, 91.4%] | 0.05 (100) |
-| 0.9 | 82.9% (315) [78.3%, 86.6%] | 0.04 (100) |
+| 0.3 | 95.9% (315) [93.1%, 97.6%] | 0.53 (100) |
+| 0.4 | 95.9% (315) [93.1%, 97.6%] | 0.22 (100) |
+| 0.45 | 95.6% (315) [92.7%, 97.3%] | 0.17 (100) |
+| 0.5 | 95.2% (315) [92.3%, 97.1%] | 0.14 (100) |
+| 0.55 | 94.6% (315) [91.5%, 96.6%] | 0.11 (100) |
+| 0.6 | 94.0% (315) [90.8%, 96.1%] | 0.1 (100) |
+| 0.65 | 94.0% (315) [90.8%, 96.1%] | 0.1 (100) |
+| 0.7 | 93.7% (315) [90.4%, 95.9%] | 0.1 (100) |
+| 0.75 | 91.8% (315) [88.2%, 94.3%] | 0.08 (100) |
+| 0.8 | 90.8% (315) [87.1%, 93.5%] | 0.07 (100) |
+| 0.85 | 89.5% (315) [85.7%, 92.4%] | 0.05 (100) |
+| 0.9 | 84.1% (315) [79.7%, 87.7%] | 0.04 (100) |
+
+At the tuning-chosen point (agreement ≥ 0.5): tuning recall **92.7%** (n = 316), evaluation recall **95.2%** (n = 315), **pooled 94.0%** (n = 631) with a 95% interval of [91.8%, 95.6%]. The bound is 95%: if the interval contains it, this battery cannot decide the arm — which is why the battery size is itself reported.
 
 **Gate 4 verdict: NOT MET** — targets were recall ≥ 0.95 and ≤ 0.2 false bands per blank. The false-positive arm is met on synthetic-noise blanks; the recall arm sits at the boundary (~0.94–0.95 at the shipped point). See `reports/GATE4_FINDING.md`.
 
