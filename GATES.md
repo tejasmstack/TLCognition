@@ -112,7 +112,9 @@ reports/GATE4_FINDING.md (eval split: 100 blanks, 128 observable true spots ≥5
 - Grid health G10: K_eff on null bins 9.67 (≥ 4). Per-commit sentinel test added (A-016).
 **Disposition:** written up as a finding per brief §6 Phase 4 and §10; the gate is NOT lowered.
 Recommended interim two-tier operating point (spec 01 §2.6): reported at a ≥ 0.6 (pooled FP
-0.31, noise 0.05, recall 0.88), candidates at a ≥ 0.4 (recall 0.96). Awaiting the human choice
-(D-013). Independent adversarial review of the finding's numbers requested.
+0.31, noise 0.05, recall 0.88), candidates at a ≥ 0.4 (recall 0.96). **Human decision (2026-08-26): option 1 chosen** —
+frozen as config/ensemble/OPERATING_POINT_v1.json; build proceeds to Phase 5 under it, with
+confidence refused (E_UNCALIBRATED) and the honest FP claim recorded in the artifact.
+Independent adversarial review of the finding's numbers requested.
 
 ---

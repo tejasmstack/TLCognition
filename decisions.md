@@ -287,8 +287,8 @@ they fix what is being counted.
 
 ## D-013 · Gate 4: §10 forced stop invoked; interim operating point proposed, not chosen
 **Date:** 2026-08-26
-**Status:** proposed — awaiting the human decision the brief assigns (§10: "Report the
-trade-off curve and let a human choose")
+**Status:** ACCEPTED — option 1 chosen by the repository owner on 2026-08-26 (the human
+decision §10 assigns). Frozen as config/ensemble/OPERATING_POINT_v1.json.
 **Context:** two genuine attempts (M-009, D-012) leave no operating point meeting FP ≤ 0.2/blank
 and recall ≥ 0.95 at ≥ 5σ simultaneously. The failure is confined to the real-texture null:
 on synthetic noise both arms are met within a few percent of recall at a ≥ 0.5.

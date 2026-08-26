@@ -1,0 +1,15 @@
+{
+  "id": "OPERATING_POINT_v1",
+  "chosen_by": "human (repository owner), 2026-08-26, per brief §10 after the Gate 4 finding (D-013 option 1)",
+  "grid": "CONFIG_GRID_v1",
+  "tiers": {
+    "reported":  {"agreement_min": 0.6, "p_med_max": 0.0164, "z_med_min": 0.0},
+    "candidate": {"agreement_min": 0.4, "p_med_max": 0.0164, "z_med_min": 0.0}
+  },
+  "measured_on_eval_split": {
+    "reported":  {"fp_per_blank_pooled": 0.31, "fp_per_blank_synthetic_noise": 0.05, "fp_per_blank_real_texture": 0.70, "recall_5sigma": 0.883},
+    "candidate": {"fp_per_blank_pooled": 1.22, "fp_per_blank_synthetic_noise": 0.40, "fp_per_blank_real_texture": 2.45, "recall_5sigma": 0.961}
+  },
+  "honest_claim": "<= 0.1 false spots per plate on synthetic noise at the reported tier; real-plate phantom rate NOT MEASURED (requires real blank plates or Phase 6 labels)",
+  "supersede_when": "20 real solvent-only blank plates exist and the battery is re-run with a real null"
+}

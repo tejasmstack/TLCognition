@@ -1,7 +1,7 @@
 """Per-commit null-battery SENTINEL (spec 05 §12.8; A-016).
 
 A reduced battery — 20 synthetic blanks through the shipped CONFIG_GRID_v1 ensemble at the
-operating point recorded in reports/gate4_evidence.json — whose job is regression detection,
+REPORTED tier of config/ensemble/OPERATING_POINT_v1.json (human-chosen, D-013) — whose job is regression detection,
 not the gate. The full 200-blank battery (scripts/gate4_check.py) is the Gate 4 evidence and
 the nightly artifact. The FP-per-blank number is printed so drift is visible before it crosses.
 """
@@ -21,7 +21,7 @@ from tlc.synth.spec import Handwriting, PlateSpec
 
 ROOT = Path(__file__).resolve().parent.parent
 GRID = ROOT / "config" / "ensemble" / "CONFIG_GRID_v1.json"
-EVIDENCE = ROOT / "reports" / "gate4_evidence.json"
+OP_POINT = ROOT / "config" / "ensemble" / "OPERATING_POINT_v1.json"
 N_BLANKS = 20
 SENTINEL_BOUND = 0.5   # looser than the gate's 0.2 on purpose: n=20 is a tripwire, not a measurement
 
@@ -41,9 +41,10 @@ def _grid():
 
 @pytest.mark.slow
 def test_null_battery_sentinel():
-    if not GRID.exists() or not EVIDENCE.exists():
-        pytest.skip("CONFIG_GRID_v1 / gate4 evidence not present")
-    op = json.loads(EVIDENCE.read_text())["operating_point"]
+    if not GRID.exists() or not OP_POINT.exists():
+        pytest.skip("CONFIG_GRID_v1 / OPERATING_POINT_v1 not present")
+    tier = json.loads(OP_POINT.read_text())["tiers"]["reported"]
+    op = {"a_star": tier["agreement_min"], "p_star": tier["p_med_max"], "z_star": tier["z_med_min"]}
     grid, weights = _grid()
     fp = 0
     for i in range(N_BLANKS):
