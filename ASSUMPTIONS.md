@@ -48,3 +48,22 @@ and tested so that labelling can start the moment a chemist sits down.
 Commits are authored as "Tejas Ghatule <tejas.ghatule@mstack.co>" (the repository owner's known
 identity), set as local git config. No remote is configured; CI is a committed workflow definition
 plus a locally runnable script, and "CI green" gates are evidenced by committed local runs.
+
+## A-007 · Noise-unit estimator for Gate 1 (evaluation report leaves it unstated)
+The eval report's plate-P33 "unmasked empty-band sd" is 0.01881 OD but never states the
+estimator, region, or background model (UNSTATED #5 in reference/EVAL_REPORT_EXTRACT.md). Chosen
+estimator (tlc/synth/stats.py): poly3 illumination surface fit on unclipped in-plate pixels;
+empty band = the eighth of the plate's row extent with lowest p95(OD residual); sigma = plain sd
+over that band (unmasked; MAD reported alongside). Under this estimator P33 reads 0.00964 —
+inside the report's own radius-dependent sigma spread (0.0032–0.0116) but 0.51× its 0.01881
+anchor, which is exactly the F4 circularity (sigma depends on the background model's stiffness).
+Consequence: Gate 1's "residual noise sd within ±20% of the real value" is evaluated with THIS
+estimator applied to both real and synthetic plates; the real-corpus target is
+reports/corpus_stats.json (median 0.0077, range 0.003–0.025 over 61 unique images).
+
+## A-008 · Synthetic scene model uses pure rotation for tilt
+The PlateSpec table (spec 05 §12.2) parameterises geometry by tilt_deg 0–12 only. The generator
+implements tilt as in-plane rotation with exact corner tracking (no perspective foreshortening).
+Handheld perspective distortion exists in reality; Gate 2's rectification is projective and will
+be additionally exercised with synthetic projective jitter when Phase 2 needs it. If Phase 2
+requires generator-level perspective, it is added as a knob then (a decisions.md entry).

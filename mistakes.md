@@ -37,3 +37,28 @@ script and fails if numpy/scipy/skimage/imageio is imported before `tlc.core.det
 the future worker/CLI entry points.
 **Lesson:** an auto-fixer is a code author like any other and its diff gets reviewed like any
 other; order-sensitive imports need a machine-checked guard, not a comment.
+
+## M-003 · numpy rng.choice silently truncated enum values to 8-char strings
+**Symptom:** `random_spec` crashed with `ValueError: np.str_('SpotShap') is not a valid SpotShape`.
+**Actual cause:** `rng.choice([...enums...])` converts the list to a numpy fixed-width string
+array (dtype '<U8' from the first element's str value), truncating "SpotShape.GAUSSIAN"'s value
+and corrupting every member. numpy's implicit dtype coercion, not the enum, is the hazard.
+**Fix:** draw integer indices (`rng.choice(n, p=...)`, `rng.integers`) and index a Python tuple.
+**Test added:** covered by `test_random_spec_deterministic_and_in_range` (the failing test).
+**Lesson:** never pass non-numeric Python objects to numpy RNG selection functions; draw indices.
+
+## M-004 · Pipe through tail masked a red CI; gate commit landed anyway
+**Symptom:** the Phase 1 commit chain `./scripts/ci.sh | tail -4 && git commit` committed while
+ruff had 2 errors (B905, zip without strict= in scripts/gate1_check.py) — the pipeline's exit
+status is tail's, not ci.sh's, so && proceeded.
+**Wrong hypothesis:** M-001's process rule ("run CI in the same shell immediately before commit")
+was sufficient. It was followed — and defeated by shell semantics.
+**Actual cause:** POSIX pipeline exit status. Any `ci.sh | filter && commit` construction is
+broken without pipefail.
+**Fix:** `set -euo pipefail` was already inside ci.sh (its own steps are safe); the invoking
+chain must never pipe it: run `./scripts/ci.sh` bare, then commit as a separate command after
+seeing it pass. Lint errors fixed; phase commit amended before any push.
+**Test added:** none applicable — the rule is about how commits are made.
+**Lesson:** a process rule that depends on shell discipline should be made structurally
+un-bypassable; from now on the gate-commit sequence is two separate tool calls: (1) bare ci.sh,
+(2) commit only after reading its exit.

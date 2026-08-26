@@ -42,6 +42,13 @@ def test_pipeline_imports_are_pure():
 
 
 def test_no_module_level_np_random_under_tlc():
+    """Spec 03 §7.2.2 item 2: one seeded PCG64 Generator, passed explicitly.
+
+    The explicit constructors (Generator, PCG64, SeedSequence) are the approved pattern;
+    everything else on numpy.random — rand, normal, default_rng, seed, ... — is banned
+    because it either uses global state or hides the bit-stream choice.
+    """
+    allowed = {"Generator", "PCG64", "SeedSequence"}
     violations = []
     for py in sorted(TLC.rglob("*.py")):
         src = py.read_text()
@@ -50,8 +57,13 @@ def test_no_module_level_np_random_under_tlc():
             if isinstance(node, ast.Attribute) and isinstance(node.value, ast.Attribute):
                 # matches np.random.<fn> / numpy.random.<fn>
                 inner = node.value
-                if isinstance(inner.value, ast.Name) and inner.value.id in {"np", "numpy"} and inner.attr == "random":
-                    violations.append(f"{py.relative_to(TLC)}:{node.lineno}: module-level numpy.random.* — use a seeded Generator")
+                if (
+                    isinstance(inner.value, ast.Name)
+                    and inner.value.id in {"np", "numpy"}
+                    and inner.attr == "random"
+                    and node.attr not in allowed
+                ):
+                    violations.append(f"{py.relative_to(TLC)}:{node.lineno}: numpy.random.{node.attr} — use a seeded Generator(PCG64(seed))")
     assert not violations, "\n".join(violations)
 
 
