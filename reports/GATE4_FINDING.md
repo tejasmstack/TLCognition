@@ -1,4 +1,17 @@
-# Gate 4 finding (attempt 2) — DIAGNOSIS REFUTED BY INDEPENDENT REVIEW; attempt 3 underway
+# Gate 4 finding — final (attempt 3): the detector sits on the gate boundary
+
+**Attempt 3 result (eval split, 100 blanks incl. 40 real-texture from a pre-registered clean
+region of MEHQ-P44; 315 observable ≥5σ spots):** at agreement ≥ 0.50, FP = 0.22/blank and
+recall = 0.952; at ≥ 0.55, FP = 0.19 and recall = 0.949. Sampling SE ±0.045 / ±0.012. Both arms
+are met within one standard error at the shipped reported tier (a ≥ 0.55); no pre-registered
+point passes strictly (the tuning split had none). **Verdict: boundary, not lowered.** The
+shipped operating point is config/ensemble/OPERATING_POINT_v2.json (two-tier: reported ≥ 0.55,
+candidates ≥ 0.40 — the human's D-013 choice on the corrected scale). What would settle it:
+(i) real solvent-only blank plates (the real phantom rate is still NOT MEASURED), (ii) Phase 7
+calibration, which replaces raw agreement by a fitted p_spot that uses z_med and the MC
+p-value as well (spec 01 §2.4) — the resolution raw agreement lacks at the top (§2.5).
+
+# Attempt 2 write-up — DIAGNOSIS REFUTED BY INDEPENDENT REVIEW (kept for the record)
 
 > **Status update (2026-08-26, after adversarial review):** the numbers below are correct, but the
 > diagnosis in §Diagnosis 2-3 is wrong. Mapping every real-texture phantom back to tile

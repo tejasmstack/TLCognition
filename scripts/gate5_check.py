@@ -34,7 +34,7 @@ from tlc.synth.spec import Handwriting, PlateSpec, SpotShape, SpotSpec  # noqa: 
 ROOT = Path(__file__).resolve().parent.parent
 CACHE = ROOT / "reports" / "gate5_cache"
 GRID = json.loads((ROOT / "config" / "ensemble" / "CONFIG_GRID_v1.json").read_text())
-OP = json.loads((ROOT / "config" / "ensemble" / "OPERATING_POINT_v1.json").read_text())
+OP = json.loads((ROOT / "config" / "ensemble" / "OPERATING_POINT_v2.json").read_text())
 from tlc.config.loader import load_pipeline  # noqa: E402
 
 CONFIG_DOC, CONFIG_HASH, CONFIG_REF = load_pipeline("0.5.0")

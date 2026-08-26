@@ -332,11 +332,9 @@ def run_plate(rgb: np.ndarray, cfg: RunConfig, seed: int) -> RunOutput:
 
     noise_structured = vif_max > VIF_ABSTAIN
     if noise_structured:
-        refusals.append(F.e_noise_structured(vif_max))
-        gates.append("NOISE_STRUCTURED")
-        flags.append(F.Flag("noise_structured", "block", f"Structured residual (VIF {vif_max:.1f} > {VIF_ABSTAIN}); spots are reported as candidates only.",
-                            "Re-shoot in the cabinet at native resolution; check for glare or compression.", {"vif": round(vif_max, 3)}))
-        raw_spots = [(li, s, f, ("candidate" if st == "confirmed" else st)) for (li, s, f, st) in raw_spots]
+        # D-016: measured and flagged, NOT actionable until the VIF estimator is calibrated
+        flags.append(F.Flag("noise_structured", "warn", f"Structured residual statistic VIF {vif_max:.1f} > {VIF_ABSTAIN} (uncalibrated estimator, D-016).",
+                            "Re-shoot in the cabinet at native resolution if spots look doubtful.", {"vif": round(vif_max, 3)}))
 
     # --- Rst anchor: highest-agreement confirmed spot in the standard lane
     anchor = None

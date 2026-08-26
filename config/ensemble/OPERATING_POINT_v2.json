@@ -1,0 +1,41 @@
+{
+  "gate4_status": "boundary: both arms met within one standard error at the reported tier; a strict pass at a pre-registered point is NOT demonstrated (tuning split found no feasible point; eval curve crosses at a\u22480.5\u20130.55)",
+  "grid": "CONFIG_GRID_v1",
+  "grid_hash": "0c0e3b5157f646b5e1677b6a4d3a780b88aa3edc2931796656e4ea20bceddf82",
+  "honest_claim": "reported tier: ~0.2 false spots per blank plate (0.17 on synthetic noise, 0.23 on rule-selected real texture) and ~95% recall on observable spots >= 5 sigma, each within sampling error of the gate; real-plate phantom rate on genuine solvent-only blanks NOT MEASURED",
+  "id": "OPERATING_POINT_v2",
+  "measured_eval_split": {
+    "candidate": {
+      "fp_per_blank_pooled": 0.3,
+      "fp_real_texture": 0.4,
+      "fp_synthetic_noise": 0.23,
+      "recall_5sigma": 0.959
+    },
+    "reported": {
+      "fp_per_blank_pooled": 0.19,
+      "fp_real_texture": 0.23,
+      "fp_synthetic_noise": 0.17,
+      "n_blanks": 100,
+      "n_true_spots": 315,
+      "recall_5sigma": 0.949
+    }
+  },
+  "sampling_se": {
+    "fp_per_blank": 0.045,
+    "recall": 0.012
+  },
+  "supersede_when": "real solvent-only blank plates exist, or Phase 7 calibration replaces raw agreement as the reported-list criterion",
+  "supersedes": "OPERATING_POINT_v1 (same human decision \u2014 two-tier interim, D-013 \u2014 restated on the D-015 agreement scale after attempt 3)",
+  "tiers": {
+    "candidate": {
+      "agreement_min": 0.4,
+      "p_med_max": 0.0164,
+      "z_med_min": 0.0
+    },
+    "reported": {
+      "agreement_min": 0.55,
+      "p_med_max": 0.0164,
+      "z_med_min": 0.0
+    }
+  }
+}

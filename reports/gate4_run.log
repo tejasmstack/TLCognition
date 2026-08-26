@@ -1,0 +1,1 @@
+{"eval_fp_per_blank":0.22,"eval_recall_5sigma":0.9524,"feasible_points_tuning":0,"gate4_pass":false,"operating_point":{"a_star":0.5,"chosen_on":"tuning split (even seeds)","p_star":0.0164,"z_star":0.0}}

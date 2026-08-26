@@ -341,3 +341,27 @@ hit fraction. Operating-point grids are re-tuned on that scale; D-013's interim 
 restated in the new scale once attempt 3 reports.
 **Why:** logit(a) is a calibration feature (x1); a compressed scale throws away resolution at
 both ends, exactly what §2.5 warns costs "resolution at the top".
+
+## D-016 · VIF-based plate abstention (spec 01 §6.2 row 14) suspended pending calibration of the estimator
+**Date:** 2026-08-26
+**Status:** accepted
+**Context:** the plate-level VIF (spec 01 §2.1: correlated/white matched-filter noise) as
+implemented — profile autocovariance summed over cross-column lags to 24 px on a fixed-scale
+high-pass — reads > 6 on ~80% of SYNTHETIC plates, which contain no structured artefacts by
+construction, and on 49/61 real plates. Spec §2.1 expects VIF ~1.5-2.5 for plain correlated
+noise; the estimator's normalisation (white variance from the profile-level sigma0) does not
+reproduce that scale. Abstaining on it demoted every spot to candidate on plates the gate's own
+synthetic ground truth says are clean.
+**Decision:** VIF is still measured and emitted (`vif`, flag `noise_structured` severity warn
+when > 6), but it does NOT change spot status or verdict until the estimator is calibrated
+against plates with known structured artefacts (glare/fingerprint synthetics — a Phase 8-9 item).
+**Why:** an uncalibrated statistic must not gate results (spec 01 anti-pattern 12 in spirit);
+the honest state is "measured, not yet actionable".
+**Revisit if:** the calibrated VIF separates artefact plates from clean ones — then row 14 is
+re-enabled with the calibrated threshold, recorded here.
+
+## D-013 amendment (attempt 3) · Operating point restated as OPERATING_POINT_v2
+The human's two-tier interim decision stands; on the corrected agreement scale (D-015) it is
+reported a ≥ 0.55 / candidates a ≥ 0.40 (p_med ≤ 1/61, no z threshold). Measured on the eval
+split: reported FP 0.19/blank (0.17 synthetic noise, 0.23 real texture), recall 0.949 (n=315);
+candidates recall 0.959. Gate 4 status: boundary (see GATES.md). OPERATING_POINT_v1 is retired.

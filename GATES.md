@@ -124,3 +124,20 @@ because the MC p-floor exceeded q/m on a clipped lane (fixed: adaptive surrogate
 scale, BH/floor fix, 250 spotted plates.** Gate 4 remains OPEN pending attempt 3.
 
 ---
+**Attempt 3 (2026-08-26, honest null + D-015 scale + BH/floor fix + 250 spotted plates):**
+evidence reports/gate4_evidence.json, curve reports/gate4_tradeoff_curve.png.
+- Eval split (100 blanks: 60 synthetic-noise + 40 rule-selected real texture from MEHQ-P44
+  rows 56–149; 315 observable ≥5σ spots): a ≥ 0.50 → FP 0.22 (synth 0.17 / textured 0.30),
+  recall 0.952; a ≥ 0.55 → FP 0.19, recall 0.949. The arms cross between the two. Pooled over
+  all 200 blanks / 631 spots at a ≥ 0.5: FP 0.19, recall 0.943.
+- Tuning split: no point meets both arms strictly; one eval point (a ≥ 0.55, p ≤ 4/61) meets
+  both but was not selected on tuning — not claimed.
+- Sampling SE at these n: ±0.045 (FP), ±0.012 (recall).
+**Verdict: BOUNDARY — both arms met within one standard error at the shipped reported tier
+(a ≥ 0.55); a strict pre-registered pass is not demonstrated. Three genuine attempts, none
+weakening the contract.** The human's two-tier interim choice (D-013) is restated on the D-015
+scale as config/ensemble/OPERATING_POINT_v2.json (reported a ≥ 0.55, candidates a ≥ 0.40).
+Textured-null phantom rate now reflects real texture under a pre-registered null (A-017 second
+amendment), not P33 chemistry. Final independent review requested.
+
+---

@@ -21,7 +21,7 @@ from tlc.synth.spec import Handwriting, PlateSpec
 
 ROOT = Path(__file__).resolve().parent.parent
 GRID = ROOT / "config" / "ensemble" / "CONFIG_GRID_v1.json"
-OP_POINT = ROOT / "config" / "ensemble" / "OPERATING_POINT_v1.json"
+OP_POINT = ROOT / "config" / "ensemble" / "OPERATING_POINT_v2.json"
 N_BLANKS = 20
 SENTINEL_BOUND = 0.5   # looser than the gate's 0.2 on purpose: n=20 is a tripwire, not a measurement
 
