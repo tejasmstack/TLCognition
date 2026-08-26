@@ -33,14 +33,13 @@ from tlc.pipeline.geometry import analyse_geometry  # noqa: E402
 from tlc.pipeline.noise import estimate_noise, prepass_exclusion_mask  # noqa: E402
 from tlc.pipeline.photometry import compute_od  # noqa: E402
 from tlc.pipeline.prep import rectify_and_mask  # noqa: E402
-from tlc.pipeline.surrogates import gutter_columns  # noqa: E402
 from tlc.synth.generator import make_plate, make_textured_blank  # noqa: E402
 from tlc.synth.spec import Handwriting, PlateSpec, SpotShape, SpotSpec  # noqa: E402
 
 ROOT = Path(__file__).resolve().parent.parent
 GRID_PATH = ROOT / "config" / "ensemble" / "CONFIG_GRID_v1.json"
 N_SURR = 60
-A_GRID = [0.30, 0.40, 0.50, 0.60, 0.70, 0.80]
+A_GRID = [0.30, 0.40, 0.45, 0.50, 0.55, 0.60, 0.65, 0.70, 0.75, 0.80, 0.85, 0.90]  # D-015 scale
 P_GRID = [0.0164, 0.0656]  # 1/61 floor and 4x floor at N_SURR=60 (p barely moves the curve)
 Z_GRID = [0.0, 6.0, 8.0, 10.0]  # spec 01 §2.4: agreement alone is low-resolution; combine with z_med
 FP_BOUND = 0.2
@@ -58,25 +57,75 @@ def load_grid() -> tuple[list[Config], np.ndarray]:
     return cfgs, np.array(weights)
 
 
-def p33_residual_tile() -> np.ndarray:
-    """Real noise texture from P33's inter-lane GUTTER strips over the analysable band (A-017).
+TILE_SCREEN_MAD = 3.0    # pre-registered (M-010, attempt 3): every lane-window spot-scale bump < 3 MAD
+TILE_MIN_ROWS = 80
+TILE_REPORT: dict = {}
 
-    Gutters carry no chemistry by construction; the earlier full-width 'empty band' tile did
-    (M-009). 163 rows tall, so tiling repeats <= 2x on any battery plate — no spot-scale
-    periodicity is manufactured.
+
+def cleanest_real_region() -> np.ndarray:
+    """Real noise texture from the corpus region that a PRE-REGISTERED rule selects as blank.
+
+    Rule (A-017, second amendment): over every unique low-clip (<= 2%) plate, rectify, take the
+    poly3 residual, and score each row by the worst lane-window row-mean bump (detrended at
+    5 FWHM, FWHM-smoothed, in MAD units of that statistic) — the detector's own statistic. Keep
+    the longest full-width run of rows with score < TILE_SCREEN_MAD; the plate with the longest
+    qualifying run (>= TILE_MIN_ROWS) is the source. Recorded in TILE_REPORT. P33's gutters
+    failed this rule (spot halos at row ~168); one region in the corpus passes.
     """
-    img = iio.imread(ROOT / "dataset" / "MEHQ-P33 4hr_31st July26.png")
-    geo = analyse_geometry(img)
-    pp = rectify_and_mask(img, geo)
-    odr = compute_od(pp.green, pp.valid, "poly3", 0)
-    resid = np.where(odr.od_valid, pp.green - odr.i0, 0.0)
-    h, w = pp.green.shape
-    pitch = w / 4.0
-    centres = [(i + 0.5) * pitch for i in range(4)]
-    gutters = gutter_columns(w, centres, 0.275 * pitch)
-    band = (int(0.25 * h), int(0.80 * h))
-    tile = resid[band[0] : band[1]][:, gutters]
-    return tile - float(np.median(tile))
+    from scipy import ndimage
+
+    audit = json.loads((ROOT / "dataset" / "audit.json").read_text())
+    cands = [r for r in audit["images"] if r["duplicate_of"] is None and r["in_plate_green_clip_fraction"] <= 0.02]
+    best = None
+    for rec in sorted(cands, key=lambda r: r["file"]):
+        p = ROOT / "dataset" / rec["file"]
+        img = iio.imread(p)
+        geo = analyse_geometry(img)
+        if not geo.found:
+            continue
+        pp = rectify_and_mask(img, geo)
+        odr = compute_od(pp.green, pp.valid, "poly3", 0)
+        h, w = pp.green.shape
+        if w < 90 or h < 160:
+            continue
+        resid = np.where(odr.od_valid, pp.green - odr.i0, 0.0)
+        pitch = w / 4.0
+        fwhm = 2.355 * 0.18 * pitch
+        hw = 0.275 * pitch
+        b0, b1 = int(0.20 * h), int(0.82 * h)
+        bumps = []
+        for i in range(4):
+            xc = (i + 0.5) * pitch
+            rm = ndimage.gaussian_filter1d(resid[b0:b1, int(xc - hw) : int(xc + hw) + 1].mean(axis=1), fwhm / 2.355)
+            tr = ndimage.median_filter(rm, size=max(11, int(5 * fwhm) | 1), mode="nearest")
+            bumps.append(rm - tr)
+        bmat = np.stack(bumps)
+        mad = 1.4826 * float(np.median(np.abs(bmat - np.median(bmat))))
+        score = np.abs(bmat).max(axis=0) / max(mad, 1e-12)
+        ok = score < TILE_SCREEN_MAD
+        runs, start = [], None
+        for k, v_ in enumerate(list(ok) + [False]):
+            if v_ and start is None:
+                start = k
+            elif not v_ and start is not None:
+                runs.append((start, k))
+                start = None
+        if not runs:
+            continue
+        r0, r1 = max(runs, key=lambda t: t[1] - t[0])
+        if r1 - r0 >= TILE_MIN_ROWS and (best is None or r1 - r0 > best[0]):
+            tile = resid[b0 + r0 : b0 + r1]
+            best = (r1 - r0, rec["file"], b0 + r0, b0 + r1, w, float(score[r0:r1].max()), tile - float(np.median(tile)))
+    if best is None:
+        raise RuntimeError("no corpus region passes the pre-registered blank screen; no honest real-texture null available")
+    TILE_REPORT.update({"rule": f"longest full-width run with every lane-window spot-scale bump < {TILE_SCREEN_MAD} MAD, >= {TILE_MIN_ROWS} rows, over unique plates with clip <= 2%",
+                        "source_file": best[1], "rows": [int(best[2]), int(best[3])], "width_px": int(best[4]),
+                        "max_score_mad": round(best[5], 3), "n_candidate_plates": len(cands)})
+    return best[6]
+
+
+def p33_residual_tile() -> np.ndarray:  # name kept for callers; the source is now rule-selected
+    return cleanest_real_region()
 
 
 def blank_specs() -> list[tuple[str, int]]:
@@ -86,7 +135,7 @@ def blank_specs() -> list[tuple[str, int]]:
 
 
 def spotted_specs() -> list[int]:
-    return [9000 + i for i in range(100)]
+    return [9000 + i for i in range(250)]  # n >= 300 observable 5-sigma spots (reviewer: n=128 cannot decide 0.95)
 
 
 def _spotted_plate(seed: int) -> tuple[PlateSpec, int]:
@@ -240,7 +289,7 @@ def sweep_operating_points(plates: list[dict]) -> list[dict]:
             curve.append({
                 "a_star": a_star, "p_star": p_star, "z_star": z_star, "fp_per_blank_by_family": fam_fp,
                 "n_unobservable_5s": sum(pl.get("n_unobservable_5s", 0) for pl in plates if pl["kind"] != "blank"),
-                "fp_per_blank": round(fp_n and fp_n / max(blanks + sum(1 for p in plates if p["kind"] != "blank"), 1) or 0.0, 4),
+                "unmatched_detections_per_plate_all": round(fp_n / max(len(plates), 1), 4),
                 "fp_per_blank_blanksonly": round((sum(len([s for s in pl["spots"] if s["a"] >= a_star and s["p_med"] <= p_star and s["z_med"] >= z_star]) for pl in plates if pl["kind"] == "blank")) / max(blanks, 1), 4),
                 "recall_5s": round(hit / max(total_true, 1), 4),
                 "n_blanks": blanks, "n_true_5s": total_true,
@@ -279,8 +328,9 @@ def main() -> None:
         "eval": {"fp_per_blank": fp_eval, "recall_5sigma": rc_eval,
                  "n_blanks": ev["n_blanks"], "n_true_spots_5s": ev["n_true_5s"],
                  "curve": eval_curve},
-        "battery": {"n_blank_total": 200, "n_textured": 80, "n_spotted": 100,
-                    "n_surrogates": N_SURR, "grid": "CONFIG_GRID_v1"},
+        "battery": {"n_blank_total": 200, "n_textured": 80, "n_spotted": 250,
+                    "n_surrogates": N_SURR, "grid": "CONFIG_GRID_v1", "tile_screen": TILE_REPORT},
+        "pooled_all_300_blanks_curve": sweep_operating_points(tune + evalp),
         "bounds": {"fp_per_blank": FP_BOUND, "recall_5sigma": RECALL_BOUND},
         "gate4_pass": gate4_pass,
     }

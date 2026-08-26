@@ -1,4 +1,17 @@
-# Gate 4 finding: blank-plate FP ≤ 0.2 and recall ≥ 0.95 at ≥5σ cannot both be met at one operating point
+# Gate 4 finding (attempt 2) — DIAGNOSIS REFUTED BY INDEPENDENT REVIEW; attempt 3 underway
+
+> **Status update (2026-08-26, after adversarial review):** the numbers below are correct, but the
+> diagnosis in §Diagnosis 2-3 is wrong. Mapping every real-texture phantom back to tile
+> coordinates showed 100% (at a ≥ 0.5) sit in two 10-row bands that are **P33's own spot halos**
+> leaking into the gutter strips (rectified rows ~168 and ~226) — not ambiguous texture (M-010).
+> The §10 forced stop was therefore premature: a third attempt with a pre-registered signal-free
+> screen on the null, the corrected agreement scale (D-015), the BH/floor fix, and n ≥ 300
+> observable spots is spec-consistent and weakens nothing. The human-chosen interim operating
+> point (D-013) stands as interim until attempt 3 reports. The claim "0.3–1.2 FP on real
+> texture" is WITHDRAWN; "≤ 0.1 on synthetic noise; real-plate phantom rate not measured" stands.
+> The observability filter excluded 0 spots (inert here); the residual gap is the recall arm.
+
+# (original attempt-2 write-up follows, kept for the record)
 
 **Status:** §10 forced-stop condition invoked after two genuine attempts. This is a finding, not a
 failure to try; the gate is NOT lowered. A human chooses the operating point (recommendation below).

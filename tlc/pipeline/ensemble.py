@@ -50,7 +50,7 @@ def config_weights(detection_vectors: np.ndarray) -> np.ndarray:
     """w_c ∝ 1 / (1 + Σ_{c'≠c} ρ_{cc'}) — a cluster of near-identical configs counts ~once."""
     k = detection_vectors.shape[0]
     if k < 2 or detection_vectors.shape[1] == 0:
-        return np.ones(k) / max(k, 1)
+        return np.ones(k)
     rows_std = detection_vectors.std(axis=1)
     c = np.zeros((k, k))
     usable = np.nonzero(rows_std > 0)[0]
@@ -60,7 +60,7 @@ def config_weights(detection_vectors: np.ndarray) -> np.ndarray:
             for b, ib in enumerate(usable):
                 c[ia, ib] = cc[a, b]
     w = 1.0 / (1.0 + np.clip(c, 0, 1).sum(axis=1) - 1.0)
-    return w / w.sum()
+    return w * (k / w.sum())  # D-015: sum to K so Jeffreys shrinkage is mild, a reads as a hit fraction
 
 
 def run_ensemble_lane(
@@ -90,7 +90,9 @@ def run_ensemble_lane(
                 analysable_rows, rng, n_surrogates=n_surrogates, od_cache=od_cache,
             )
         )
-    w = np.ones(len(grid)) / len(grid) if weights is None else weights
+    w = np.ones(len(grid)) if weights is None else np.asarray(weights, dtype=float)
+    if w.sum() > 0 and abs(w.sum() - len(grid)) > 1e-6:
+        w = w * (len(grid) / w.sum())  # D-015: agreement on the sum-to-K scale
 
     sigma_nom = 0.18 * pitch
     tol = MATCH_TOL_FWHM * 2.355 * max(1.0, sigma_nom)

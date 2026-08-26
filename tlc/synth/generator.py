@@ -135,10 +135,19 @@ def _render_spot(od: np.ndarray, s: SpotSpec, spec: PlateSpec, geom: dict, amp_o
 
     contribution = amp_od * prof
     od += contribution
+    # Position convention D-014: the darkest row of THIS spot's contribution at its column,
+    # sub-pixel refined by a parabola through the three rows around the argmax.
+    col = contribution[:, int(np.clip(round(x0), 0, w - 1))]
+    i = int(np.argmax(col))
+    if 0 < i < h - 1 and (col[i - 1] - 2 * col[i] + col[i + 1]) < 0:
+        y_mode = i + 0.5 * (col[i - 1] - col[i + 1]) / (col[i - 1] - 2 * col[i] + col[i + 1])
+    else:
+        y_mode = float(i)
     return SpotTruth(
         lane=s.lane,
         x=float(x0),
         y=float(y0),
+        y_mode=float(y_mode),
         shape=s.shape.value,
         amplitude_od=float(amp_od),
         amplitude_sigma=float(s.amplitude_sigma),

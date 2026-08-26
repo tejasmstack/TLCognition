@@ -96,7 +96,8 @@ class PlateSpec:
 class SpotTruth:
     lane: int
     x: float                     # exact centre, plate coords (px)
-    y: float
+    y: float                     # EMG/Gaussian mu (shape parameter)
+    y_mode: float                # darkest row of the rendered spot at its column (D-014 position)
     shape: str
     amplitude_od: float          # exact peak OD
     amplitude_sigma: float       # peak OD / analytic sigma_od

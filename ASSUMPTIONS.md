@@ -168,3 +168,21 @@ rows), mirror-tiled with a seeded phase shift over a synthetic illumination surf
 are chemistry-free by construction; the original full-width "empty band" tile was not (M-009).
 Broad row structure in the tile (illumination residual) is absorbed by the pipeline's own
 background models; sub-spot-scale texture (correlation, compression) is preserved untouched.
+
+## A-017 amendment (M-010)
+"Gutters are chemistry-free by construction" was false: broad spots and halos extend into the
+gutters. The real-texture tile is now screened by a PRE-REGISTERED rule (invalid columns
+dropped; rows where any column's FWHM-smoothed residual exceeds 4 MAD, ±2 FWHM margin, dropped;
+largest contiguous remaining block kept). The screen's decisions are recorded in the Gate 4
+evidence. The null preserves sub-spot texture of the surviving region only.
+
+## A-017 second amendment · The real-texture null source is chosen by a pre-registered corpus rule
+P33's gutters failed even after screening (a spot halo at rectified row ~168 read 2.9-3.8 MAD to
+the screen and z 15-25 to the detector). Attempt 3 selects the null source by rule, before the
+battery: over every unique plate with <= 2% clipping (30 plates), score each rectified row by the
+worst lane-window row-mean bump (FWHM-smoothed, detrended at 5 FWHM, in MAD of that statistic —
+the detector's own statistic); keep the longest full-width run with every row < 3 MAD; require
+>= 80 rows. Exactly one region qualifies: MEHQ-P44 rows 56-149 (93 rows x 132 px, max 2.9 MAD).
+The rule, the winner and its score are written into the Gate 4 evidence. The remaining textured
+phantom rate is therefore a measurement of real texture under an honest null, not of P33's
+chemistry.

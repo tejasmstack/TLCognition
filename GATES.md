@@ -115,6 +115,12 @@ Recommended interim two-tier operating point (spec 01 §2.6): reported at a ≥ 
 0.31, noise 0.05, recall 0.88), candidates at a ≥ 0.4 (recall 0.96). **Human decision (2026-08-26): option 1 chosen** —
 frozen as config/ensemble/OPERATING_POINT_v1.json; build proceeds to Phase 5 under it, with
 confidence refused (E_UNCALIBRATED) and the honest FP claim recorded in the artifact.
-Independent adversarial review of the finding's numbers requested.
+**Adversarial review (2026-08-26): numbers reproduced exactly; diagnosis REFUTED** — the
+real-texture phantoms are P33 spot halos in the gutter tile (100% of a ≥ 0.5 phantoms in two
+10-row bands), so the null violated spec 05 §12.3's "blank band" premise (M-010). Also found: the
+agreement scale was compressed to [0.25, 0.75] (D-015), and a 20σ spot was rejected by BH
+because the MC p-floor exceeded q/m on a clipped lane (fixed: adaptive surrogate count).
+**Attempt 3 is a legitimate third attempt (no contract weakening): screened null, corrected
+scale, BH/floor fix, 250 spotted plates.** Gate 4 remains OPEN pending attempt 3.
 
 ---

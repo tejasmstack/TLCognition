@@ -41,6 +41,7 @@ EXTRACTIONS = ("mean", "median", "trimmed20")
 PEAK_MODELS = ("emg", "bigauss", "raw_max")
 Z_FLOOR = 3.0
 BH_Q = 0.10
+MAX_SURROGATES = 400   # adaptive cap: enough for m = 40 candidates at q = 0.10
 WIDTH_FRAC_NOMINAL = 0.18  # nominal spot sigma as fraction of lane pitch (corpus-calibrated)
 
 
@@ -318,8 +319,13 @@ def scan_lane_shared(
     # recorded diagnostic, not the operative null: on spotted lanes it inherits the strongest
     # spot's spectral power and suppresses real neighbours (D-010, measured).
     r0, r1 = analysable_rows
+    # The Davison-Hinkley floor 1/(N+1) must sit below BH's strictest threshold q/m, or a
+    # candidate that beats EVERY surrogate is rejected for lack of p-resolution, not evidence
+    # (found: a 20-sigma spot on a clipped lane with m=7 candidates, N=60). Draw more when needed.
+    n_needed = max(n_surrogates, int(np.ceil(len(peaks) / BH_Q)) + 1)
+    n_draw = min(n_needed, MAX_SURROGATES)
     s1_max: list[float] = []
-    for _ in range(n_surrogates):
+    for _ in range(n_draw):
         nprof = s1_gutter_profile(od, od_valid, gutters, window_cols, analysable_rows, rng)
         if nprof is None:
             nprof = s2_iaaft_profile(prof[r0:r1], rng)

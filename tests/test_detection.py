@@ -121,7 +121,7 @@ def test_k_eff_duplicates_collapse():
     v2 = rng.integers(0, 2, size=(4, 200))
     assert k_eff(v2) > 2.5
     w = config_weights(v)
-    assert np.allclose(w, 0.25)
+    assert np.allclose(w, 1.0)  # D-015: weights sum to K
 
 
 def test_mc_p_value_floor_and_monotone():

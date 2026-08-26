@@ -162,3 +162,27 @@ reported per family, so a contaminated tile is visible, not pooled away).
 **Lesson:** a null built from real data must be shown to be signal-free BEFORE it is used to
 judge a detector; "lowest-p95 band" is a heuristic for calibration statistics, not a proof of
 emptiness.
+
+## M-010 · The Gate 4 finding's diagnosis was wrong: the "real-texture phantoms" were P33's spot halos
+**Symptom:** GATE4_FINDING.md attributed the pooled-FP failure to "coherent structure in real
+texture ... decidable only by human adjudication". The independent adversarial reviewer mapped
+every textured-blank phantom back to tile coordinates: at a >= 0.5, 102/102 sit in tile rows
+89-98 or 147-156 (uniform expectation 1.85 per 5-row bin) — P33 rectified rows ~168 and ~226,
+where P33 carries a row of four broad spots and a diffuse lane-1 spot whose halos extend into
+every gutter (residual dips to -26 MAD at the plate's right edge). Mirror pairs (e.g. seed 8014
+rows 69.96/206.63) were the same feature and its reflection.
+**Wrong hypothesis:** "gutters are chemistry-free by construction" (A-017). False for broad spots
+and halos; the ±0.275-pitch+2 px gutter is inside the halo footprint. Also 7 of 42 tile columns
+were od_valid=False constants, lightening the S1 null further.
+**Actual cause:** a null built from real data was used without a pre-registered signal-free
+screen — M-009's lesson, not learned the first time.
+**Fix (attempt 3, spec-consistent, no contract weakening):** the tile is built with a
+PRE-REGISTERED screen: drop invalid columns; smooth each column at the nominal FWHM; drop every
+row where any column's smoothed residual exceeds 4 MAD (with a 2-FWHM margin); keep the largest
+remaining contiguous block (>= 60 rows); record what was excised in the evidence. Second: the
+agreement scale is corrected (D-015). Third: the 20-sigma miss at seed 9021 is investigated.
+**Test added:** the battery evidence now records the tile screen (rows/columns excised, the
+per-column max |smoothed residual| in MAD) so a contaminated null is visible, not inferred.
+**Lesson:** when a null and a detector disagree, locate the disagreement in the null's own
+coordinates before theorising about the detector; and "by construction" claims about real
+data are hypotheses until measured.

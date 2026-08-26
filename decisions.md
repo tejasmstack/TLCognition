@@ -287,8 +287,10 @@ they fix what is being counted.
 
 ## D-013 · Gate 4: §10 forced stop invoked; interim operating point proposed, not chosen
 **Date:** 2026-08-26
-**Status:** ACCEPTED — option 1 chosen by the repository owner on 2026-08-26 (the human
-decision §10 assigns). Frozen as config/ensemble/OPERATING_POINT_v1.json.
+**Status:** ACCEPTED AS INTERIM — option 1 chosen by the repository owner on 2026-08-26; the
+adversarial review then refuted the diagnosis the options rested on (M-010): the forced stop was
+premature and attempt 3 proceeds. OPERATING_POINT_v1 stays in force until attempt 3 reports;
+its thresholds are on the pre-D-015 agreement scale (0.6 ≈ 70% weighted hit fraction, 0.4 ≈ 30%).
 **Context:** two genuine attempts (M-009, D-012) leave no operating point meeting FP ≤ 0.2/blank
 and recall ≥ 0.95 at ≥ 5σ simultaneously. The failure is confined to the real-texture null:
 on synthetic noise both arms are met within a few percent of recall at a ≥ 0.5.
@@ -307,3 +309,35 @@ reach the reported list if the real-texture structure is truly phantom; 12% of f
 spots land in the candidate list rather than the reported list.
 **Revisit if:** real blank plates exist (then the battery re-runs with a real null and this
 entry is superseded).
+
+## D-014 · Spot position convention: the MODE (darkest row), superseding D-006's mu
+**Date:** 2026-08-26
+**Status:** accepted
+**Context:** D-006 fixed position = EMG mu in truth and fit. Measured in Phase 5: on a synthetic
+EMG spot (sigma 5.4, tau 8.1) the poly3 background absorbs part of the tail (F5: spots pull the
+estimate under themselves), the observed profile is more symmetric than the rendered truth, and
+the fitted mu lands 3.2 px (0.025 Rst) from the true mu — over Gate 5's 0.01 bound, for a
+model-mismatch reason no fitter can remove.
+**Options considered:**
+  1. Keep mu; accept the bias or try to "de-absorb" the tail (model-dependent, fragile).
+  2. Position = the mode (argmax of the spot's profile), sub-pixel refined, in BOTH ground
+     truth (argmax of the rendered spot contribution at its lane column) and the fit (argmax of
+     the fitted curve). mu, sigma, tau remain shape descriptors and feed the streak statistic.
+**Decision:** option 2. It is what a chemist measures with a ruler, it is robust to tail
+absorption (the mode moves far less than mu), and it needs no deconvolution assumption.
+**Consequences:** GroundTruth gains `y_mode`; Gate 5's position error is mode-vs-mode; Rst is
+computed from modes. mu is still reported (emg_sigma_px/emg_tau_px stay as shape).
+**Revisit if:** the labelled set (Phase 6) shows chemists mark tailing spots systematically away
+from the darkest row.
+
+## D-015 · Agreement scale: config weights sum to K, not 1 (Jeffreys shrinkage as intended)
+**Date:** 2026-08-26
+**Status:** accepted
+**Context:** spec 01 §2.3: a = (Σ w_c 1[hit] + α)/(Σ w_c + α + β), α=β=0.5 — MILD shrinkage
+with Σw ≈ K. config_weights() normalised Σw = 1, so a = (hit_w + 0.5)/2 ∈ [0.25, 0.75]:
+a = 0.5 meant 50% weighted agreement, 0.7 meant 90%, and 0.8 was unattainable (reviewer).
+**Decision:** weights are scaled to Σw = K; a now spans ~[0.02, 0.98] and reads as a weighted
+hit fraction. Operating-point grids are re-tuned on that scale; D-013's interim point is
+restated in the new scale once attempt 3 reports.
+**Why:** logit(a) is a calibration feature (x1); a compressed scale throws away resolution at
+both ends, exactly what §2.5 warns costs "resolution at the top".
