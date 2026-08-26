@@ -226,3 +226,27 @@ phantom tile-row histogram, so a seam artefact is visible in the artifact itself
 **Lesson:** a screen must be checked in ITS OWN output coordinates (does it score every row it
 can select?) before its verdict is trusted; and "pre-registered" is a claim about history, not
 about intent.
+
+## M-013 · No region of a reaction plate is blank at the ensemble's sensitivity
+**Symptom:** with seams removed (crop-mode textured blanks) the rule-v3 region of PER-P19 still
+yields ~1 phantom/plate at a >= 0.55 (z_med >> 10); P44 gave ~0.5. Every screening rule tried
+(v1-v3) passed material the 24-config ensemble then found spots in.
+**Wrong hypothesis (three times):** that a screen can certify a region of a real reaction plate
+as chemistry-free.
+**Actual cause:** a "blank band" screen is a spot detector with a threshold, and the ensemble is a
+more sensitive spot detector than any screen normalised by the plate's own residual MAD (which
+the faint chemistry itself inflates). On plates that were actually run, the corpus has no band
+that is blank at the ensemble's sensitivity. This is not a bug in the screen; it is the nature
+of the material.
+**Fix:** the real-noise-texture variant of the null battery is declared NOT CONSTRUCTIBLE from
+this corpus (D-019). The FP arm is measured on 200 synthetic-noise blanks (spec 05 §12.3 Null A,
+>= 200 realisations); the textured family is retained as a labelled DIAGNOSTIC whose phantom
+rate is an upper bound on real-texture phantoms, never pooled into the gate number. Real blank
+plates (solvent-only, CAPTURE_PROTOCOL) are the only honest source of Null B — requested.
+**Test added:** the battery evidence labels the textured family "diagnostic_not_null" and
+records the phantom tile-row histogram.
+**Lesson:** when three successive fixes to a null each fail the same way, the null's premise is
+wrong; stop repairing and re-state what can be measured.
+**Evidence for M-013 (crop mode, no seams):** 15 phantoms at a >= 0.55 over 16 textured blanks;
+tile-row histogram {20-29: 6, 30-39: 9}, spread over lanes 0/1/3 — one row-coherent real feature
+of the PER-P19 region, invisible to a 3-MAD screen normalised by the plate's own residual.

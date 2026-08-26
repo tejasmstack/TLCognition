@@ -189,3 +189,14 @@ PER-P19 region) are written into the Gate 4 evidence. History: the rule replaced
 band, leaving it blind at the band edge (M-012, fixed: full-height scoring, edge discard, iid
 row-mean check). The textured FP rate is an UPPER BOUND on real-texture phantoms until the
 phantom tile-row histogram in the evidence is flat.
+
+## A-017 third amendment (M-012) · Rule v3 and what it selects
+Screen v3: lane-window spot-scale bump < 3 MAD scored over the full rectified height (>= 2.5 FWHM
+discarded at each detrend edge), >= 80 contiguous rows, AND the tile's full-width row-mean
+spot-scale bump < 3 MAD (same statistic). An iid row-mean check was tried and rejected EVERY
+real candidate (row means 15-29x the iid expectation) — real texture is row-correlated; that is
+a property of the medium, so the check was wrong, not the tiles. Under v3 exactly one region
+passes: PER-P19-Opt 3-6hr rows 85-168 (83 rows). The threshold sensitivity and the phantom
+tile-row histogram are written into the evidence so a seam artefact is visible. The textured FP
+figure remains an upper bound on real-texture phantoms; the real phantom rate on genuine blank
+plates is NOT MEASURED.

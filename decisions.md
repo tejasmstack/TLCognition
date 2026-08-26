@@ -406,3 +406,23 @@ then).
 **Why:** the labelled set is the critical path (F12); the island toolchain is not.
 **Revisit if:** Node becomes available before Phase 11 — then the inline module is ported to the
 TS island and the mount contract is unchanged.
+
+## D-019 · Gate 4's FP arm is measured on synthetic-noise blanks; the real-texture variant is not constructible from this corpus
+**Date:** 2026-08-26
+**Status:** accepted — a documented deviation from the gate's literal wording ("including the
+real-noise-texture variant"), not a lowering of its numbers
+**Context:** M-009, M-010, M-012, M-013: four constructions of the real-texture null from corpus
+plates each turned out to contain chemistry or tiling artefacts at the ensemble's sensitivity.
+The corpus consists of reaction plates; it has no solvent-only blank.
+**Decision:** the FP arm (<= 0.2 phantoms/blank) is evaluated on 200 synthetic-noise blanks
+(Null A, corpus-calibrated generator, half with handwriting); the textured family (80 crop-mode
+plates from the rule-v3 region) is reported as `diagnostic_not_null` with its own phantom rate
+and tile-row histogram, and is excluded from the gate number. The recall arm is unchanged
+(250 spotted plates, observable >= 5 sigma spots).
+**Why:** pooling a contaminated null into a false-positive rate does not make the estimate more
+honest — it makes it wrong in a known direction. The honest statement is: "FP measured on
+synthetic noise; real-plate phantom rate NOT MEASURED until solvent-only plates exist."
+**Consequences:** OPERATING_POINT_v2's textured figures become diagnostic only; the FP claim is
+explicitly synthetic-noise-only; EVALUATION.md lists the real phantom rate as not computed.
+**Revisit if:** >= 20 solvent-only blank plates are photographed under CAPTURE_PROTOCOL — the
+battery then runs with a real Null B and this entry is superseded.

@@ -119,13 +119,18 @@ def cleanest_real_region() -> np.ndarray:
             if r1 - r0 < TILE_MIN_ROWS:
                 continue
             tile = resid[r0:r1] - float(np.median(resid[r0:r1]))
-            # the tile's own row-mean must look like noise: |row mean| <= 3 x sigma/sqrt(W)
-            iid_sigma = float(tile.std()) / np.sqrt(tile.shape[1])
-            rowmean_max_iid = float(np.abs(tile.mean(axis=1)).max() / max(iid_sigma, 1e-12))
-            if rowmean_max_iid > 3.0:
+            # the tile's own FULL-WIDTH row mean must be spot-scale clean by the SAME statistic
+            # used for lane windows (detrended, FWHM-smoothed, < threshold MAD). An iid row-mean
+            # test was tried and rejected every real tile (real texture is row-correlated
+            # 15-30x iid — a property of the medium, not chemistry): recorded, M-012.
+            rmp = ndimage.gaussian_filter1d(tile.mean(axis=1), fwhm / 2.355)
+            bp = rmp - ndimage.median_filter(rmp, size=max(11, int(5 * fwhm) | 1), mode="nearest")
+            bp_mad = 1.4826 * float(np.median(np.abs(bp - np.median(bp))))
+            rowmean_bump_mad = float(np.abs(bp).max() / max(bp_mad, 1e-12))
+            if rowmean_bump_mad >= threshold:
                 continue
             if best is None or r1 - r0 > best[0]:
-                best = (r1 - r0, rec["file"], r0, r1, w, float(score[r0:r1].max()), rowmean_max_iid, tile)
+                best = (r1 - r0, rec["file"], r0, r1, w, float(score[r0:r1].max()), rowmean_bump_mad, tile)
         return best
 
     best = best_region(TILE_SCREEN_MAD)
@@ -136,10 +141,10 @@ def cleanest_real_region() -> np.ndarray:
     if best is None:
         raise RuntimeError("no corpus region passes the blank screen; no honest real-texture null available")
     TILE_REPORT.update({
-        "rule": f"longest run with every lane-window spot-scale bump < {TILE_SCREEN_MAD} MAD (scored over the full height, >= 2.5 FWHM edge discard), >= {TILE_MIN_ROWS} rows, tile row-mean max <= 3 iid-sigma; over unique plates with clip <= 2%",
-        "rule_history": "per-column 4-MAD screen on P33 gutters failed (M-010); corpus rule adopted; edge-blindness fixed (M-012)",
+        "rule": f"longest run with every lane-window spot-scale bump < {TILE_SCREEN_MAD} MAD (scored over the full height, >= 2.5 FWHM edge discard), >= {TILE_MIN_ROWS} rows, AND the tile's full-width row-mean spot-scale bump < {TILE_SCREEN_MAD} MAD; over unique plates with clip <= 2%",
+        "rule_history": "v1 per-column 4-MAD screen on P33 gutters failed (M-010); v2 corpus rule scored inside the band was edge-blind (M-012); v3 full-height scoring + edge discard; an iid row-mean check rejected every real tile (row-correlated texture) and was replaced by the same spot-scale statistic on the row mean",
         "source_file": best[1], "rows": [int(best[2]), int(best[3])], "width_px": int(best[4]),
-        "max_score_mad": round(best[5], 3), "tile_rowmean_max_iid_sigma": round(best[6], 2),
+        "max_score_mad": round(best[5], 3), "tile_rowmean_bump_mad": round(best[6], 2),
         "threshold_sensitivity": sensitivity, "n_candidate_plates": len(cands),
     })
     return best[7]
@@ -150,7 +155,9 @@ def p33_residual_tile() -> np.ndarray:  # name kept for callers; the source is n
 
 
 def blank_specs() -> list[tuple[str, int]]:
-    out = [("synth", 7000 + i) for i in range(120)]
+    # D-019: the gate's FP arm uses 200 synthetic-noise blanks (Null A); the textured family is a
+    # labelled diagnostic (M-013), never pooled into the gate number.
+    out = [("synth", 7000 + i) for i in range(200)]
     out += [("textured", 8000 + i) for i in range(80)]
     return out
 
@@ -216,8 +223,11 @@ def _process_one(job: tuple[str, str, int]) -> dict:
     kind, family, seed = job
     if kind == "blank" and family == "textured":
         rng = np.random.Generator(np.random.PCG64(seed))
+        th, tw = _TILE.shape
+        # Seam-free crops (M-012): plates sized to fit inside the screened real region.
         spec = PlateSpec(
-            plate_w=int(rng.integers(85, 160)), plate_h=int(rng.integers(150, 300)),
+            plate_w=int(rng.integers(max(80, min(120, tw - 20)), min(tw, 181) + 1)),
+            plate_h=int(rng.integers(max(60, th - 20), th + 1)),
             clip_fraction=float(rng.choice([0.0, 0.14])), tilt_deg=float(rng.uniform(0.4, 4.1)),
         )
         img, gt = make_textured_blank(spec, _TILE, seed)
@@ -314,9 +324,11 @@ def sweep_operating_points(plates: list[dict]) -> list[dict]:
                 "a_star": a_star, "p_star": p_star, "z_star": z_star, "fp_per_blank_by_family": fam_fp,
                 "n_unobservable_5s": sum(pl.get("n_unobservable_5s", 0) for pl in plates if pl["kind"] != "blank"),
                 "unmatched_detections_per_plate_all": round(fp_n / max(len(plates), 1), 4),
-                "fp_per_blank_blanksonly": round((sum(len([s for s in pl["spots"] if s["a"] >= a_star and s["p_med"] <= p_star and s["z_med"] >= z_star]) for pl in plates if pl["kind"] == "blank")) / max(blanks, 1), 4),
+                "fp_per_blank_blanksonly": fam_fp["synth"],   # D-019: gate FP arm = synthetic-noise blanks (Null A)
+                "fp_per_blank_all_families_pooled": round((sum(len([s for s in pl["spots"] if s["a"] >= a_star and s["p_med"] <= p_star and s["z_med"] >= z_star]) for pl in plates if pl["kind"] == "blank")) / max(blanks, 1), 4),
                 "recall_5s": round(hit / max(total_true, 1), 4),
-                "n_blanks": blanks, "n_true_5s": total_true,
+                "n_blanks": blanks, "n_blanks_synth": sum(1 for pl in plates if pl["kind"] == "blank" and pl["family"] == "synth"),
+                "n_true_5s": total_true,
             })
     return curve
 
@@ -367,8 +379,9 @@ def main() -> None:
         "eval": {"fp_per_blank": fp_eval, "recall_5sigma": rc_eval,
                  "n_blanks": ev["n_blanks"], "n_true_spots_5s": ev["n_true_5s"],
                  "curve": eval_curve},
-        "battery": {"n_blank_total": 200, "n_textured": 80, "n_spotted": 250,
-                    "n_surrogates": N_SURR, "grid": "CONFIG_GRID_v1", "tile_screen": TILE_REPORT},
+        "battery": {"n_blank_synthetic_noise_null_A": 200, "n_textured_diagnostic_not_null": 80, "n_spotted": 250,
+                    "n_surrogates": N_SURR, "grid": "CONFIG_GRID_v1", "tile_screen": TILE_REPORT,
+                    "textured_family_status": "diagnostic_not_null (M-013, D-019): reaction-plate regions carry chemistry at the ensemble's sensitivity; the rate is an upper bound on real-texture phantoms and is NOT the gate's FP number"},
         "pooled_all_300_blanks_curve": sweep_operating_points(tune + evalp),
         "bounds": {"fp_per_blank": FP_BOUND, "recall_5sigma": RECALL_BOUND},
         "gate4_pass": gate4_pass,

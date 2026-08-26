@@ -413,25 +413,33 @@ def make_textured_blank(
     )
     rng = np.random.Generator(np.random.PCG64(seed))
     h, w = blank.plate_h, blank.plate_w
-    # Mirror-tile the residual to cover the plate, with a seeded phase shift.
     th, tw = residual_tile.shape
-    reps_y = h // th + 2
-    reps_x = w // tw + 2
-    rows = []
-    for iy in range(reps_y):
-        row = []
-        for ix in range(reps_x):
-            t = residual_tile
-            if iy % 2 == 1:
-                t = t[::-1]
-            if ix % 2 == 1:
-                t = t[:, ::-1]
-            row.append(t)
-        rows.append(np.concatenate(row, axis=1))
-    big = np.concatenate(rows, axis=0)
-    oy = int(rng.integers(0, th))
-    ox = int(rng.integers(0, tw))
-    field = big[oy : oy + h, ox : ox + w]
+    if h <= th and w <= tw:
+        # Seam-free: a random CROP of the real residual (no tiling at all). Preferred whenever the
+        # plate fits inside the screened region (M-012: mirror seams manufactured phantoms).
+        oy = int(rng.integers(0, th - h + 1))
+        ox = int(rng.integers(0, tw - w + 1))
+        field = residual_tile[oy : oy + h, ox : ox + w]
+    else:
+        # Mirror-tile the residual to cover the plate, with a seeded phase shift (seams are a
+        # known artefact source — the battery reports the phantom tile-row histogram).
+        reps_y = h // th + 2
+        reps_x = w // tw + 2
+        rows = []
+        for iy in range(reps_y):
+            row = []
+            for ix in range(reps_x):
+                t = residual_tile
+                if iy % 2 == 1:
+                    t = t[::-1]
+                if ix % 2 == 1:
+                    t = t[:, ::-1]
+                row.append(t)
+            rows.append(np.concatenate(row, axis=1))
+        big = np.concatenate(rows, axis=0)
+        oy = int(rng.integers(0, th))
+        ox = int(rng.integers(0, tw))
+        field = big[oy : oy + h, ox : ox + w]
 
     # Rebuild make_plate's photometric path with the real texture as the noise term.
     rng2 = np.random.Generator(np.random.PCG64(seed))
