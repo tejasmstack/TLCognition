@@ -191,3 +191,30 @@ system-wide, and detection thresholds are calibrated in this unit against the nu
 (Phase 4), so the scale convention cancels where it matters.
 **Revisit if:** Gate 4 cannot meet FP<=0.2/plate and recall>=0.95 simultaneously and the
 operating-point analysis traces the failure to the noise unit's scale convention.
+
+## D-009 · Phase 4 follows spec 01's ensemble design, not the eval's literal 32-grid
+**Date:** 2026-08-26
+**Status:** accepted
+**Context:** The brief's Phase 4 heading says "the 32-pipeline agreement ensemble" (the grid the
+prior evaluation ran: 4 radii x 4 models x 2 thresholds). Spec 01 §2.3 — binding on "the
+ensemble design" per the brief's own reading table — shows that grid's failure mode (near-
+duplicate configs; at rho=0.8, K_eff = 1.24 of 32) and prescribes: 5 decorrelated axes (radius
+8/16/32/64 log-spaced; background models morphological-opening/rolling-ball, running-median,
+arPLS lambda=1e5, 2-D Legendre order 3; sigma-variant; densitogram extraction mean/median/
+trimmed-20; peak model EMG/bi-Gaussian/raw-max) -> 576 run offline -> prune by measured
+performance -> greedy max-min diversity to K=24 (CONFIG_GRID_v1, hashed) with K_eff and config
+weights reported.
+**Decision:** implement spec 01's design. The brief wins only on NN1-5/F1-15 conflicts; there is
+none here — F6's substance (ensemble agreement as the core evidence, no saturation assumption)
+is preserved and strengthened. Threshold policy likewise per spec 01 §2.2: per-plate empirical
+surrogate nulls (S1 gutter transplant, S2 IAAFT, S4 synthetic blanks incl. real-texture) with
+Davison-Hinkley MC p-values and BH q=0.10 — never a bare "3-sigma rule". The noise unit is
+spec 01 §2.1's sigma0 + full-autocovariance matched-filter z (radius-free, fixed 6 px high-pass);
+D-008's difference-based estimator remains as the Gate 3 radius-independence tripwire.
+**Why:** an agreement fraction over near-duplicates measures redundancy, not robustness; the
+spec's K_eff >= 4 CI gate (G10) makes that failure detectable instead of latent.
+**Consequences:** more implementation surface (arPLS, Legendre, opening, IAAFT, biweight
+midcovariance); Gate 4's numeric criteria unchanged (FP <= 0.2/plate on >= 200 blanks AND
+recall >= 0.95 at >= 5 sigma, simultaneously).
+**Revisit if:** K_eff on the selected 24 falls below 4 on the dev set (G10), or the 576-sweep
+compute becomes prohibitive on this hardware (then shrink axes, recorded here).

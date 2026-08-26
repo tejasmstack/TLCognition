@@ -125,3 +125,12 @@ iterations, mask rule `keep if g > bg - 0.5*mean|bg-g|` (ported constants from
 tlc-spec-impl/normalize.py:146-152); median kernel = 2R+1; rolling ball in the ImageJ 8-bit
 convention (M-007). Untrusted pixels (invalid/clipped) are excluded via normalized convolution
 or pre-filled from the Gaussian estimate; they never inform a fit.
+
+## A-013 · CONFIG_GRID_v1 is selected on synthetic dev plates (no human labels exist yet)
+Spec 01 §2.3's grid pruning needs measured recall on adjudicated-true spots and FP on blank
+plates. Pre-Gate-6 there are no adjudicated real spots, so the 576->24 selection runs on a
+synthetic dev set (corpus-calibrated generator, Gate 1) plus synthetic/real-texture blanks.
+Per §3.4 the grid selection is a fitted quantity: when real labels exist (Phase 6+), selection
+is re-run inside the CV loop and the synthetic-selected grid is treated as version 1, never as
+evidence of real-data performance. The synthetic dev seeds are disjoint from every seed used in
+gate evidence elsewhere.
