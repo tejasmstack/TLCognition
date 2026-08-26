@@ -204,7 +204,11 @@ def _init_worker(tile: np.ndarray) -> None:
 from tlc.core.hashing import tree_fingerprint  # noqa: E402
 
 _CODE_FP = tree_fingerprint(ROOT / "tlc" / "pipeline", ROOT / "tlc" / "synth")[:12]
-CACHE_DIR = ROOT / "reports" / "gate4_cache" / _CODE_FP   # M-012: stale caches never reused
+# M-012: stale caches are never reused. The code fingerprint covers tlc/pipeline + tlc/core; the
+# harness's own truth-extraction is not in it, so RECORD_SCHEMA is bumped whenever this file changes
+# what a cached record MEANS (M-017 was cached under the previous schema).
+RECORD_SCHEMA = "v2_mode_truth"
+CACHE_DIR = ROOT / "reports" / "gate4_cache" / f"{_CODE_FP}_{RECORD_SCHEMA}"
 
 
 def process_one(job: tuple[str, str, int]) -> dict:
@@ -272,7 +276,7 @@ def _process_one(job: tuple[str, str, int]) -> dict:
         for s in spots:
             true_amp = None
             for t in gt.spots:
-                if t.lane == lane and abs(s.row - t.y) <= tol:
+                if t.lane == lane and abs(s.row - t.y_mode) <= tol:
                     true_amp = max(true_amp or 0.0, t.amplitude_sigma)
             rows.append({"lane": lane, "row": round(s.row, 2), "a": round(s.agreement, 4),
                          "p_med": round(s.p_med, 4), "z_med": round(s.z_med, 2),
@@ -283,15 +287,18 @@ def _process_one(job: tuple[str, str, int]) -> dict:
     for tr in gt.spots:
         if not tr.quantifiable or tr.amplitude_sigma < 5.0:
             continue
-        y0, y1 = int(max(0, tr.y - 2 * tr.sigma_y)), int(min(clip_rect.shape[0], tr.y + 2 * tr.sigma_y + 1))
+        y0, y1 = int(max(0, tr.y_mode - 2 * tr.sigma_y)), int(min(clip_rect.shape[0], tr.y_mode + 2 * tr.sigma_y + 1))
         x0, x1 = int(max(0, tr.x - hw)), int(min(clip_rect.shape[1], tr.x + hw + 1))
         box = clip_rect[y0:y1, x0:x1]
         box_clip = float((box >= 0.5).mean()) if box.size else 1.0
         if box_clip >= 0.5:
             unobservable += 1  # F1: nobody can see a spot under saturated pixels (D-012)
             continue
-        truths_5s.append({"lane": tr.lane, "y": round(tr.y, 2), "amp": tr.amplitude_sigma,
-                          "box_clip": round(box_clip, 3)})
+        # M-017: match against the MODE, which is the position convention the pipeline reports
+        # (D-014) and the one Gate 5 scores. `tr.y` is the EMG shape parameter mu; for a tailed spot
+        # it sits 3-7 px from the darkest row, which is as large as the matching tolerance itself.
+        truths_5s.append({"lane": tr.lane, "y": round(tr.y_mode, 2), "y_mu": round(tr.y, 2),
+                          "amp": tr.amplitude_sigma, "shape": tr.shape, "box_clip": round(box_clip, 3)})
     return {"kind": kind, "family": family, "seed": seed, "spots": rows,
             "truths_5s": truths_5s, "n_unobservable_5s": unobservable, "tol": tol}
 

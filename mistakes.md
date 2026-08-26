@@ -297,3 +297,24 @@ that merely memorised those plates would have shown 0% and passed.
 streaks missed. Both numbers are recorded in `reports/exp_streak_rule_heldout.json`, and the gate
 evidence now cites the held-out run alongside its own. Any future streak-rule change must repeat the
 held-out measurement; a fix validated only on the gate's seeds is not a fix.
+
+## M-017 — Gate 4 measured recall against the wrong truth coordinate (2026-08-26)
+
+**What happened.** `scripts/gate4_check.py` matched detections to `SpotTruth.y` — the EMG shape
+parameter mu — while the pipeline reports, and Gate 5 scores, the MODE (D-014: the darkest row). For
+a Gaussian these coincide. For a tailed spot they do not: measured on the gate's own plates,
+|y_mode − mu| is 3.3–6.9 px against a matching tolerance of 4.1–6.6 px. Half of every gate-4 plate's
+spots are EMG by construction, so a systematic share of correctly-found bands were scored as misses.
+
+**How it surfaced.** Diagnosing the recall arm (`scripts/exp_recall_miss.py`) showed 6 of 23 eval
+misses had a fully-passing ensemble cluster just outside the tolerance, at 1.05–1.25 x tol — a
+displacement too consistent to be noise, and only on EMG spots.
+
+**Fix.** Gate 4 matches `tr.y_mode`, like Gate 5, and the cache was deleted and rebuilt. The recall
+figures published before this fix (0.927 eval, and the whole attempt-1..3 history in
+`reports/GATE4_FINDING.md`) understate recall by an unknown amount and must be re-read from the
+regenerated evidence.
+
+**The general lesson, third time in this build (M-005, M-011, now this).** When a measurement
+disagrees with the thing it measures, check the coordinate convention on both sides before changing
+the algorithm. Two of the three convention bugs so far were in the yardstick, not the pipeline.
