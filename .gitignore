@@ -28,3 +28,6 @@ reports/gate4_cache/
 # local run stores (demo and dev); never part of the audit trail
 demo_data/
 data/
+frontend/node_modules/
+frontend/.next/
+frontend/out/
