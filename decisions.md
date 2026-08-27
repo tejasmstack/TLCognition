@@ -697,3 +697,23 @@ Two things follow. Real bands behave exactly like the generator's — which is t
 retracted M-025's width claim. And the real lanes being flagged are genuinely *intermediate*: twice
 the breadth of a band, half that of a smear. They are broad bands and tailing lanes, not zones, which
 is why suppressing them wholesale was wrong.
+
+## D-032 WITHDRAWN — width-aware ensemble clustering, measured and rejected (2026-08-27)
+The change made the clustering tolerance scale with the matched-filter template width instead of a
+nominal constant. It did what it was designed to do on a wide band — agreement 0.45 → 0.89 at 4.4x
+nominal — and it is withdrawn anyway, because the evidence does not support shipping it:
+
+| variant | Gate 5 position p95 (bound 0.01) | counted bands, 66 real plates |
+|---|---|---|
+| fixed nominal tolerance (shipped) | **0.00984 PASS** | 119 |
+| width-aware, cap 6x nominal | 0.01047 FAIL | 121 |
+| width-aware, cap 2x nominal (the measured p95 band width) | 0.01128 FAIL | 121 |
+
+It costs the position arm at every cap and buys two bands out of 119. The premise that motivated it —
+that real bands are 2.75x wider than the generator's — was retracted the same day (M-025 correction):
+real detected bands are 1.00x nominal at the median.
+
+The mechanism of the cost is worth keeping: merging clusters averages together more per-config centre
+estimates, and the extra ones are precisely those that disagreed enough to have formed their own
+cluster. If wide bands ever do matter here, the fix belongs in the per-config position estimate, not
+in the clustering.

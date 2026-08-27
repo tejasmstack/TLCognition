@@ -1,0 +1,1 @@
+{"file": "PER-P19-Opt 4-4hr_18th July26.png", "n_refusals": 5, "n_spots": 2, "refusal_codes": ["E_FRAME_OVERRUN", "E_LANE_COUNT_UNKNOWN", "E_NO_FRONT", "E_NO_REFERENCE_LANE"], "schema_valid": true, "silent_nulls": [], "status": "degraded", "verdict": "ok"}

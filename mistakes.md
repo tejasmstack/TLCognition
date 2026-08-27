@@ -542,3 +542,24 @@ calibrated for illumination, noise, clipping and geometry but never for what a b
 on the synthetic battery (0% false, 19/19 caught). `shape_ratio` and `run_over_own_width` are still
 computed and carried in the verdict as diagnostics, because the next round needs them. Nothing is
 re-tuned until the generator renders bands and streaks that look like this lab's plates.
+
+## M-029 — A streaking lane lost its positions as well as its areas (2026-08-27)
+
+**What happened.** Spec 02 H05 is explicit: on a streaking lane *"Position (rst) may still be reported
+with a widened interval"* and only the area-derived quantities are withheld. The runner refused the
+position too. On the real corpus that cost **35 bands their Rst**, including a band at 0.94 ensemble
+agreement and SNR 17 — and because the standard lane was among the lanes flagged, it also cost those
+plates their Rst anchor, which cascades: no anchor means no Rst for any band on the plate, which means
+the reaction reading has nothing to compare and returns "cannot conclude".
+
+**How it was found.** By scanning all 66 real plates and asking why 28 of them yield no counted band.
+17 of the 35 bands found on those plates were `suppressed_streak`.
+
+**Fix.** A spot in a streaking lane keeps its position, with the interval widened by the lane's own
+measured breadth, and still refuses every area. Bands carrying a position across the corpus went
+**130 → 148**; counted bands, the synthetic false-streak rate (0%) and the true-streak catch rate
+(19/19) are all unchanged, and Gate 5 still passes.
+
+**The lesson.** "Suppress the lane" was implemented as "suppress everything about the lane". The spec
+distinguished the two, and the distinction was the difference between a plate that reads and a plate
+that says nothing.

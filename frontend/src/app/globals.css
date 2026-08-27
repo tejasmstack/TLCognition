@@ -1,0 +1,50 @@
+@import "tailwindcss";
+
+/* The palette is deliberately narrow. Colour never carries meaning on its own: every state also has
+   a word, a fill pattern and a position. Red is reserved for system faults — never for a refusal,
+   which is the system working correctly. */
+:root {
+  --ink: #16181c;
+  --ink-2: #3d434d;
+  --muted: #6b7280;
+  --line: #dcdfe4;
+  --line-2: #eef0f3;
+  --paper: #ffffff;
+  --paper-2: #f7f8fa;
+  --struct: #33506b;
+  --struct-2: #eaf0f6;
+  --accent: #1f4e8c;
+  --warn: #8a6d3b;
+  --fault: #a8172f;
+}
+
+@theme inline {
+  --color-ink: var(--ink);
+  --color-ink2: var(--ink-2);
+  --color-muted: var(--muted);
+  --color-line: var(--line);
+  --color-line2: var(--line-2);
+  --color-paper: var(--paper);
+  --color-paper2: var(--paper-2);
+  --color-struct: var(--struct);
+  --color-struct2: var(--struct-2);
+  --color-accent: var(--accent);
+  --color-warn: var(--warn);
+  --color-fault: var(--fault);
+  --font-sans: ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
+  --font-mono: ui-monospace, "SF Mono", Menlo, monospace;
+}
+
+html, body { background: var(--paper); color: var(--ink); }
+body { font-family: var(--font-sans); -webkit-font-smoothing: antialiased; }
+.num { font-variant-numeric: tabular-nums; font-feature-settings: "tnum"; }
+.hatch-refused {
+  background-image: repeating-linear-gradient(45deg, var(--struct) 0 2px, transparent 2px 6px);
+}
+.hatch-partial {
+  background-image: linear-gradient(90deg, var(--struct) 50%, transparent 50%);
+}
+details > summary { cursor: pointer; list-style: none; }
+details > summary::-webkit-details-marker { display: none; }
+details > summary::before { content: "▸ "; color: var(--muted); }
+details[open] > summary::before { content: "▾ "; }

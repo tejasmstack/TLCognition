@@ -14,16 +14,15 @@ from tlc.pipeline.configs import Config, LanePeak, detect_lane
 from tlc.pipeline.noise import NoiseModel
 
 JEFFREYS = 0.5
-MATCH_TOL_FWHM = 0.4   # tau = 0.4 x spot FWHM (spec 01 §2.3)
-# D-032: the tolerance scales with the width the DATA shows, not with a nominal constant. Each peak
-# carries the FWHM of the matched-filter template that fired; on a band several times wider than
-# nominal the configs' centre estimates scatter proportionally, and a fixed tolerance shatters one
-# band into several clusters that each fall below the reporting bar (M-025).
-# The cap comes from the measured corpus, not from taste: real detected bands run 1.00x nominal at
-# the median and 1.93x at the 95th percentile (reports/band_widths.json, 150 bands over 66 plates),
-# so widening past 2x is widening for a band this lab does not produce — and it costs position
-# accuracy, which Gate 5 measures (D-032 amendment).
-MATCH_TOL_MAX_FWHM_MULT = 2.0
+MATCH_TOL_FWHM = 0.4   # tau = 0.4 x nominal spot FWHM (spec 01 §2.3)
+# D-032 WITHDRAWN (2026-08-27). Scaling this tolerance with the observed template width rescued a
+# band 4.4x wider than nominal (agreement 0.45 -> 0.89) but cost position accuracy at every cap
+# tried — Gate 5's p95 went 0.0098 (fixed) -> 0.0105 (cap 6x) -> 0.0113 (cap 2x) against a 0.01
+# bound — and bought only +2 counted bands across 66 real plates, because real bands are 1.00x
+# nominal at the median (reports/band_widths.json). The premise that motivated it was retracted with
+# M-025. Merging clusters averages more centre estimates together, and the extra estimates are the
+# ones that disagree; that is the whole cost. If wide bands ever matter here, the fix belongs in the
+# per-config position estimate, not in the clustering.
 
 
 @dataclass(frozen=True)
@@ -104,16 +103,7 @@ def run_ensemble_lane(
         w = w * (len(grid) / w.sum())  # D-015: agreement on the sum-to-K scale
 
     sigma_nom = 0.18 * pitch
-    fwhm_nom = 2.355 * max(1.0, sigma_nom)
-    tol_nom = MATCH_TOL_FWHM * fwhm_nom
-    tol_max = MATCH_TOL_FWHM * MATCH_TOL_MAX_FWHM_MULT * fwhm_nom
-
-    def match_tol(pk: LanePeak, cl: dict) -> float:
-        """Half the matching window, in px, for this peak against this cluster: 0.4 x the widest
-        template either side actually used, floored at the nominal spot and capped so that merging
-        cannot swallow a whole lane."""
-        widths = [pk.template_fwhm] + [p.template_fwhm for p in cl["configs"].values()]
-        return float(min(max(tol_nom, MATCH_TOL_FWHM * max(widths)), tol_max))
+    tol = MATCH_TOL_FWHM * 2.355 * max(1.0, sigma_nom)
 
     # Greedy clustering of accepted peaks by position, strongest evidence first.
     entries = [
@@ -127,7 +117,7 @@ def run_ensemble_lane(
     for ci, pk in entries:
         placed = False
         for cl in clusters:
-            if abs(pk.row - cl["row"]) <= match_tol(pk, cl) and ci not in cl["configs"]:
+            if abs(pk.row - cl["row"]) <= tol and ci not in cl["configs"]:
                 n = len(cl["configs"])
                 cl["row"] = (cl["row"] * n + pk.row) / (n + 1)
                 cl["configs"][ci] = pk

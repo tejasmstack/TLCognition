@@ -311,3 +311,18 @@ Changing the reported tier from agreement >= 0.60 (what the config actually reso
 `scripts/gate5_check.py` had also named `OPERATING_POINT_v2.json` directly (the same M-018 pattern);
 it now resolves the operating point through the shipped pipeline config, as do the two Gate 4
 diagnostics and the per-commit sentinel.
+
+## Gate 5 — re-run after the H05 position fix (2026-08-27): PASS
+
+| arm | value | gate |
+|---|---|---|
+| Rst error p95, resolved spots | **0.00984** (median 0.0022, max 0.0240, n = 174) | ≤ 0.01 |
+| false streak flags on clean lanes | **0.0%** (0 / 221) | ≤ 2% |
+| true streak lanes flagged and unquantified | **19 / 19** | all |
+| real corpus: result or typed refusal | **61 / 61**, 0 silent nulls | all |
+
+Two changes since the last run, one kept and one withdrawn. Kept: D-036, a streaking lane reports its
+positions with a widened interval and withholds only areas, which recovered 18 band positions across
+the real corpus at no cost to any arm. Withdrawn: D-032, width-aware clustering, which cost the
+position arm at every cap tried and bought two counted bands out of 119 — the numbers are in the
+decision entry.
