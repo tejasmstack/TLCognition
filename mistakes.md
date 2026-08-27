@@ -436,3 +436,81 @@ falling back to their blind pass if they have only done Pass A. The blind pass i
 the evidence for a future unaided-vs-aided metric — but it is no longer a second voice. A test asserts
 that one reviewer's two passes stay `provisional` with zero double-labelled, and that a second reviewer
 moves it to agreed/disputed.
+
+## M-025 — Real bands are ~2.75x wider than the synthetic ones, and the ensemble shattered them (2026-08-27)
+
+**What happened.** Demoing the system on `MEHQ-P33` — the cleanest plate in the corpus, 0% clipping,
+sigma_od 0.0017 — produced **zero counted bands** on a lane carrying an 87-sigma feature. Tracing it:
+
+1. Every `arpls` and `poly3` config found the band; every `median` and `rolling_ball` config found
+   nothing. That looked like the background models absorbing a wide band.
+2. It was not. 22 of 24 configs DID detect it. The ensemble's clustering tolerance is a fixed
+   fraction (0.4) of a NOMINAL spot FWHM, while the configs' centre estimates on a 57-px-wide band
+   scatter over ~18 px — so one band was split into clusters of 11 + 9 + 2, and the largest reached
+   agreement 0.45 against a 0.50 reporting bar. A band 22 of 24 pipelines agreed on was not counted.
+3. Measured band widths, real vs synthetic (12 plates, FWHM measured on the strongest band outside
+   the handwriting and origin zones, divided by the nominal spot width the pipeline assumes):
+   **real median 2.75x, range 0.45-5.97; the synthetic generator produces 1.10x.**
+4. A width sweep on synthetic plates reproduces the failure exactly: agreement 0.98 at 1.0-2.5x
+   nominal, 0.70 at 3.3x, **0.45 at 4.4x** — an 18-sigma band, invisible to the reporting tier.
+
+**Why it matters.** Gate 4's recall of 0.955 was measured on a battery whose bands are
+unrepresentatively narrow, so it does not transfer to the plates this lab actually shoots. This is
+the synthetic-generator fidelity gap that Gate 1 did not test: Gate 1 calibrated illumination, noise,
+clipping and geometry against corpus statistics — never spot WIDTH.
+
+**Fix.** `MATCH_TOL` becomes width-aware: the clustering window is 0.4 x the widest matched-filter
+template either side actually used, floored at the nominal spot and capped at 6x nominal (D-032).
+Re-measured: agreement 0.98 through 3.3x, 0.89 at 4.4x, 0.74 at 5.6x.
+
+**Still owed:** the synthetic batteries must carry the real width distribution, and Gates 4 and 5
+must be re-run against it. Until they are, their published numbers describe a narrower world than the
+one the lab works in.
+
+## M-026 — An unverified detection change rode into main on an unrelated commit (2026-08-27)
+
+**What happened.** The width-aware clustering fix (M-025) was deliberately parked with `git stash`
+because it changes detection and invalidates the gate evidence. It was restored to the working tree
+to run a measurement, and the next commit — the reaction reading, an unrelated change — used
+`git add -A` and swept it in. `tlc/pipeline/ensemble.py` reached main in `2ac0e75` without its gates
+being re-run.
+
+**Consequence.** For the length of that commit, `reports/gate4_evidence.json` and
+`reports/gate5_evidence.json`, and therefore `EVALUATION.md` and `/method`, described a detector that
+is no longer the one on main. No number became wrong — they became STALE, which is harder to notice.
+
+**Fix.** The gates are being re-run against the current code (task in flight), and the evidence files
+carry a code fingerprint precisely so this is detectable. The process fix is the one this build keeps
+relearning: `git add -A` is not a review. Stage what the commit message describes.
+
+## M-027 — Two streak statistics chased in a row, both defeated by the same simulator gap (2026-08-27)
+
+**What happened.** The corpus scan showed 28 of 66 real plates yielding no counted band, and on those
+plates 17 of the 35 bands the ensemble found were suppressed as streaks — including one at agreement
+**0.94** and SNR 17. The streak rule, tuned to 0% false flags on synthetic plates (D-027), fires on
+ordinary real lanes.
+
+Diagnosing it, two candidate statistics were built and both measured out:
+
+1. **`plateau`** — the fraction of the above-2-sigma run that sits above half its maximum — is
+   AMPLITUDE-dependent, not shape-dependent. For one Gaussian it reads 0.87 at 5 sigma and 0.48 at
+   40 sigma. So on real plates ordinary weak bands read as "flat-topped" and were suppressed. This
+   part of the diagnosis is solid.
+2. **`shape_ratio` = W25/W50** is amplitude-independent by construction (1.414 for a Gaussian at
+   every amplitude, 1.000 for a flat smear). It does not separate the two populations on the current
+   generator: clean lanes p50 1.40, synthetic streaks p50 1.17 with p90 1.77 — overlapping.
+3. **`run_over_own_width`** — run length in units of the band's own W50 — separates them backwards
+   (clean p50 1.59, streaks p50 1.32), because a pure smear IS its own width, so the ratio collapses
+   to ~1 for exactly the case it was meant to catch.
+
+**The real lesson.** A band and a streak look the same in a 1-D profile except in EXTENT relative to
+the migration distance — and the current generator's streaks span 0.32 of the lane at the median
+while its clean lanes reach 0.38, so the two populations genuinely overlap in the simulator. Every
+threshold derived on that simulator is being fitted to an artefact. This is M-025's lesson recurring:
+**the generator's fidelity is upstream of every detection threshold in the build, and it was
+calibrated for illumination, noise, clipping and geometry but never for what a band looks like.**
+
+**What was done.** The decision logic is restored to the D-027 rules, which have measured behaviour
+on the synthetic battery (0% false, 19/19 caught). `shape_ratio` and `run_over_own_width` are still
+computed and carried in the verdict as diagnostics, because the next round needs them. Nothing is
+re-tuned until the generator renders bands and streaks that look like this lab's plates.

@@ -42,6 +42,8 @@ def one(seed: int) -> list[dict]:
                      "reason": None if st is None else st.reason,
                      "resid_run": None if st is None else round(st.residual_run_fwhm, 3),
                      "plateau": None if st is None else round(st.plateau_frac, 3),
+                     "shape": None if st is None or st.shape_ratio is None else round(st.shape_ratio, 3),
+                     "runown": None if st is None or st.run_over_own_width is None else round(st.run_over_own_width, 3),
                      "n_peaks_in_run": None if st is None else st.n_peaks_in_run,
                      "fits": [{"sig": round(sp.fit.sigma, 2), "tau_over_sig": round(sp.fit.tau / max(sp.fit.sigma, 1e-9), 2),
                                "amp": round(sp.fit.amp, 4)}
@@ -85,7 +87,7 @@ def main() -> int:
     for r in false_flags:
         by_rule[which(r["reason"])] = by_rule.get(which(r["reason"]), 0) + 1
     stats = {}
-    for key in ("frac", "run_fwhm", "tail", "resid_run", "plateau"):
+    for key in ("frac", "run_fwhm", "tail", "resid_run", "plateau", "shape", "runown"):
         for name, sel in (("clean", clean), ("false_flags", false_flags), ("true_streak", real)):
             v = np.array([r[key] for r in sel if r[key] is not None], float)
             stats[f"{key}_{name}"] = {"n": int(v.size),
