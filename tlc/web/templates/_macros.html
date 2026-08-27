@@ -94,3 +94,101 @@
   {% endif %}
 </article>
 {%- endmacro %}
+
+{% macro reaction_panel(r) -%}
+{% if r %}
+<section class="reading v-{{ r.verdict }}">
+  <header>
+    <span class="verdict-chip">{{ {'complete':'reaction complete','in_progress':'reaction in progress','no_reaction_detected':'no conversion seen','cannot_conclude':'cannot conclude'}.get(r.verdict, r.verdict) }}</span>
+    <span class="conf conf-{{ r.confidence.grade }}">{{ r.confidence.grade }} confidence</span>
+  </header>
+  <h2 class="headline">{{ r.headline }}</h2>
+
+  <div class="reading-grid">
+    <div class="plain">
+      <h3>What this plate says</h3>
+      {% for p in r.plain_summary %}<p>{{ p|safe_md }}</p>{% endfor %}
+      {% if r.confidence.grade != 'high' %}
+      <p class="weak"><b>Why the confidence is {{ r.confidence.grade }}:</b>
+        {% for f in r.confidence.factors %}{{ f }}{% if not loop.last %}; {% endif %}{% endfor %} — not established.</p>
+      {% endif %}
+    </div>
+
+    <div class="bands">
+      <h3>Every band in the reaction lane</h3>
+      {% if r.assignments %}
+      <table class="spots">
+        <thead><tr><th>Band</th><th>Rst</th><th>Read as</th><th>Share of lane</th><th>Confidence</th></tr></thead>
+        <tbody>
+        {% for a in r.assignments %}
+          <tr class="id-{{ a.identity }}">
+            <td class="mono">{{ a.band_id }}</td>
+            <td class="num">{{ a.rst if a.rst is not none else '—' }}</td>
+            <td><b>{{ a.label }}</b><div class="muted small">{{ a.basis }}</div></td>
+            <td class="num">{% if a.share_of_lane.value is not none %}{{ (100 * a.share_of_lane.value)|round(0)|int }}%{% else %}<span class="muted">withheld</span>{% endif %}</td>
+            <td><span class="conf conf-{{ a.confidence }}">{{ a.confidence }}</span></td>
+          </tr>
+        {% endfor %}
+        </tbody>
+      </table>
+      {% else %}<p class="muted">No band in the reaction lane could be identified.</p>{% endif %}
+
+      {% set conv = r.quantities.get('apparent_conversion') %}
+      {% if conv %}
+      <p class="conversion">
+        {% if conv.value is not none %}
+          <b>Apparent conversion: {{ (100 * conv.value)|round(0)|int }}%</b>
+          <span class="muted">— product against starting material, within this lane only. A share of UV darkness, not of moles.</span>
+          {% if r.quantities.get('linear_range_note') %}<span class="muted"> {{ r.quantities.linear_range_note }}</span>{% endif %}
+        {% else %}
+          <b>Conversion not reported.</b> <span class="muted">{{ conv.refusal.message }} {{ conv.refusal.remedy }}</span>
+        {% endif %}
+      </p>
+      {% endif %}
+    </div>
+  </div>
+
+  <details class="evidence">
+    <summary>How this was worked out — the chemist's version</summary>
+    <ul>{% for line in r.chemist_summary %}<li>{{ line|safe_md }}</li>{% endfor %}</ul>
+    {% if r.matrix_shift.applied %}
+    <p class="muted small"><b>Matrix shift (rule R1):</b> {{ r.matrix_shift.applied.basis }}.
+      {% if r.matrix_shift.anchor_estimate %}Anchor estimate {{ r.matrix_shift.anchor_estimate.delta_rst }};{% endif %}
+      {% if r.matrix_shift.curve_estimate %} whole-curve estimate {{ r.matrix_shift.curve_estimate.delta_rst }};{% endif %}
+      {% if r.matrix_shift.agree is not none %} the two {{ 'agreed' if r.matrix_shift.agree else 'disagreed, so no shift was applied' }}.{% endif %}</p>
+    {% endif %}
+    {% if r.cospot.available %}
+    <p class="muted small"><b>Co-spot decomposition (rule R4):</b> co ≈ {{ r.cospot.alpha_S }}·S + {{ r.cospot.beta_R }}·R,
+      R² = {{ r.cospot.r_squared }}. {{ r.cospot.reading }}</p>
+    {% endif %}
+  </details>
+
+  {% if r.impurities %}
+  <div class="impurities">
+    <h3>The other bands</h3>
+    <ul>{% for i in r.impurities %}
+      <li>Rst {{ i.rst }} — {{ i.reading }}</li>
+    {% endfor %}</ul>
+  </div>
+  {% endif %}
+
+  <div class="limits-inline">
+    <h3>What would change this answer</h3>
+    <ul>{% for f in r.what_would_change_this %}<li>{{ f }}</li>{% endfor %}</ul>
+    {% if r.next_experiment %}<p><b>Suggested next step:</b> {{ r.next_experiment }}</p>{% endif %}
+    <details><summary>Caveats that always apply</summary>
+      <ul>{% for c in r.caveats %}<li>{{ c }}</li>{% endfor %}</ul>
+    </details>
+    <details><summary>Words used here</summary>
+      <dl>{% for k, v in r.glossary.items() %}<dt>{{ k }}</dt><dd>{{ v }}</dd>{% endfor %}</dl>
+    </details>
+  </div>
+
+  {% if r.refusals %}
+  <div class="reading-refusals">
+    {% for x in r.refusals %}<p><b>{{ x.message }}</b> {{ x.remedy }}</p>{% endfor %}
+  </div>
+  {% endif %}
+</section>
+{% endif %}
+{%- endmacro %}

@@ -14,7 +14,12 @@ from tlc.pipeline.configs import Config, LanePeak, detect_lane
 from tlc.pipeline.noise import NoiseModel
 
 JEFFREYS = 0.5
-MATCH_TOL_FWHM = 0.4   # tau = 0.4 x nominal spot FWHM (spec 01 §2.3)
+MATCH_TOL_FWHM = 0.4   # tau = 0.4 x spot FWHM (spec 01 §2.3)
+# D-032: the tolerance scales with the width the DATA shows, not with a nominal constant. Each peak
+# carries the FWHM of the matched-filter template that fired; on a band several times wider than
+# nominal the configs' centre estimates scatter proportionally, and a fixed tolerance shatters one
+# band into several clusters that each fall below the reporting bar (M-025).
+MATCH_TOL_MAX_FWHM_MULT = 6.0   # never widen past this multiple of nominal: that is a lane, not a band
 
 
 @dataclass(frozen=True)
@@ -95,7 +100,16 @@ def run_ensemble_lane(
         w = w * (len(grid) / w.sum())  # D-015: agreement on the sum-to-K scale
 
     sigma_nom = 0.18 * pitch
-    tol = MATCH_TOL_FWHM * 2.355 * max(1.0, sigma_nom)
+    fwhm_nom = 2.355 * max(1.0, sigma_nom)
+    tol_nom = MATCH_TOL_FWHM * fwhm_nom
+    tol_max = MATCH_TOL_FWHM * MATCH_TOL_MAX_FWHM_MULT * fwhm_nom
+
+    def match_tol(pk: LanePeak, cl: dict) -> float:
+        """Half the matching window, in px, for this peak against this cluster: 0.4 x the widest
+        template either side actually used, floored at the nominal spot and capped so that merging
+        cannot swallow a whole lane."""
+        widths = [pk.template_fwhm] + [p.template_fwhm for p in cl["configs"].values()]
+        return float(min(max(tol_nom, MATCH_TOL_FWHM * max(widths)), tol_max))
 
     # Greedy clustering of accepted peaks by position, strongest evidence first.
     entries = [
@@ -109,7 +123,7 @@ def run_ensemble_lane(
     for ci, pk in entries:
         placed = False
         for cl in clusters:
-            if abs(pk.row - cl["row"]) <= tol and ci not in cl["configs"]:
+            if abs(pk.row - cl["row"]) <= match_tol(pk, cl) and ci not in cl["configs"]:
                 n = len(cl["configs"])
                 cl["row"] = (cl["row"] * n + pk.row) / (n + 1)
                 cl["configs"][ci] = pk

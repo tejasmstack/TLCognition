@@ -67,6 +67,18 @@ def get_findings(run_id: str, svc: RunService = Depends(get_service)):  # noqa: 
     return svc.load_findings(run_id)
 
 
+@router.get("/runs/{run_id}/reaction")
+def get_reaction(run_id: str, svc: RunService = Depends(get_service)):  # noqa: B008
+    """What the four lanes say about the chemistry: verdict, per-band identity, shares, caveats."""
+    if not svc.repo.get_run(run_id):
+        raise _error(404, "E_NOT_FOUND", "No such run.", "Check the run id.")
+    rep = svc.load_reaction(run_id)
+    if rep is None:
+        raise _error(404, "E_NO_READING", "This run has no reaction reading.",
+                     "Re-run the plate; readings are produced at run time.")
+    return rep
+
+
 @router.post("/cohort/findings")
 def cohort_findings(body: dict, svc: RunService = Depends(get_service)):  # noqa: B008
     """body: {"runs": [run_id, ...], "meta": {run_id: {campaign_id, reaction_time_h, ...}}}"""

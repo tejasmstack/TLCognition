@@ -615,3 +615,53 @@ twice is a no-op.
 the fact is a promise about the past.
 **Revisit if:** the lab wants the store off-machine (an S3 bucket or a locked share) — only the
 `--holdout-dir` argument changes.
+
+## D-033 — Owner directive (2026-08-27): reaction reasoning, self-labelled dev set, product-grade UI
+The owner has redirected the remaining build:
+
+1. **Correlations are within-plate reaction reasoning first.** The lab's plates carry S (starting
+   material), co (SM spotted with the reaction mixture), R (reaction) and sd (standard product). The
+   report must reason across those lanes — co as the matrix-shift calibrator for where SM and product
+   sit in the reaction matrix, assignment of every R band to SM / product / impurity, SM remaining,
+   product formed, impurity inventory — and say it in prose a chemist can act on, with intervals and
+   caveats, not as a table. Cross-plate (Class B/C) trends wait for series metadata.
+2. **No human labels will be supplied.** The build labels plates itself from chemistry logic, as a
+   machine reviewer kept distinct from humans in the label store. Consequence for the contract: Gate 6
+   stays formally NOT MET, NN4 still forbids accuracy claims, and any calibration fitted on machine
+   labels is a development artefact labelled as such, never shown as a probability. The machine
+   labels exist to build and exercise the reporting, not to certify it.
+3. **The UI is rebuilt to product level** in a separate Next.js frontend against the existing FastAPI
+   backend. The server-rendered Jinja screens remain as the fallback and the reference for behaviour.
+4. **Single-photo flow first**; multi-plate comparison is deferred until that is solid.
+5. Progress is reported as a 1–100 score at every 10% milestone with what is done and what is broken.
+
+**Why:** a working, readable single-plate report is the product; everything else is scaffolding for it.
+**Revisit if:** a chemist becomes available — their labels replace the machine labels for every gate.
+
+## D-034 — The reaction reading: what the four lanes say, in two voices (2026-08-27)
+`tlc/insight/reaction.py` implements the seven correlation rules from the project's own design
+document (TLC_System_Design_Visual.pdf p7) over the lab's S / co / R / sd plate format:
+
+| rule | what it does here |
+|---|---|
+| R1 matrix shift | two independent estimates — the SM band inside the co lane against the S lane, and whole-curve alignment of the two traces. They must agree within 0.03 Rst; if they disagree the shift is set to zero and the matching tolerance is doubled instead of averaging a disagreement away |
+| R2 reference anchoring | only confirmed bands above 3 sigma and outside the origin zone anchor anything |
+| R3 impurity inheritance | a band in R that also appears in S or co is marked inherited: the action is to purify the SM, not to change the route |
+| R4 co-spot decomposition | co ≈ alpha·S + beta·R by two-component non-negative least squares on the authoritative traces; R² is the plate's self-consistency score |
+| R5 conflict resolution | a band matching both anchors is decided on intensity consistency, and the ambiguity is stated |
+| R6 streak guard | a streaking lane yields zones, never shares or a conversion figure |
+| R7 apparent conversion | product against SM **within the reaction lane only**, refused outside the 0.05–1.00 OD linear range, always labelled a share of UV darkness rather than of moles |
+
+The output is a **reading, not a table**: a verdict (complete / in_progress / no_reaction_detected /
+cannot_conclude), a headline, a plain-language passage that explains what a TLC plate even is before
+it gives the answer, a chemist's version with the anchors and rule outputs, a per-band identity table
+with the basis for each call, what would change the answer, and a suggested next step. Confidence is
+an ordinal grade built from named factors and the weakest link decides it (design doc p9) — never a
+probability, so NN1 and NN4 hold.
+
+It is computed at run time from the assembled result plus the authoritative HDF5 traces, and stored
+beside the result at `data/reaction/{run_id}.json` — never inside it, so improving the reading does
+not move `result_sha256`. Surfaces: `/runs/{id}` (top of the page), `/runs/{id}/reaction.json`,
+`GET /api/v1/runs/{id}/reaction`.
+**Revisit if:** the lab's lane vocabulary changes, or series metadata arrives and the verdict set
+gains PROGRESSING / STALLED / DEGRADING across timepoints (TLC_System_Flow.pdf p5).

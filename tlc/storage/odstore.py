@@ -29,3 +29,17 @@ def write_run_h5(path: Path | str, od: np.ndarray, od_valid: np.ndarray, densito
 def read_od(path: Path | str) -> tuple[np.ndarray, np.ndarray]:
     with h5py.File(path, "r") as f:
         return f["od"][()], f["od_valid"][()].astype(bool)
+
+
+def read_densitograms(path: Path | str) -> dict[int, np.ndarray]:
+    """The authoritative per-lane traces. The preview in the result JSON is decimated and explicitly
+    non-authoritative (spec 03 §7.3.3), so anything that computes — curve alignment, co-spot
+    decomposition — reads these."""
+    out: dict[int, np.ndarray] = {}
+    with h5py.File(path, "r") as f:
+        g = f.get("densitograms")
+        if g is None:
+            return out
+        for name in g:
+            out[int(str(name).split("_")[1])] = np.asarray(g[name][()], dtype=np.float64)
+    return out

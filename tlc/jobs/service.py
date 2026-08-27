@@ -21,6 +21,7 @@ from tlc.config.loader import load_pipeline
 from tlc.core.canonical_json import canonical_json
 from tlc.core.hashing import sha256_bytes, sha256_canonical, tree_fingerprint
 from tlc.insight.findings import to_result_block
+from tlc.insight.reaction import analyse_reaction
 from tlc.insight.service import analyse_plate_findings
 from tlc.pipeline.configs import Config
 from tlc.pipeline.runner import RunConfig, run_plate
@@ -163,6 +164,23 @@ class RunService:
         findings_path = self.data_dir / "findings" / f"{run_id}.json"
         findings_path.parent.mkdir(parents=True, exist_ok=True)
         findings_path.write_text(canonical_json([f.to_dict() for f in findings]) + "\n")
+        # the reaction reading: what the four lanes say about the chemistry. Derived from the result
+        # and the authoritative traces, stored beside it, never inside it — so the result hash does
+        # not move when the reading improves.
+        reaction_path = self.data_dir / "reaction" / f"{run_id}.json"
+        reaction_path.parent.mkdir(parents=True, exist_ok=True)
+        try:
+            report = analyse_reaction(d, {L.index: L.profile for L in out.lanes})
+            reaction_path.write_text(canonical_json(report.to_dict()) + "\n")
+        except Exception as e:  # noqa: BLE001 - a reading that fails must not lose the measurement
+            reaction_path.write_text(canonical_json(
+                {"verdict": "cannot_conclude", "headline": "The reaction reading could not be produced for this plate.",
+                 "plain_summary": [], "chemist_summary": [], "confidence": {"grade": "low", "factors": []},
+                 "anchors": {}, "matrix_shift": {}, "cospot": {}, "assignments": [], "quantities": {},
+                 "impurities": [], "caveats": [], "what_would_change_this": [], "next_experiment": None,
+                 "refusals": [{"code": "E_READING_FAILED", "message": f"{type(e).__name__}: {e}",
+                               "remedy": "The measurement above is unaffected; report this plate."}],
+                 "glossary": {}}) + "\n")
         drift = expected_result_sha256 is not None and expected_result_sha256 != sha_res
         if replay_of is not None and drift:
             # spec 03 §7.2.5: a replay that does not reproduce result_sha256 is FAILED with E_REPLAY_DRIFT
@@ -210,6 +228,10 @@ class RunService:
                           cache={**{"hits": 0, "misses": 0, "bundle_hash": ""}, **read.cache},
                           cost={**{"input_tokens": 0, "output_tokens": 0, "usd": 0.0}, **read.cost},
                           attempts=read.attempts, retries=read.retries, degraded=read.degraded)
+
+    def load_reaction(self, run_id: str) -> dict | None:
+        p = self.data_dir / "reaction" / f"{run_id}.json"
+        return json.loads(p.read_text()) if p.exists() else None
 
     def load_findings(self, run_id: str) -> list[dict]:
         p = self.data_dir / "findings" / f"{run_id}.json"

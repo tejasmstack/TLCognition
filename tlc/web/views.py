@@ -9,6 +9,7 @@ import numpy as np
 from fastapi import APIRouter, Depends, File, Form, HTTPException, Request, UploadFile
 from fastapi.responses import HTMLResponse, JSONResponse, RedirectResponse, Response
 from fastapi.templating import Jinja2Templates
+from markupsafe import Markup
 from PIL import Image
 
 from tlc.api.deps import get_service
@@ -27,6 +28,19 @@ ROOT = _here.parents[1]
 templates = Jinja2Templates(directory=str(_here / "templates"))
 templates.env.filters.update({"q": nf.fmt_q, "pct": nf.fmt_pct, "plain": nf.fmt_plain, "interval": nf.fmt_interval})
 templates.env.globals.update({"refusal_copy": copy.render})
+
+
+def _safe_md(text: str) -> str:
+    """The reading uses **bold** for the one sentence that answers the question. Nothing else in it
+    is markup, and the text is ours, not a user's — so this converts exactly that and escapes the rest."""
+    import html as _html
+    import re as _re
+
+    out = _re.sub(r"\*\*(.+?)\*\*", r"<b>\1</b>", _html.escape(text))
+    return _re.sub(r"(?<![*\w])\*([^*]+?)\*(?![*\w])", r"<i>\1</i>", out)
+
+
+templates.env.filters["safe_md"] = lambda s: Markup(_safe_md(s))
 
 # Detection-limit statement (§11.3.H): the faintest band that would have registered ≈ Z_LIMIT × σ_od.
 # `chosen`, stated on /method; not derived from the ensemble threshold, which is an agreement fraction.
@@ -138,7 +152,7 @@ def _ctx(request: Request, svc: RunService, run_id: str) -> dict:
     vm = view_model(res, cfg, n_labelled=len(svc.repo.label_records()))
     order = {"reported": 0, "tentative": 1, "anomaly": 2, "insufficient_data": 3, "suppressed": 4}
     findings.sort(key=lambda f: (order.get(f["verdict"], 9), f["hypothesis_id"]))
-    return {"request": request, "row": row, "findings": findings,
+    return {"request": request, "row": row, "findings": findings, "reaction": svc.load_reaction(run_id),
             "limits": _limits(res, svc), **vm}
 
 
@@ -267,6 +281,15 @@ def review_submit(request: Request, run_id: str, reviewer_id: str = Form(...), b
     if "application/json" in request.headers.get("accept", ""):
         return JSONResponse(out)
     return RedirectResponse(f"/runs/{run_id}?saved={out['label_status']}", status_code=303)
+
+
+@router.get("/runs/{run_id}/reaction.json")
+def run_reaction(run_id: str, svc: RunService = Depends(get_service)):  # noqa: B008
+    _load(svc, run_id)
+    rep = svc.load_reaction(run_id)
+    if rep is None:
+        raise HTTPException(404, "no reaction reading for this run")
+    return JSONResponse(rep)
 
 
 @router.get("/runs/{run_id}/findings.json")

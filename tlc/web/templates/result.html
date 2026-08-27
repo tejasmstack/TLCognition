@@ -1,9 +1,10 @@
 {% extends "base.html" %}
-{% from "_macros.html" import capability_bar, tally, chip, refusal_card, scale, finding_card %}
+{% from "_macros.html" import capability_bar, tally, chip, refusal_card, scale, finding_card, reaction_panel %}
 {% set run_id = res.run_id %}
 {% block title %}Run #{{ res.run_id[4:12] }} · TLC{% endblock %}
 {% block body %}
 {% if saved %}<p class="notice">Review saved · label status: {{ saved }}</p>{% endif %}
+{{ reaction_panel(reaction) }}
 <div class="result">
 <aside class="rail">
   <h1>{{ res.image.original_filename or res.image.sha256[:8] }}</h1>

@@ -255,3 +255,13 @@ conversion number unless it is `yes`. No such field is collected, so the area ra
 `area_ratio` only inside the cohort statistic and is never labelled "conversion" anywhere in the UI.
 **Verify by:** adding the per-reaction-class flag to the upload form; until then, treat any ratio in
 the JSON as an area ratio.
+
+## A-023 — `co` is read as a co-spot lane (SM + reaction mixture) (2026-08-27)
+`TLC_Analysis.pdf` p2 glosses the third lane as "other reactants reference", while the owner's
+instruction and rule R4 of `TLC_System_Design_Visual.pdf` (co ≈ alpha·S + beta·R) both treat it as a
+**co-spot**: the starting material and the reaction mixture run together in one lane. The reading
+implements the co-spot meaning, because that is what makes the lane load-bearing — it is the only
+lane that can measure a matrix shift, and R4 only makes sense if co contains both materials.
+**Verify by:** asking the bench which the lane holds on a given plate. If a lab ever runs it as a
+co-reactant reference, the matrix-shift and decomposition rules must be switched off for that plate —
+the assignment logic would otherwise compare against a lane that does not contain the SM.

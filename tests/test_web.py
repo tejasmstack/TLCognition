@@ -323,3 +323,17 @@ def test_run_list_does_not_call_a_provisional_label_labelled(client):
                                          for s in res["spots"] if s["status"] == "confirmed"])})
     html = client.get("/runs").text
     assert "awaiting a second reviewer" in html
+
+
+def test_the_reading_is_the_first_thing_on_the_result_page(client, run_id):
+    """The answer comes before the evidence: a chemist should not have to read a table to get it."""
+    html = client.get(f"/runs/{run_id}").text
+    assert 'class="reading' in html
+    assert html.index('class="reading') < html.index('class="result"'), "the reading must precede the tables"
+    assert "What this plate says" in html
+    assert "What would change this answer" in html
+    body = client.get(f"/runs/{run_id}/reaction.json").json()
+    assert body["verdict"] in ("complete", "in_progress", "no_reaction_detected", "cannot_conclude")
+    api = client.get(f"/api/v1/runs/{run_id}/reaction").json()
+    assert api == body
+    assert client.get("/api/v1/runs/run_nope/reaction").status_code == 404
