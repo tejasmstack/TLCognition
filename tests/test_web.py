@@ -290,3 +290,36 @@ def test_two_passes_by_one_reviewer_are_one_opinion(client, png):
     assert two["label_status"] in ("agreed", "disputed"), "a second reviewer is a second opinion"
     stats2 = client.get("/api/v1/labels/stats").json()
     assert stats2["n_double_labelled"] == 1
+
+
+def test_upload_form_makes_the_lane_count_an_explicit_operator_choice(client):
+    """F10: the lane count is never inferred. It must therefore be asked for, not left optional."""
+    html = client.get("/upload").text
+    assert 'name="n_lanes"' in html and "required" in html
+    assert "choose…" in html, "no pre-selected default: a default is an input the operator never made"
+    for role in ("S", "R", "co", "sd", "blank"):
+        assert f"'{role}'" in html or f">{role}<" in html
+    assert "chosen</b> by the operator" in html
+
+
+def test_run_list_does_not_call_a_provisional_label_labelled(client):
+    """One reviewer's draft is not a label; Gate 6 counts agreed and adjudicated plates."""
+    import io as _io
+
+    from PIL import Image as _Image
+
+    from tlc.synth.generator import make_plate as _mk
+
+    img, _ = _mk(PlateSpec(spots=SPOTS, tilt_deg=3.0), seed=5150)   # a plate no other test has uploaded
+    buf = _io.BytesIO()
+    _Image.fromarray(img).save(buf, format="PNG")
+    r = client.post("/upload", files={"file": ("solo.png", buf.getvalue(), "image/png")},
+                    data={"labels": "S,R,co,sd"}, follow_redirects=False)
+    rid = r.headers["location"].rsplit("/", 1)[1]
+    res = client.get(f"/runs/{rid}.json").json()
+    client.post(f"/runs/{rid}/review", headers={"accept": "application/json"},
+                data={"reviewer_id": "SOLO", "blind": "0", "viewed_result_sha256": res["provenance"]["result_sha256"],
+                      "ops": json.dumps([{"op": "spot.confirm", "spot_id": s["id"]}
+                                         for s in res["spots"] if s["status"] == "confirmed"])})
+    html = client.get("/runs").text
+    assert "awaiting a second reviewer" in html

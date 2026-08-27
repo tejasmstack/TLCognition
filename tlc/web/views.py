@@ -192,8 +192,13 @@ def runs_list(request: Request, status: str | None = None, svc: RunService = Dep
                       "n_below": sum(1 for s in res["spots"] if s["status"] == "candidate") if res else 0,
                       "labels": [L["label"] for L in res["lanes"]] if res else []})
     labs = svc.repo.label_records()
-    return templates.TemplateResponse(request, "runs.html", {"request": request, "items": items, "n_labelled": len(labs),
-                                                             "status": status})
+    # a provisional label is one person's draft; calling it "labelled" inflates Gate 6's counter
+    counts = {"labelled": sum(1 for r in labs if r["status"] in ("agreed", "adjudicated")),
+              "double": sum(1 for r in labs if (r["n_reviewers"] or 0) >= 2),
+              "provisional": sum(1 for r in labs if r["status"] == "provisional"),
+              "disputed": sum(1 for r in labs if r["status"] == "disputed")}
+    return templates.TemplateResponse(request, "runs.html", {"request": request, "items": items,
+                                                             "labels": counts, "status": status})
 
 
 @router.get("/runs/{run_id}.json")

@@ -2,7 +2,9 @@
 {% from "_macros.html" import capability_bar %}
 {% block title %}Runs · TLC{% endblock %}
 {% block body %}
-<p class="corpus">Corpus: {{ items|length }} runs · {{ n_labelled }} labelled · accuracy not yet computed <a href="/method">/method</a></p>
+<p class="corpus">Corpus: {{ items|length }} runs · {{ labels.labelled }} labelled ·
+  {{ labels.double }} double-labelled{% if labels.provisional %} · {{ labels.provisional }} awaiting a second reviewer{% endif %}{% if labels.disputed %} · {{ labels.disputed }} disputed{% endif %} ·
+  accuracy not yet computed <a href="/method">/method</a></p>
 <form class="filters" method="get">
   <select name="status" onchange="this.form.submit()">
     <option value="" {{ 'selected' if not status }}>all</option>

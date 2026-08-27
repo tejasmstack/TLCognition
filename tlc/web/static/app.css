@@ -72,3 +72,7 @@ h3.rule{border-top:1px solid var(--line);padding-top:10px;color:var(--muted);fon
 .tentative-note{font-size:12px;font-style:italic}
 .limits{border-top:1px solid var(--line);margin-top:18px;padding-top:8px}
 .limits ul{font-size:12px;color:var(--muted)}
+.lanerow{display:flex;gap:10px;flex-wrap:wrap;margin:6px 0}
+.lanerow .lane{display:flex;flex-direction:column;gap:2px;font-size:12px}
+.lanerow .lane .k{color:var(--muted)}
+.lanerow .lane input.other{width:80px}

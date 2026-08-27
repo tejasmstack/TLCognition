@@ -15,13 +15,46 @@
       <div class="muted">Advisory, computed in the browser. The server measures the same quantity inside the plate outline and decides.</div>
     </div>
   </div>
-  <label>Lanes <input type="number" name="n_lanes" min="1" max="12" placeholder="e.g. 4"></label>
-  <label>Lane labels, left to right, comma separated <input type="text" name="labels" placeholder="S, co, R, sd"></label>
-  <p class="muted">ⓘ If you enter the lane labels here they are recorded as confirmed by the operator. Lane count never comes from the signal (F10).</p>
+  <label>Lanes, left to right
+    <select name="n_lanes" id="n_lanes" required>
+      <option value="" selected disabled>choose…</option>
+      {% for n in range(1, 9) %}<option value="{{ n }}">{{ n }}</option>{% endfor %}
+    </select>
+  </label>
+  <div id="lanerow" class="lanerow"></div>
+  <input type="hidden" name="labels" id="labels">
+  <p class="muted">ⓘ The lane count and the labels are yours, not the system's: they are recorded as
+    <b>chosen</b> by the operator. Lane count is never inferred from the signal — a grid fitted to the
+    signal slides toward the loaded lanes when one is empty (F10). Without them the run still produces
+    positions, but no standard lane means no Rst.</p>
   <button type="submit">Run</button>
 </form>
 <script>
 (function(){
+  // lane label pickers: a closed vocabulary, because a free-text lane role is a lane role nobody can group by
+  const VOCAB=['S','R','co','sd','blank','other'];
+  const sel=document.getElementById('n_lanes'), row=document.getElementById('lanerow'), hidden=document.getElementById('labels');
+  function sync(){
+    const out=[];
+    row.querySelectorAll('.lane').forEach(d=>{
+      const s=d.querySelector('select'), o=d.querySelector('input.other');
+      o.hidden = s.value!=='other';
+      out.push(s.value==='other' ? (o.value.trim()||'?') : s.value);
+    });
+    hidden.value=out.join(',');
+  }
+  sel.addEventListener('change',()=>{
+    const n=+sel.value; row.innerHTML='';
+    const guess=['S','R','co','sd'];
+    for(let i=0;i<n;i++){
+      const d=document.createElement('div'); d.className='lane';
+      d.innerHTML=`<span class="k">L${i+1}</span><select>${VOCAB.map(v=>`<option${v===(guess[i]||'other')?' selected':''}>${v}</option>`).join('')}</select><input class="other" placeholder="label" hidden>`;
+      d.querySelector('select').addEventListener('change',sync);
+      d.querySelector('input.other').addEventListener('input',sync);
+      row.appendChild(d);
+    }
+    sync();
+  });
   const f=document.getElementById('file');
   f.addEventListener('change', async ()=>{
     const file=f.files[0]; if(!file) return;
