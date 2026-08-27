@@ -336,7 +336,8 @@ def run_plate(rgb: np.ndarray, cfg: RunConfig, seed: int) -> RunOutput:
         streak = assess_streak(den.profile, band, sigma_prof, tails, fwhm_nom, peak_rows=[s.row for s in tiered],
                                fitted_peaks=fitted_sum,
                                dominant_mu=dom.mu if dom is not None else None,
-                               dominant_tau=dom.tau if dom is not None else None)
+                               dominant_tau=dom.tau if dom is not None else None,
+                               dominant_fwhm=(dom.fwhm if dom is not None and np.isfinite(dom.fwhm) else None))
         is_empty = not tiered
         suppression = None
         quantified = photometry_mode == "full"
@@ -412,12 +413,18 @@ def run_plate(rgb: np.ndarray, cfg: RunConfig, seed: int) -> RunOutput:
         y_var = combine_position_variance(within if np.isfinite(within) else between, between, max(1.0, s.n_hit))
         rst_est = None
         rst_ref = None
-        if st == "suppressed_streak":
-            rst_ref = F.e_streak(li, lane.streak.reason or "streak")
-        elif anchor is None or origin_refusal is not None or not origin.found:
+        # D-037 / spec 02 H05: "Position (rst) may still be reported with a widened interval" on a
+        # streaking lane — only the area-derived quantities go. Refusing the position too threw away
+        # every band on 22 real lanes, including one at 0.94 ensemble agreement (M-029).
+        if anchor is None or origin_refusal is not None or not origin.found:
             rst_ref = anchor_refusal or origin_refusal
         else:
-            rst_est = rst_with_interval(y_px, y_var, anchor["y_px"], anchor["var"], origin.row, (origin.row_sd or 0.5) ** 2)
+            var = y_var
+            if st == "suppressed_streak":
+                # a smear has a position, but a much less certain one: widen by the streak's own width
+                wf = getattr(lane.streak, "width_frac_of_migration", None) or 0.3
+                var = y_var + (wf * (band[1] - band[0]) / 2.355) ** 2
+            rst_est = rst_with_interval(y_px, var, anchor["y_px"], anchor["var"], origin.row, (origin.row_sd or 0.5) ** 2)
         box_r0, box_r1 = int(max(0, y_px - 2 * f.sigma - 3)), int(min(h, y_px + 2 * f.sigma + 4))
         box = pp.valid_geom[box_r0:box_r1, int(max(0, lane.x_center_px - hw)):int(min(w, lane.x_center_px + hw + 1))]
         boxv = pp.valid[box_r0:box_r1, int(max(0, lane.x_center_px - hw)):int(min(w, lane.x_center_px + hw + 1))]

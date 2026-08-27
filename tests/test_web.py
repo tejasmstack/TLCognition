@@ -337,3 +337,25 @@ def test_the_reading_is_the_first_thing_on_the_result_page(client, run_id):
     api = client.get(f"/api/v1/runs/{run_id}/reaction").json()
     assert api == body
     assert client.get("/api/v1/runs/run_nope/reaction").status_code == 404
+
+
+def test_a_run_can_reproduce_its_own_key_from_its_own_record(client, run_id):
+    """M-028: the result carried a run_key and a config_hash computed differently from the ones the
+    run is stored under, so a record could not verify itself. Spec 03 §7.2.1."""
+    from tlc.api import deps
+    from tlc.api.app import app
+    from tlc.core.hashing import sha256_canonical
+
+    svc = app.dependency_overrides[deps.get_service]()
+    res = client.get(f"/runs/{run_id}.json").json()
+    prov = res["provenance"]
+    row = svc.repo.get_run(run_id)
+    assert prov["run_key"] == row["run_key"], "the record must name the key it is stored under"
+    assert prov["config_hash"] == row["config_hash"] == svc.config_hash
+    assert row["vlm_bundle_hash"] == prov["vlm_bundle_hash"]
+    # and the key must be recomputable from the record alone
+    recomputed = sha256_canonical({
+        "image_sha256": res["image"]["sha256"], "config_hash": prov["config_hash"],
+        "code_fingerprint": prov["code_fingerprint"], "env_fingerprint": prov["env_fingerprint"],
+        "vlm_bundle_hash": prov["vlm_bundle_hash"]})
+    assert recomputed == prov["run_key"]

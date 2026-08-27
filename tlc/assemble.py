@@ -77,9 +77,14 @@ def git_state() -> tuple[str, bool]:
 
 def assemble(out: RunOutput, image_bytes: bytes, image_meta: dict, config_document: dict, run_id: str,
              created_at: str, vlm_block: S.VLMBlock | None = None, storage: S.StorageBlock | None = None,
-             correlations: S.CorrelationBlock | None = None) -> S.Result:
+             correlations: S.CorrelationBlock | None = None, config_hash: str | None = None,
+             vlm_bundle_hash: str | None = None) -> S.Result:
+    """`config_hash` and `vlm_bundle_hash` are passed in by the caller that KEYS the run, so the
+    result records the identifiers the run is stored under. Recomputing them here produced a record
+    that could not reproduce its own run_key: the caller hashes the config document before enriching
+    it, and knows the VLM bundle, and this function knows neither (M-028)."""
     image_sha = sha256_bytes(image_bytes)
-    config_hash = sha256_canonical(config_document)
+    config_hash = config_hash or sha256_canonical(config_document)
     lock_hash = sha256_bytes((ROOT / "uv.lock").read_bytes()) if (ROOT / "uv.lock").exists() else "unavailable"
     env_hash, libs, platform_tag = environment_fingerprint(lock_hash)
     code_fp = tree_fingerprint(ROOT / "tlc" / "pipeline", ROOT / "tlc" / "core")
@@ -237,7 +242,8 @@ def assemble(out: RunOutput, image_bytes: bytes, image_meta: dict, config_docume
         config_ref=str(config_document.get("config_ref", "config/pipeline/v0.6.0.toml")), config_document=config_document,
         code_fingerprint=code_fp, git_commit=commit, git_dirty=dirty, env_fingerprint=env_hash, lock_hash=lock_hash,
         libraries=libs, platform_tag=platform_tag, seed=seed, seed_derivation="int(image_sha256[:16],16) ^ config.seed_salt",
-        run_key=sha256_canonical({"image_sha256": image_sha, "config_hash": config_hash, "code_fingerprint": code_fp, "env_fingerprint": env_hash, "vlm_bundle_hash": None}),
+        vlm_bundle_hash=vlm_bundle_hash,
+        run_key=sha256_canonical({"image_sha256": image_sha, "config_hash": config_hash, "code_fingerprint": code_fp, "env_fingerprint": env_hash, "vlm_bundle_hash": vlm_bundle_hash}),
         result_sha256=None, od_sha256=hashlib.sha256(out.od.astype(np.float32).tobytes()).hexdigest() if out.od is not None else None,
         replay_of=None, superseded_by=None, determinism_tier="tier1",
     )

@@ -39,6 +39,14 @@ SHAPE_RATIO_FLAT = 1.15       # below this the feature has no peak left to speak
 # which is what this rule used to do — flags every real band, because real bands are ~2.75x the
 # nominal width the pipeline assumes (M-025).
 RUN_OVER_OWN_WIDTH_LIMIT = 3.2
+# D-036: how wide the dominant band is as a fraction of the migration distance. Measured populations
+# (reports/exp_explained_mass.json): synthetic clean bands 0.10 median, real lanes the rule does not
+# flag 0.105 — the same — real lanes the rule DOES flag 0.20, synthetic full streaks 0.40. So the
+# lanes being suppressed on real plates are genuinely broad, and genuinely not smears. A band gets
+# three tiers instead of a binary, which is what spec 02 H05 asks for ("position may still be
+# reported with a widened interval") and what the design doc's R6 means by "zones only".
+BROAD_WIDTH_FRAC = 0.15       # above this the band is broad: position kept, interval widened
+STREAK_WIDTH_FRAC = 0.30      # above this it is a zone: no position, no area
 RESIDUAL_TAIL_MIN_FWHM = 1.0  # D-027: a long fitted tail is only evidence if elevation survives the fit
 
 
@@ -54,7 +62,9 @@ class StreakVerdict:
     plateau_frac: float = 0.0           # amplitude-dependent; kept for comparison, never decides
     n_peaks_in_run: int = 0
     shape_ratio: float | None = None    # D-035: W25/W50 — 1.41 Gaussian, 1.00 flat, >1.6 tailing
-    run_over_own_width: float | None = None   # D-035: the statistic that decides
+    run_over_own_width: float | None = None
+    width_frac_of_migration: float | None = None   # D-036: the statistic that grades the lane
+    tier: str = "band"                  # band | broad | streak
 
 
 def _width_at(seg: np.ndarray, base: float, peak: float, frac: float) -> float | None:
@@ -102,6 +112,7 @@ def assess_streak(
     profile: np.ndarray, rows: tuple[int, int], sigma_prof: float, tail_ratios: list[float],
     nominal_fwhm_px: float = 12.0, peak_rows: list[float] | None = None,
     fitted_peaks: np.ndarray | None = None, dominant_mu: float | None = None, dominant_tau: float | None = None,
+    dominant_fwhm: float | None = None,
 ) -> StreakVerdict:
     """tail_ratios: ONLY the dominant peak's non-degenerate tau/sigma should be passed (M-014);
     peak_rows: tiered peak positions — a long run containing >= 2 peaks is adjacent spots,
@@ -195,7 +206,22 @@ def assess_streak(
             and tail_corroborated and not tail_is_another_spot and not tail_unsupported):
         reasons.append(f"tail ratio tau/sigma {max_tail:.1f} > {TAIL_RATIO_LIMIT} with {resid_run_fwhm:.1f} FWHM "
                        "of unexplained elevation")
+    # D-036: the width of the dominant band as a fraction of the migration distance, recorded so the
+    # report can say HOW broad a flagged lane is. Measured: a band is ~0.10, a real flagged lane
+    # ~0.20, a synthetic full streak ~0.40. It grades the statement; it does not gate the flag, which
+    # stays with the tested rules above.
+    migration = float(max(1, r1 - r0))
+    width_frac = None if not dominant_fwhm else float(dominant_fwhm / migration)
+    if width_frac is None:
+        tier = "streak" if reasons else "band"
+    elif width_frac >= STREAK_WIDTH_FRAC:
+        tier = "streak"
+    elif width_frac >= BROAD_WIDTH_FRAC:
+        tier = "broad"
+    else:
+        tier = "streak" if reasons else "band"
     return StreakVerdict(bool(reasons), frac, float(run_fwhm), max_tail, "; ".join(reasons) or None,
                          float(resid_run_fwhm), resid_frac, float(plateau), int(n_peaks_in_run),
                          None if ratio is None else float(ratio),
-                         None if run_over_own is None else float(run_over_own))
+                         None if run_over_own is None else float(run_over_own),
+                         width_frac, tier)

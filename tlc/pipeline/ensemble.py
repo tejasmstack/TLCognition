@@ -19,7 +19,11 @@ MATCH_TOL_FWHM = 0.4   # tau = 0.4 x spot FWHM (spec 01 §2.3)
 # carries the FWHM of the matched-filter template that fired; on a band several times wider than
 # nominal the configs' centre estimates scatter proportionally, and a fixed tolerance shatters one
 # band into several clusters that each fall below the reporting bar (M-025).
-MATCH_TOL_MAX_FWHM_MULT = 6.0   # never widen past this multiple of nominal: that is a lane, not a band
+# The cap comes from the measured corpus, not from taste: real detected bands run 1.00x nominal at
+# the median and 1.93x at the 95th percentile (reports/band_widths.json, 150 bands over 66 plates),
+# so widening past 2x is widening for a band this lab does not produce — and it costs position
+# accuracy, which Gate 5 measures (D-032 amendment).
+MATCH_TOL_MAX_FWHM_MULT = 2.0
 
 
 @dataclass(frozen=True)

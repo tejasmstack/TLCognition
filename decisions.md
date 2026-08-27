@@ -665,3 +665,35 @@ not move `result_sha256`. Surfaces: `/runs/{id}` (top of the page), `/runs/{id}/
 `GET /api/v1/runs/{id}/reaction`.
 **Revisit if:** the lab's lane vocabulary changes, or series metadata arrives and the verdict set
 gains PROGRESSING / STALLED / DEGRADING across timepoints (TLC_System_Flow.pdf p5).
+
+## D-036 — A streaking lane keeps its positions; only the areas go (2026-08-27)
+Spec 02 H05 says of a streaking lane: *"Position (rst) may still be reported with a widened interval"*
+and *"every area-derived quantity in that lane is withheld"*. The runner withheld the position too, so
+a flagged lane lost everything. On the real corpus that cost **35 bands their position**, including one
+at 0.94 ensemble agreement and SNR 17 (M-029).
+
+Now: a spot in a streaking lane carries its Rst with the interval widened by the lane's own measured
+breadth (the dominant band's FWHM as a fraction of the migration distance), keeps its
+`suppressed_streak` status so nothing counts it as a clean band, and still refuses every area. Result
+on the corpus: **bands carrying a position 130 → 148**, counted bands unchanged, and the synthetic
+streak metrics unchanged (0% false flags, 19/19 caught).
+
+This matters because the reaction reading needs positions, not areas: a broad band whose Rst matches
+the standard still tells a chemist the product is there.
+
+## D-037 — The lane breadth is measured and graded, not just flagged (2026-08-27)
+`StreakVerdict` now carries `width_frac_of_migration` — the dominant band's fitted FWHM as a fraction
+of the analysable band — and a `tier` of band / broad / streak. Measured populations
+(`reports/exp_explained_mass.json`, 40 synthetic plates and all 66 real ones):
+
+| population | median width as a fraction of migration |
+|---|---|
+| synthetic clean bands | 0.10 |
+| **real lanes the rule does not flag** | **0.105** |
+| **real lanes the rule flags** | **0.20** |
+| synthetic full streaks | 0.40 |
+
+Two things follow. Real bands behave exactly like the generator's — which is the measurement that
+retracted M-025's width claim. And the real lanes being flagged are genuinely *intermediate*: twice
+the breadth of a band, half that of a smear. They are broad bands and tailing lanes, not zones, which
+is why suppressing them wholesale was wrong.

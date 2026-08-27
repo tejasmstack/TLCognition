@@ -502,6 +502,7 @@ def build_worked_example() -> Result:
             seed=11497285633021448106,
             seed_derivation="int(image_sha256[:16],16) ^ config.seed_salt",
             run_key="c0d4e1",
+            vlm_bundle_hash=None,
             result_sha256=None,
             od_sha256="f309cc",
             replay_of=None,

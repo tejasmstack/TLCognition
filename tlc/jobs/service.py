@@ -102,10 +102,16 @@ class RunService:
                                filename, uploaded_by, {})
         return {"image_id": image_id, "sha256": sha, "width_px": dec.width, "height_px": dec.height, "mime": dec.mime}
 
-    def vlm_bundle_fingerprint(self, mode: str) -> str:
-        """What the semantic layer will do to a given image is fixed by its mode and by the committed
-        prompt/schema files — so that is what enters the run key. (`bundle_hash` in the result is an
-        OUTPUT: the hash of the responses actually used, which cannot be known before the run.)"""
+    def vlm_bundle_fingerprint(self, mode: str) -> str | None:
+        """Spec 03 §7.2.1: the run key's `vlm_bundle_hash` is **null when the mode is `off`** — nothing
+        the model said entered the result, so nothing about it can change one. For the other modes it
+        is the hash of the responses actually used (§7.9.3), which the read reports.
+
+        Using a prompt/schema fingerprint here instead (as this did until M-028) made the key
+        unverifiable from the record: the record carried a different value than the key was built
+        from."""
+        if mode == "off":
+            return None
         return sha256_canonical({"mode": mode,
                                  "resources": tree_fingerprint(ROOT / "tlc" / "vlm" / "prompts",
                                                                ROOT / "tlc" / "vlm" / "schemas")})
@@ -123,7 +129,8 @@ class RunService:
             labels: tuple[str, ...] | None = None, vlm_mode: str = "off", replay_of: str | None = None,
             expected_result_sha256: str | None = None) -> dict:
         info = self.ingest(data, filename)
-        run_key, _, _ = self.run_key(info["sha256"], self.vlm_bundle_fingerprint(vlm_mode))
+        vlm_bundle = self.vlm_bundle_fingerprint(vlm_mode)
+        run_key, _, _ = self.run_key(info["sha256"], vlm_bundle)
         existing = self.repo.existing_run_for_key(run_key)
         if existing and replay_of is None:
             return {"run_id": existing["run_id"], "deduplicated": True, "status": existing["status"],
@@ -139,11 +146,13 @@ class RunService:
                       "exif_orientation": dec.exif_orientation, "decoder": f"imageio.v3/{dec.decoder}",
                       "original_filename": filename}
         created = utcnow()
-        result = assemble(out, data, image_meta, self.config_doc, run_id, created, vlm_block=vlm_block)
+        result = assemble(out, data, image_meta, self.config_doc, run_id, created, vlm_block=vlm_block,
+                          config_hash=self.config_hash, vlm_bundle_hash=vlm_bundle)
         # insight (spec 02): Class A findings are computed from the assembled result — never from pixels —
         # then folded back in as the result's correlation block, so a run carries its own findings.
         findings = analyse_plate_findings(result.model_dump(mode="json"))
         result = assemble(out, data, image_meta, self.config_doc, run_id, created, vlm_block=vlm_block,
+                          config_hash=self.config_hash, vlm_bundle_hash=vlm_bundle,
                           correlations=S.CorrelationBlock.model_validate(
                               to_result_block(findings, fdr_target=0.10, adjustment="none_class_a")))
         sha_res = result_sha256(result)

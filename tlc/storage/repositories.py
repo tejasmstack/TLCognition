@@ -78,7 +78,7 @@ class Repo:
                               " VALUES (:rid,:rk,:iid,:pv,:ch,:cf,:ef,:pt,:vm,:vb,:st,1.0,:ca,:sa,:fa,:dm,:rs,:rp,:os,:op,:ro,:ns,:ma,:pm,:bf,:ec,:ej)"),
                          {"rid": result["run_id"], "rk": run_key, "iid": result["image_id"], "pv": prov["pipeline_version"],
                           "ch": prov["config_hash"], "cf": prov["code_fingerprint"], "ef": prov["env_fingerprint"],
-                          "pt": prov["platform_tag"], "vm": vlm_mode, "vb": None, "st": status_override or result["status"],
+                          "pt": prov["platform_tag"], "vm": vlm_mode, "vb": prov.get("vlm_bundle_hash"), "st": status_override or result["status"],
                           "ca": result["created_at"], "sa": started_at, "fa": utcnow(), "dm": duration_ms,
                           "rs": prov["result_sha256"], "rp": result_path, "os": prov["od_sha256"], "op": od_path, "ro": replay_of,
                           "ns": len(confirmed), "ma": max(agreements) if agreements else None,

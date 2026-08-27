@@ -985,6 +985,17 @@
             }
           ],
           "title": "Superseded By"
+        },
+        "vlm_bundle_hash": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Vlm Bundle Hash"
         }
       },
       "required": [
@@ -1003,6 +1014,7 @@
         "seed",
         "seed_derivation",
         "run_key",
+        "vlm_bundle_hash",
         "result_sha256",
         "od_sha256",
         "replay_of",

@@ -540,6 +540,8 @@ class ProvenanceBlock(BaseModel):
     seed: int
     seed_derivation: str  # "int(image_sha256[:16],16) ^ config.seed_salt"
     run_key: str
+    vlm_bundle_hash: str | None   # §7.2.1/§7.9.3: null when vlm_mode == "off"; an INPUT to run_key,
+    #: so it lives in the record — without it a run cannot recompute its own key (M-028)
     result_sha256: str | None
     od_sha256: str | None
     replay_of: str | None
