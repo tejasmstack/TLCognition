@@ -108,11 +108,22 @@ def record_correction(svc: RunService, run_id: str, doc: CorrectionDoc, reviewer
     ops = [op.model_dump(mode="json") for op in doc.ops]
     svc.repo.insert_correction(cid, run_id, row["image_id"], reviewer_id, doc.viewed_result_sha256, doc.blind, ops,
                                doc.review_seconds, source)
-    truths = []
+    # ONE truth per reviewer, not per correction row (M-024). The two-pass review posts twice — a
+    # blind Pass A and an adjudicated Pass B — and both come from the same person; counting them as
+    # two reviewers manufactures a second opinion and would let one chemist clicking twice satisfy
+    # Gate 6's double-labelling requirement. A reviewer's truth is their latest adjudicated pass,
+    # falling back to their blind pass when they have only done Pass A.
+    by_reviewer: dict[str, list[dict]] = {}
     for c in svc.repo.corrections_for_image(row["image_id"]):
-        res_c = json.loads(Path(svc.repo.get_run(c["run_id"])["result_path"]).read_text())
-        truths.append(apply_ops(res_c, json.loads(c["ops_json"]), blind=bool(c["blind"]), correction_id=c["correction_id"],
-                                reviewer_id=c["reviewer_id"], review_seconds=c["review_seconds"]))
+        by_reviewer.setdefault(c["reviewer_id"], []).append(c)
+    truths = []
+    for _rid, cs in sorted(by_reviewer.items()):
+        cs.sort(key=lambda c: (c["submitted_at"], c["correction_id"]))
+        final = next((c for c in reversed(cs) if not c["blind"]), cs[-1])
+        res_c = json.loads(Path(svc.repo.get_run(final["run_id"])["result_path"]).read_text())
+        truths.append(apply_ops(res_c, json.loads(final["ops_json"]), blind=bool(final["blind"]),
+                                correction_id=final["correction_id"], reviewer_id=final["reviewer_id"],
+                                review_seconds=final["review_seconds"]))
     draft = promote(truths)
     sample_id = getattr(draft.payload, "sample_id", None) if draft.payload else None
     key = batch_key_for(sample_id, capture_session=f"{result['created_at'][:10]}:{reviewer_id}")

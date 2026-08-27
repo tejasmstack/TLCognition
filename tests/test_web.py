@@ -263,3 +263,30 @@ def test_lane_numbers_in_prose_match_the_screen(client, run_id):
             assert f"Lane {lane['index'] + 1}" in sup["message"] or "Lane" not in sup["message"]
             assert "Lane 0" not in sup["message"]
     assert n_lanes >= 1
+
+
+def test_two_passes_by_one_reviewer_are_one_opinion(client, png):
+    """M-024: the blind pass and the adjudication pass come from the same person. Counting them as
+    two reviewers would let one chemist clicking twice satisfy Gate 6's double-labelling bar."""
+    r = client.post("/upload", files={"file": ("pair.png", png, "image/png")}, data={"labels": "S,R,co,sd"},
+                    follow_redirects=False)
+    rid = r.headers["location"].rsplit("/", 1)[1]
+    res = client.get(f"/runs/{rid}.json").json()
+    sha = res["provenance"]["result_sha256"]
+    confirm = json.dumps([{"op": "spot.confirm", "spot_id": s["id"]} for s in res["spots"] if s["status"] == "confirmed"])
+
+    def review(reviewer, blind, ops):
+        return client.post(f"/runs/{rid}/review", headers={"accept": "application/json"},
+                           data={"reviewer_id": reviewer, "blind": "1" if blind else "0",
+                                 "viewed_result_sha256": sha, "ops": ops}).json()
+
+    review("AK", True, json.dumps([{"op": "spot.add", "lane_index": 1, "y_frac": 0.42, "strength": "strong"}]))
+    one = review("AK", False, confirm)
+    assert one["label_status"] == "provisional", "one person's two passes are one opinion"
+    stats = client.get("/api/v1/labels/stats").json()
+    assert stats["n_double_labelled"] == 0
+
+    two = review("BK", False, confirm)
+    assert two["label_status"] in ("agreed", "disputed"), "a second reviewer is a second opinion"
+    stats2 = client.get("/api/v1/labels/stats").json()
+    assert stats2["n_double_labelled"] == 1

@@ -414,3 +414,25 @@ frontend's sentence "{labelled_plates} plates are labelled; {required} are requi
 it cannot know how many plates are labelled — and the view injects the live count from the label store,
 so a stored result never claims a stale number. `copy.render` now returns `missing_placeholders`, and a
 test renders every refusal the pipeline can emit and fails if any placeholder has nothing behind it.
+
+## M-024 — One reviewer's two passes were counted as two reviewers (2026-08-27)
+
+**What happened.** The review screen posts twice by design: a blind Pass A (the reviewer's own marks,
+before the machine's are shown) and an adjudicated Pass B. `record_correction` built one
+`ReviewerTruth` per CORRECTION ROW and handed the list to `promote()`, which treats each element as a
+separate reviewer. So one person reviewing one plate produced `n_reviewers=2`, a label status of
+`disputed`, an inter-reviewer agreement rate of 0.0, and — worst — `n_double_labelled = 1`.
+
+**Why it matters.** Gate 6 requires 30 labelled plates with 10 double-labelled and an inter-reviewer
+agreement figure. Under this bug, one chemist clicking through 10 plates alone would have satisfied
+the double-labelling requirement and produced a fabricated disagreement statistic. That is a
+manufactured second opinion: the exact failure NN4 exists to prevent.
+
+**How it was found.** By walking the two-pass review against the running server during a demo check —
+`labels/stats` reported `n_double_labelled: 1` after a single reviewer's single plate.
+
+**Fix.** Corrections are grouped by `reviewer_id`; a reviewer's truth is their latest adjudicated pass,
+falling back to their blind pass if they have only done Pass A. The blind pass is still stored — it is
+the evidence for a future unaided-vs-aided metric — but it is no longer a second voice. A test asserts
+that one reviewer's two passes stay `provisional` with zero double-labelled, and that a second reviewer
+moves it to agreed/disputed.
