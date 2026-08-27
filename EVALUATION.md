@@ -1,6 +1,6 @@
 # EVALUATION
 
-Generated 2026-08-26T17:39:02Z from committed evidence at commit `e7a94d36f5b8` (dirty tree) by `tools/evaluate.py`. Regenerate rather than edit.
+Generated 2026-08-27T04:36:16Z from committed evidence at commit `e0c58612c6b8` (dirty tree) by `tools/evaluate.py`. Regenerate rather than edit.
 
 **The contract of this document:** every number carries an n and an interval. Every metric that cannot be computed is listed as `not computed`, with the reason and what would unblock it — never omitted, never replaced by a plausible-looking figure.
 

@@ -42,11 +42,19 @@ def capability(res: dict) -> list[dict]:
     ref = res["reference"]
     pos_state = "refused" if status == "refused" or not lanes else "measured"
     pos_word = "measured" if pos_state == "measured" else "refused"
-    if pm == "full":
+    n_lanes = len(lanes)
+    n_suppressed = sum(1 for L in lanes if not L["quantified"])
+    if pm == "full" and n_suppressed == 0:
         pho = ("measured", "measured")
-    elif pm == "positions_only":
+    elif pm == "full" and n_suppressed < n_lanes:
+        # the plate as a whole passed the clipping gate but individual lanes did not: saying
+        # "measured" here while the table says "not quantified" is the contradiction a chemist
+        # screenshots (M-022)
+        pho = ("partial", f"partial — areas withheld in {n_suppressed} of {n_lanes} lanes")
+    elif pm == "positions_only" or (pm == "full" and n_suppressed == n_lanes):
         clip = res["capture_qc"]["green_clip_frac_in_plate"]["value"]
-        pho = ("refused", f"refused — {nf.fmt_pct(clip)} of the plate is clipped")
+        pho = ("refused", f"refused — {nf.fmt_pct(clip)} of the plate is clipped"
+                          if pm == "positions_only" else "refused — every lane is too clipped to measure areas")
     else:
         pho = ("refused", "refused")
     provs = {L["label_provenance"] for L in lanes}
@@ -69,7 +77,7 @@ def capability(res: dict) -> list[dict]:
             {"key": "Scale", "state": sca[0], "word": sca[1]}]
 
 
-def view_model(res: dict, cfg: dict) -> dict:
+def view_model(res: dict, cfg: dict, n_labelled: int | None = None) -> dict:
     K = res["spots"][0]["ensemble_n_total"] if res["spots"] else int(cfg.get("ensemble", {}).get("k", 24))
     a_rep = float(cfg.get("_reported_agreement_min", 0.55))
     thr = int(np.ceil(a_rep * K))
@@ -100,14 +108,20 @@ def view_model(res: dict, cfg: dict) -> dict:
     return {"res": res, "cap": capability(res), "K": K, "thr": thr, "ceiling": ceiling, "H": H, "lanes": lanes,
             "cards": uniq, "origin_px": origin, "anchor": anchor, "n_confirmed": sum(len(x["main"]) for x in lanes),
             "n_below": sum(len(x["below"]) for x in lanes), "sha8": res["provenance"]["result_sha256"][:8],
-            "flags": res["flags"], "uncalibrated": copy.render(_uncalibrated(res))}
+            "flags": res["flags"], "uncalibrated": copy.render(_uncalibrated(res, n_labelled))}
 
 
-def _uncalibrated(res: dict) -> dict:
-    for s in res["spots"]:
-        if s["confidence"]["provenance"] == "refused" and s["confidence"].get("refusal"):
-            return s["confidence"]["refusal"]
-    return {"code": "E_UNCALIBRATED", "message": "", "remedy": "", "evidence": {"labelled_plates": 0, "required": 30}}
+def _uncalibrated(res: dict, n_labelled: int | None = None) -> dict:
+    ref = next((s["confidence"]["refusal"] for s in res["spots"]
+                if s["confidence"]["provenance"] == "refused" and s["confidence"].get("refusal")), None)
+    ref = dict(ref or {"code": "E_UNCALIBRATED", "message": "", "remedy": "", "evidence": {"required": 30}})
+    # the stored refusal carries the requirement; the COUNT is live and comes from the label store,
+    # so an old result never claims a stale number
+    ev = dict(ref.get("evidence") or {})
+    if n_labelled is not None:
+        ev["labelled_plates"] = n_labelled
+    ref["evidence"] = ev
+    return ref
 
 
 def _load(svc: RunService, run_id: str) -> tuple[dict, dict]:
@@ -121,7 +135,7 @@ def _ctx(request: Request, svc: RunService, run_id: str) -> dict:
     row, res = _load(svc, run_id)
     findings = svc.load_findings(run_id)
     cfg = {**svc.config_doc, "_reported_agreement_min": svc.op_doc["tiers"]["reported"]["agreement_min"]}
-    vm = view_model(res, cfg)
+    vm = view_model(res, cfg, n_labelled=len(svc.repo.label_records()))
     order = {"reported": 0, "tentative": 1, "anomaly": 2, "insufficient_data": 3, "suppressed": 4}
     findings.sort(key=lambda f: (order.get(f["verdict"], 9), f["hypothesis_id"]))
     return {"request": request, "row": row, "findings": findings,

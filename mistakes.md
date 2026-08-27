@@ -361,3 +361,56 @@ replay mode is for. Gate 10 back to 3/3 byte-identical.
 **The lesson.** Wiring a previously-inert component into the result is a change to the determinism
 surface, not just a feature. The gate that guards that surface has to be re-run in the same commit —
 this one was caught only because Gate 10 was re-run after an unrelated config change.
+
+## M-020 — A template edit replaced an empty string and served 5 MB of duplicated markup (2026-08-27)
+
+**What happened.** The edit that made `/method` read gate status from the evidence computed its
+replacement target as `s[s.index('<h2 id="gates">Open gates</h2>'):s.index('{% endblock %}')]`. The
+first `{% endblock %}` in the file closes the TITLE block near the top, so the slice ran backwards and
+came out empty — and `str.replace("", new)` inserts `new` between every character. `method.html` became
+29,071 lines containing 3,227 copies of the gate table, and the page served 5.25 MB with no `<head>`.
+It shipped in commit `ab52eda` and stayed broken through two more commits.
+
+**Why the tests missed it.** `test_method_page_gate_table_comes_from_the_evidence` asserted only that
+"Gate status" and one number appeared *somewhere* in the response. A page mangled into 3,227 copies of
+that section satisfies both. The test checked presence, never shape.
+
+**How it was found.** Not by CI — by starting the server and curling every route to see whether the
+system could be demoed. `/method` returned 200 with a 5 MB body, and only the byte count looked wrong.
+
+**Fix.** The template is rebuilt by hand. The test now asserts the page is under 60 kB, that
+`id="gates"` and `<h1>` appear exactly once, that it renders inside the base layout, and that the gate
+table has exactly one row per gate — shape, not substrings. A slice-based edit like that one is
+banned: replacements now target unique literals.
+
+## M-021 — Lane numbers were 0-based in prose and 1-based on screen (2026-08-27)
+
+**What happened.** `flags.py` wrote refusal sentences with the raw lane index: the panel headed
+"L2 R" carried the message "Lane 1: 6.8% of the lane band is clipped". Three lanes, three off-by-one
+sentences, on every clipped plate in the corpus.
+
+**Fix.** Prose counts lanes the way the screen does (`lane + 1`); the evidence dict keeps the 0-based
+`lane` for machines and adds `lane_display` for copy. A test asserts the two never diverge again.
+
+## M-022 — The capability bar said "Photometry: measured" while the table said "not quantified" (2026-08-27)
+
+**What happened.** The four-segment capability bar derived photometry from the PLATE-level
+`photometry_mode`. On a plate that passes the plate-wide clipping gate but has individual lanes over
+the per-lane limit, the rail read "Photometry — measured" while three of four lanes were hatched and
+three of four bands showed "— not quantified". The one-sentence summary contradicted the table under
+it, which is exactly the screenshot spec 04 §11.10 warns about.
+
+**Fix.** The segment now reads `partial — areas withheld in 3 of 4 lanes`, and falls to `refused` when
+every lane is suppressed.
+
+## M-023 — E_UNCALIBRATED was assembled by hand with empty evidence (2026-08-27)
+
+**What happened.** `tlc/pipeline/flags.py` has a proper `e_uncalibrated()` constructor. Nothing called
+it: `assemble.py` built its own `S.Refusal(code="E_UNCALIBRATED", ..., evidence={})` inline, so the
+frontend's sentence "{labelled_plates} plates are labelled; {required} are required" rendered as
+"— plates are labelled; — are required" on every band of every run.
+
+**Fix.** The assembler emits `F.e_uncalibrated()`. The pure pipeline carries only the requirement —
+it cannot know how many plates are labelled — and the view injects the live count from the label store,
+so a stored result never claims a stale number. `copy.render` now returns `missing_placeholders`, and a
+test renders every refusal the pipeline can emit and fails if any placeholder has nothing behind it.

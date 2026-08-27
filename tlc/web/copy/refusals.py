@@ -16,6 +16,14 @@ class Copy:
     actions: tuple[str, ...] = ("retake",)
 
 
+def _num(x):
+    """The result schema stores evidence as floats, so counts arrive as 30.0. Print a whole number
+    as a whole number: "30.0 labelled plates" reads like a measurement of something."""
+    if isinstance(x, float) and x.is_integer():
+        return int(x)
+    return x
+
+
 def _pct(x) -> str:
     try:
         return f"{100.0 * float(x):.0f}%"
@@ -103,7 +111,8 @@ COPY: dict[str, Copy] = {
         "Confidence is not yet calibrated",
         "Ensemble agreement (n of K variants) is reported for every band.",
         "No probability is reported.",
-        "{labelled_plates} plates are labelled; {required} are required before calibration can be measured.",
+        "No calibration map is fitted for this pipeline version. {labelled_plates_clause}"
+        "{required} labelled plates are required before one can be measured.",
         "Review plates in the review screen; calibration is computed once the label set is complete.",
         ("labels",),
     ),
@@ -169,17 +178,28 @@ def render(refusal: dict) -> dict:
     """Interpolate a refusal object into its copy. Unknown codes get a generic honest card."""
     code = refusal.get("code", "")
     ev = dict(refusal.get("evidence") or {})
+    if "lane_display" in ev:
+        ev = {**ev, "lane": ev["lane_display"]}   # M-021: prose counts lanes the way the screen does
     c = COPY.get(code)
     if c is None:
         return {"code": code, "title": refusal.get("message", code), "measured": "", "withheld": "",
                 "why": refusal.get("message", ""), "remedy": refusal.get("remedy", ""), "actions": ()}
-    fmt = {k: (_pct(v) if k in PERCENT_KEYS else v) for k, v in ev.items()}
+    fmt = {k: (_pct(v) if k in PERCENT_KEYS else _num(v)) for k, v in ev.items()}
+    if code == "E_UNCALIBRATED":
+        n = ev.get("labelled_plates")
+        fmt["labelled_plates_clause"] = "" if n is None else f"{int(n)} plate(s) are labelled so far; "
+
+    missing: list[str] = []
 
     class _Safe(dict):
         def __missing__(self, k):
+            # a placeholder with nothing behind it is a broken sentence; record it so CI can see it
+            missing.append(k)
             return "—"
 
     s = _Safe(fmt)
-    return {"code": code, "title": c.title.format_map(s), "measured": c.measured.format_map(s),
-            "withheld": c.withheld.format_map(s), "why": c.why.format_map(s), "remedy": c.remedy.format_map(s),
-            "actions": c.actions}
+    out = {"code": code, "title": c.title.format_map(s), "measured": c.measured.format_map(s),
+           "withheld": c.withheld.format_map(s), "why": c.why.format_map(s), "remedy": c.remedy.format_map(s),
+           "actions": c.actions}
+    out["missing_placeholders"] = sorted(set(missing))
+    return out

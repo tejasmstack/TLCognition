@@ -184,16 +184,31 @@ def test_findings_api_and_cohort_endpoint(client, run_id):
 
 
 def test_method_page_gate_table_comes_from_the_evidence(client):
-    """A gate status typed into a template goes stale the day after it is written."""
+    """A gate status typed into a template goes stale the day after it is written.
+
+    The assertions also check the page's SHAPE, not just that a substring appears somewhere: a
+    template mangled into 3227 copies of one section satisfied the substring test and served 5 MB
+    of duplicated markup for two commits (M-020).
+    """
     import json as _json
+    import re as _re
     from pathlib import Path as _Path
 
-    html = client.get("/method").text
-    assert "Gate status" in html
+    from tlc.web.views import gate_status
+
+    r = client.get("/method")
+    assert r.status_code == 200
+    html = r.text
+    assert len(html) < 60_000, f"the method page is {len(html)} bytes — it should be one page, not many"
+    assert html.count('id="gates"') == 1 and html.count('id="gate-table"') == 1
+    assert html.count("<h1>") == 1 and "<nav" in html, "the page must render inside the base layout"
+    body = html[html.index('id="gate-table"'):]
+    assert body.count("<tr>") == len(gate_status()) + 1, "one row per gate, plus the header"
     root = _Path(__file__).resolve().parents[1]
     g5 = _json.loads((root / "reports" / "gate5_evidence.json").read_text())
     assert f"{g5['position']['rst_err_p95']}" in html
-    assert ("PASS" if g5["gate5_pass"] else "not met") in html
+    row = _re.search(r"<tr><td>5 · position and streaks</td><td>([^<]+)</td>", html)
+    assert row and row.group(1) == ("PASS" if g5["gate5_pass"] else "not met")
 
 
 def test_replay_reproduces_the_result_byte_for_byte(client, run_id):
@@ -209,3 +224,42 @@ def test_replay_reproduces_the_result_byte_for_byte(client, run_id):
     after = svc.load_result(out["run_id"])
     assert after["vlm"]["mode"] == before["vlm"]["mode"]
     assert svc.repo.get_run(run_id)["superseded_by"] == out["run_id"]
+
+
+def test_refusal_copy_renders_every_placeholder_it_declares():
+    """A card that prints "—" or "30.0" where a number belongs is worse than no card (M-020..M-022)."""
+    import re as _re
+    import string as _string
+
+    from tlc.pipeline import flags as _flags
+
+    samples = [
+        _flags.e_clip_photometry(0.41), _flags.e_clip_unusable(0.52), _flags.e_lane_clip(1, 0.31),
+        _flags.e_area_clip(2, 0.068), _flags.e_box_clip("sp_01"), _flags.e_no_front(),
+        _flags.e_no_origin(1, 2), _flags.e_origin_uncertain(0.11), _flags.e_no_reference(["S", "R"]),
+        _flags.e_streak(3, "flat-topped run"), _flags.e_uncalibrated(), _flags.e_uncalibrated(7),
+        _flags.e_frame_overrun("left", 0.114), _flags.e_no_plate(0.02), _flags.e_resolution(7.2),
+        _flags.e_noise_structured(8.1), _flags.e_lane_count_unknown(), _flags.e_in_annotation_band("sp_02"),
+        _flags.e_vlm_unconfirmed(0.42, 1.1, 5.0),
+    ]
+    for r in samples:
+        card = copy.render({"code": r.code, "message": r.message, "remedy": r.remedy, "evidence": dict(r.evidence)})
+        text = " ".join([card["title"], card["measured"], card["withheld"], card["why"], card["remedy"]])
+        assert card["missing_placeholders"] == [], f"{r.code}: nothing behind {card['missing_placeholders']}"
+        assert not _re.search(r"\{[a-z_]+\}", text), f"{r.code}: literal placeholder left in {text}"
+        assert not _re.search(r"\b\d+\.0\b", text), f"{r.code}: a count rendered as a float: {text}"
+        for field in (card["title"], card["why"]):
+            assert not [t for _, t, _, _ in _string.Formatter().parse(field) if t], "unrendered field"
+
+
+def test_lane_numbers_in_prose_match_the_screen(client, run_id):
+    """Lanes are 0-indexed in the data and 1-indexed on screen; prose must use the screen's numbering."""
+    res = client.get(f"/runs/{run_id}.json").json()
+    n_lanes = len(res["lanes"])
+    for lane in res["lanes"]:
+        sup = lane.get("suppression")
+        if sup and "lane" in (sup.get("evidence") or {}):
+            assert sup["evidence"]["lane"] == lane["index"], "the machine-readable index stays 0-based"
+            assert f"Lane {lane['index'] + 1}" in sup["message"] or "Lane" not in sup["message"]
+            assert "Lane 0" not in sup["message"]
+    assert n_lanes >= 1

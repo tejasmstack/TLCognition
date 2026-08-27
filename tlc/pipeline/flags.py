@@ -70,15 +70,17 @@ def e_clip_photometry(frac: float) -> Refusal:
 
 
 def e_lane_clip(lane: int, frac: float) -> Refusal:
-    return Refusal("EXPOSURE_CLIPPED", f"Lane {lane} is {frac:.0%} saturated; nothing in it can be measured.",
+    # M-021: lanes are 0-indexed in the data and 1-indexed on every screen; prose uses the screen's
+    # numbering, evidence keeps the index, and `lane_display` is what copy interpolates.
+    return Refusal("EXPOSURE_CLIPPED", f"Lane {lane + 1} is {frac:.0%} saturated; nothing in it can be measured.",
                    "Re-shoot darker; this lane sits under the brightest part of the illumination.",
-                   {"lane": lane, "lane_clip_frac": round(frac, 4), "gate": CLIP_LANE_ABSTAIN})
+                   {"lane": lane, "lane_display": lane + 1, "lane_clip_frac": round(frac, 4), "gate": CLIP_LANE_ABSTAIN})
 
 
 def e_area_clip(lane: int, frac: float) -> Refusal:
-    return Refusal("AREA_UNRELIABLE_CLIP", f"Lane {lane}: {frac:.1%} of the lane band is clipped; areas withheld, positions kept.",
+    return Refusal("AREA_UNRELIABLE_CLIP", f"Lane {lane + 1}: {frac:.1%} of the lane band is clipped; areas withheld, positions kept.",
                    "Re-shoot darker to recover areas.",
-                   {"lane": lane, "lane_clip_frac": round(frac, 4), "gate": CLIP_LANE_AREA})
+                   {"lane": lane, "lane_display": lane + 1, "lane_clip_frac": round(frac, 4), "gate": CLIP_LANE_AREA})
 
 
 def e_box_clip(spot_id: str) -> Refusal:
@@ -109,14 +111,19 @@ def e_no_reference(labels: list[str]) -> Refusal:
 
 
 def e_streak(lane: int, reason: str) -> Refusal:
-    return Refusal("E_STREAK", f"Lane {lane} is streaking ({reason}); the position of a streak is not defined.",
-                   "Reduce loading or change the solvent system.", {"lane": lane})
+    return Refusal("E_STREAK", f"Lane {lane + 1} is streaking ({reason}); the position of a streak is not defined.",
+                   "Reduce loading or change the solvent system.", {"lane": lane, "lane_display": lane + 1})
 
 
-def e_uncalibrated(n_labelled: int = 0, required: int = 30) -> Refusal:
-    return Refusal("E_UNCALIBRATED", "Confidence is not yet calibrated on this instrument; treat ensemble agreement as ordinal evidence, not a probability.",
-                   "Complete 30 labelled plates (Gate 6) and run calibration (Gate 7).",
-                   {"labelled_plates": n_labelled, "required": required})
+def e_uncalibrated(n_labelled: int | None = None, required: int = 30) -> Refusal:
+    """The pure pipeline does not know how many plates are labelled — that lives in the label store —
+    so it emits the requirement only. A caller that knows the count passes it, and the count then
+    travels with the refusal instead of being invented at render time."""
+    ev: dict = {"required": required}
+    if n_labelled is not None:
+        ev["labelled_plates"] = n_labelled
+    return Refusal("E_UNCALIBRATED", "Confidence is not calibrated for this pipeline version; treat ensemble agreement as ordinal evidence, not a probability.",
+                   f"Complete {required} labelled plates (Gate 6) and run calibration (Gate 7).", ev)
 
 
 def e_frame_overrun(edge: str, frac: float) -> Refusal:

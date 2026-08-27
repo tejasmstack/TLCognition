@@ -14,6 +14,7 @@ import numpy as np
 
 from tlc.core.canonical_json import canonical_json
 from tlc.core.hashing import sha256_bytes, sha256_canonical, tree_fingerprint
+from tlc.pipeline import flags as F
 from tlc.pipeline.runner import RunOutput
 from tlc.schemas import result as S
 
@@ -220,7 +221,7 @@ def assemble(out: RunOutput, image_bytes: bytes, image_meta: dict, config_docume
             ensemble_agreement=_q(sp.ensemble.agreement, "1", method="weighted_jeffreys_agreement"),
             ensemble_n_total=sp.ensemble.n_total, ensemble_n_hit=sp.ensemble.n_hit,
             ensemble_y_spread_px=_q(sp.ensemble.row_spread, "px"),
-            confidence=_refused("1", uncal) if uncal else S.Q(value=None, unit="1", provenance="refused", refusal=S.Refusal(code="E_UNCALIBRATED", message="Confidence is not yet calibrated.", remedy="Complete Gates 6-7.", evidence={})),
+            confidence=_refused("1", uncal or F.e_uncalibrated()),
             calibration_version=None,
             fit_residual_rms_od=_q(f.residual_rms, "OD") if f.ok and np.isfinite(f.residual_rms) else None,
             vlm_proposed=False, vlm_confirmation=None, flags=list(sp.flags),
