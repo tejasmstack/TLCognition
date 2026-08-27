@@ -164,7 +164,23 @@ class Repo:
                           "p": json.dumps(payload, sort_keys=True), "pa": partition, "d": json.dumps(derived_from), "t": utcnow()})
             self.audit(conn, "promoter", "label.promote", "label", label_id, {"status": status, "partition": partition})
 
-    def label_records(self, current_only: bool = True) -> list[dict]:
-        q = "SELECT * FROM label_records" + (" WHERE superseded_by IS NULL" if current_only else "")
+    def label_records(self, current_only: bool = True, partitions: tuple[str, ...] | None = None) -> list[dict]:
+        """`partitions` restricts the result — fitting code must pass ('tune', 'calibrate') so that a
+        hold-out plate cannot reach a model even before the payloads are sealed away (Gate 6)."""
+        wheres = ["superseded_by IS NULL"] if current_only else []
+        params: dict = {}
+        if partitions:
+            wheres.append("partition IN (" + ",".join(f":p{i}" for i in range(len(partitions))) + ")")
+            params.update({f"p{i}": p for i, p in enumerate(partitions)})
+        q = "SELECT * FROM label_records" + (" WHERE " + " AND ".join(wheres) if wheres else "")
         with self.engine.begin() as conn:
-            return [dict(r) for r in conn.execute(text(q)).mappings().all()]
+            return [dict(r) for r in conn.execute(text(q), params).mappings().all()]
+
+    def seal_holdout(self, label_id: str, sealed_at: str) -> None:
+        """Drop the truth payload from the database once it has been written outside it. The row
+        stays — the system must know a plate is held out — but what the reviewer said is gone from
+        anywhere the pipeline can reach."""
+        with self.engine.begin() as conn:
+            conn.execute(text("UPDATE label_records SET payload_json='{}', sealed_at=:t WHERE label_id=:l"),
+                         {"t": sealed_at, "l": label_id})
+            self.audit(conn, "holdout", "label.seal", "label", label_id, {"sealed_at": sealed_at})

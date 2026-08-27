@@ -598,3 +598,20 @@ change ships as **`config/pipeline/v0.6.0.toml`** — one line different from v0
 on disk so its runs replay byte-for-byte (M-018 explains why this mattered more than it looked).
 **Revisit if:** the detector improves at 5-8 sigma, where the remaining misses live; Phase 7
 calibration replaces the raw agreement bar with a fitted p_spot that also uses z and the MC p-value.
+
+
+## D-031 — The hold-out partition becomes a location, not a column (2026-08-27)
+Gate 6 requires the hold-out set to be "written to a location the pipeline code cannot read". Until
+today it was `partition = 'holdout'` in the same SQLite file every other query reads: a promise kept
+by remembering to filter. Now `tools/seal_holdout.py` writes each hold-out truth to
+`holdout/<image_id>.json` read-only, records its sha256 in `holdout/MANIFEST.json`, then NULLs the
+payload in the database and stamps `sealed_at`. The row stays — the system must know which plates are
+held out — but what the reviewer said is gone from anywhere `tlc/` can reach.
+`Repo.label_records(partitions=("tune", "calibrate"))` is how fitting code asks for data, so a
+hold-out plate cannot reach a model even before sealing. Three tests enforce it: no path into the
+store appears under `tlc/`, `seal_holdout` may delete the payload but never SELECT it, and sealing
+twice is a no-op.
+**Why now, with zero labels:** the mechanism has to exist before the first label does. Sealing after
+the fact is a promise about the past.
+**Revisit if:** the lab wants the store off-machine (an S3 bucket or a locked share) — only the
+`--holdout-dir` argument changes.

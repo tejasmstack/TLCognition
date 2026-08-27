@@ -103,7 +103,18 @@ def make_engine(db_path: Path | str) -> Engine:
     return engine
 
 
+#: Columns added after the first release. SQLite cannot express them in CREATE TABLE IF NOT EXISTS,
+#: and the project has no migration runner in use, so they are applied idempotently at startup.
+ADDED_COLUMNS: tuple[tuple[str, str, str], ...] = (
+    ("label_records", "sealed_at", "TEXT"),
+)
+
+
 def init_schema(engine: Engine) -> None:
     with engine.begin() as conn:
         for stmt in [s.strip() for s in DDL.split(";\n") if s.strip()]:
             conn.execute(text(stmt))
+        for table, column, decl in ADDED_COLUMNS:
+            cols = {r[1] for r in conn.execute(text(f"PRAGMA table_info({table})")).all()}
+            if column not in cols:
+                conn.execute(text(f"ALTER TABLE {table} ADD COLUMN {column} {decl}"))

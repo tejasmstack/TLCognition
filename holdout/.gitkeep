@@ -1,0 +1,2 @@
+# Sealed hold-out labels live here (tools/seal_holdout.py). Nothing under tlc/ may read this
+# directory; a test enforces that. Files are written read-only and are never edited in place.
