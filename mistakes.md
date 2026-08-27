@@ -563,3 +563,42 @@ measured breadth, and still refuses every area. Bands carrying a position across
 **The lesson.** "Suppress the lane" was implemented as "suppress everything about the lane". The spec
 distinguished the two, and the distinction was the difference between a plate that reads and a plate
 that says nothing.
+
+## M-030 — The surrogate null contained the very bands it was testing for (2026-08-27)
+
+**What happened.** 28 of 66 real plates reported no counted band. Tracing one — `MEHQ-P40_3hr`, whose
+standard lane visibly carries a band — showed **22 of 24 configs found it**, with matched-filter z up
+to 10.2, and **every one of them scored p_mc = 1.0000 and was rejected**.
+
+The S1 surrogate null is transplanted from the gutters between the lanes. That is only a null while
+the gutters hold no chemistry. Measured on that plate: the mean gutter profile carries a feature at
+**z = 43.5, at the same row as the real bands.** Per-column maxima ran to 47 on P40, 68 on P31, 112 on
+P20. There was **not one clean gutter column on any plate examined.** The bands are broad relative to
+the lane pitch, so they bleed straight across the gaps, and every lane was being tested against a null
+that contained a bigger version of the thing it was looking for. Every p saturates at 1; nothing can
+ever be accepted.
+
+**Why it stayed hidden.** On synthetic plates the gutters are quiet — the generator's spots are narrow
+enough not to bleed — so Gate 4 measures recall 0.95 and a false-positive rate of 0.07-0.14 per blank
+against a null that works. The gates were measuring a world in which this defect does not exist.
+
+**The other two nulls do not rescue it.** S2 (IAAFT) preserves the profile's own spectrum and
+amplitudes, so a lane containing a clear z=28 band produces surrogates that contain one too: measured
+p = 0.23 for an obvious band. The spec calls S2 a diagnostic, and this is why.
+
+**What was fixed now.** The system no longer claims a lane is empty when it had no power to say so.
+A lane is `is_empty` only if the null was usable, where usable means the gutter does not carry an
+unmistakable band (>= 8 sigma, above what noise over this many rows can reach) that also exceeds
+anything in the lane itself — exactly the saturation condition. Otherwise the plate carries
+`E_NULL_NOT_CONSTRUCTIBLE`, naming the measured gutter strength and what to change at the bench, and
+the reaction reading says the plate has not been tested rather than that nothing was found.
+
+Measured across the corpus: **lanes claimed empty 124 -> 52**, plates carrying the honest refusal
+0 -> 40, counted bands unchanged. The condition is inert on synthetic plates (0 of 12 fire), so no
+gate moves.
+
+**Still owed.** This makes the failure honest; it does not make those plates readable. A null that
+does not need a signal-free region — a parametric one built from the noise unit's own autocovariance,
+which is estimated on a prepass-excluded field and so cannot contain a band — is the way to actually
+test these lanes, and it has to be validated against S1 on plates where both are available before it
+can carry a claim.

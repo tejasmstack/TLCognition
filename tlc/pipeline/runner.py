@@ -41,6 +41,7 @@ from tlc.pipeline.streak import StreakVerdict, assess_streak
 WIDTH_FRAC_NOMINAL = 0.18
 STANDARD_LABELS = ("sd", "s")   # reference lane candidates, in preference order
 POSITION_MIN_HITS = 3           # D-026: below this the ensemble average is one or two configs, not a consensus
+GUTTER_BAND_SIGMA = 8.0         # M-030: above this a gutter feature is a band, not a noise excursion
 SPOTLIKE_SIGMA_MAX = 1.5        # D-027: a fit wider than 1.5x nominal is not a spot explanation
 SPOTLIKE_TAIL_MAX = 2.0         # D-027: nor is one with a tail longer than 2 sigma
 
@@ -156,6 +157,36 @@ def _focus_metric(green: np.ndarray, mask: np.ndarray) -> float:
         return float("nan")
     mean = float(green[m].mean())
     return float(lap[m].var() / max(mean * mean, 1e-12))
+
+
+def _gutter_strength(od: np.ndarray, od_valid: np.ndarray, lane_centres: list[float], hw: float,
+                     rows: tuple[int, int], sigma: float) -> float:
+    """The strongest feature the S1 null can contain, in sigma.
+
+    Measured the way the null is built: the MEAN over the gutter columns, not the worst single
+    column — averaging is what makes a null quiet, and a per-column maximum would condemn every
+    plate for ordinary noise excursions."""
+    from tlc.pipeline.surrogates import gutter_columns
+
+    r0, r1 = rows
+    cols = [x for x in gutter_columns(od.shape[1], lane_centres, hw)
+            if od_valid[r0:r1, x].mean() >= 0.5]
+    if not cols:
+        return 0.0
+    sub = np.where(od_valid[r0:r1, cols], od[r0:r1, cols], np.nan)
+    with np.errstate(invalid="ignore"):
+        prof = np.nanmean(sub, axis=1)
+        if not np.isfinite(prof).any():
+            return 0.0
+        return float(np.nanmax((prof - np.nanmedian(prof)) / max(sigma, 1e-12)))
+
+
+def _lane_strength(profile: np.ndarray, rows: tuple[int, int], sigma: float) -> float:
+    """The strongest feature in this lane, on the same scale as the gutter's."""
+    seg = np.asarray(profile[rows[0]:rows[1]], float)
+    if seg.size < 4:
+        return 0.0
+    return float(np.max((seg - np.median(seg)) / max(sigma, 1e-12)))
 
 
 def _refine_lane_center(od: np.ndarray, od_valid: np.ndarray, x_seed: float, pitch: float, rows: tuple[int, int]) -> tuple[float, str]:
@@ -284,6 +315,14 @@ def run_plate(rgb: np.ndarray, cfg: RunConfig, seed: int) -> RunOutput:
         lane_centres.append(xc)
         lane_methods.append(meth)
 
+    # --- can the surrogate null even be built? S1 transplants the null from the strips between the
+    # lanes, so it is a null only while those strips hold no chemistry. When bands are broad relative
+    # to the lane pitch they bleed across, and the null then contains a peak bigger than anything in
+    # the lane — every p saturates at 1 and nothing can ever be accepted (M-030). The test is exactly
+    # that saturation condition, so it is inert wherever the gutters really are quiet.
+    gutter_z = _gutter_strength(odr.od, odr.od_valid, lane_centres, hw, (int(0.16 * h), int(0.86 * h)),
+                                max(sigma_od, 1e-9))
+
     # --- origin (before the band is finalised: the band ends just above the detected origin so
     # comet tails from the origin are seen whole while the spotting dots themselves stay out)
     zone = (int(cfg.origin_zone_frac[0] * h), int(cfg.origin_zone_frac[1] * h))
@@ -313,6 +352,11 @@ def run_plate(rgb: np.ndarray, cfg: RunConfig, seed: int) -> RunOutput:
         x_lo, x_hi = den.x_lo, den.x_hi
         lane_valid_geom = pp.valid_geom[band[0]:band[1], x_lo:x_hi]
         lane_clip = float((~pp.valid[band[0]:band[1], x_lo:x_hi] & lane_valid_geom).sum() / max(lane_valid_geom.sum(), 1))
+        lane_z = _lane_strength(den.profile, band, max(sigma_od, 1e-9))
+        # M-030: the null is unusable only when the gutter holds something unmistakably a BAND
+        # (noise over this many rows tops out near 5 sigma) AND that thing is stronger than anything
+        # in this lane, which is exactly when every surrogate p saturates at 1.
+        null_usable = not (gutter_z >= GUTTER_BAND_SIGMA and gutter_z >= lane_z)
         ens, _ = run_ensemble_lane(grid, weights, pp.green, pp.valid, noise, excl, li, xc, pitch, lane_centres, band,
                                    seed=seed, n_surrogates=cfg.n_surrogates, od_cache=od_cache)
         tiered = [s for s in ens if s.agreement >= cfg.candidate_agreement_min and s.p_med <= cfg.p_med_max and s.z_med >= cfg.z_med_min]
@@ -338,7 +382,17 @@ def run_plate(rgb: np.ndarray, cfg: RunConfig, seed: int) -> RunOutput:
                                dominant_mu=dom.mu if dom is not None else None,
                                dominant_tau=dom.tau if dom is not None else None,
                                dominant_fwhm=(dom.fwhm if dom is not None and np.isfinite(dom.fwhm) else None))
-        is_empty = not tiered
+        is_empty = (not tiered) and null_usable
+        if not null_usable and not tiered:
+            # the lane found nothing AND could not have: say which, rather than reporting a clean
+            # lane the test never had the power to contradict (M-030)
+            r = F.e_null_not_constructible(0, int(2 * hw + 1), gutter_z)
+            if not any(x.code == "E_NULL_NOT_CONSTRUCTIBLE" for x in refusals):
+                refusals.append(r)
+                gates.append("E_NULL_NOT_CONSTRUCTIBLE")
+            flags.append(F.Flag("null_not_constructible", "warn",
+                                f"Lane {li + 1}: {r.message}", r.remedy,
+                                {"lane": li, "gutter_max_z": round(gutter_z, 1), "lane_max_z": round(lane_z, 1)}))
         suppression = None
         quantified = photometry_mode == "full"
         if lane_clip > F.CLIP_LANE_ABSTAIN:

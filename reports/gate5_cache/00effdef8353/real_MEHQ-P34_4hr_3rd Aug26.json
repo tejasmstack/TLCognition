@@ -1,0 +1,1 @@
+{"file": "MEHQ-P34_4hr_3rd Aug26.png", "n_refusals": 8, "n_spots": 0, "refusal_codes": ["E_FRAME_OVERRUN", "E_LANE_COUNT_UNKNOWN", "E_NO_FRONT", "E_NO_REFERENCE_LANE", "E_NULL_NOT_CONSTRUCTIBLE"], "schema_valid": true, "silent_nulls": [], "status": "degraded", "verdict": "ok"}

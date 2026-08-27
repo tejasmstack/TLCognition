@@ -1,0 +1,2906 @@
+[
+ {
+  "file": "MEHQ-P20_1st Step 3hr_21st July26.png",
+  "lanes": [
+   {
+    "flagged_streaking": false,
+    "label": "S",
+    "lane": 0,
+    "n_bands": 0,
+    "reason": null,
+    "streak_frac": 0.151,
+    "width_frac": null
+   },
+   {
+    "flagged_streaking": false,
+    "label": "R",
+    "lane": 1,
+    "n_bands": 1,
+    "reason": null,
+    "streak_frac": 0.344,
+    "width_frac": 0.409
+   },
+   {
+    "flagged_streaking": false,
+    "label": "co",
+    "lane": 2,
+    "n_bands": 0,
+    "reason": null,
+    "streak_frac": 0.194,
+    "width_frac": null
+   },
+   {
+    "flagged_streaking": false,
+    "label": "sd",
+    "lane": 3,
+    "n_bands": 1,
+    "reason": null,
+    "streak_frac": 0.204,
+    "width_frac": 0.075
+   }
+  ],
+  "rendered": true,
+  "sheet": "MEHQ-P20_1st_Step_3hr_21st_July26.png",
+  "status": "degraded"
+ },
+ {
+  "file": "MEHQ-P20_2nd Step 1hr_21st July26.png",
+  "lanes": [
+   {
+    "flagged_streaking": false,
+    "label": "S",
+    "lane": 0,
+    "n_bands": 1,
+    "reason": null,
+    "streak_frac": 0.303,
+    "width_frac": 0.092
+   },
+   {
+    "flagged_streaking": false,
+    "label": "R",
+    "lane": 1,
+    "n_bands": 1,
+    "reason": null,
+    "streak_frac": 0.367,
+    "width_frac": 0.339
+   },
+   {
+    "flagged_streaking": false,
+    "label": "co",
+    "lane": 2,
+    "n_bands": 0,
+    "reason": null,
+    "streak_frac": 0.202,
+    "width_frac": null
+   },
+   {
+    "flagged_streaking": false,
+    "label": "sd",
+    "lane": 3,
+    "n_bands": 2,
+    "reason": null,
+    "streak_frac": 0.248,
+    "width_frac": 0.064
+   }
+  ],
+  "rendered": true,
+  "sheet": "MEHQ-P20_2nd_Step_1hr_21st_July26.png",
+  "status": "degraded"
+ },
+ {
+  "file": "MEHQ-P21_1st Step 6hr_22nd July26.png",
+  "lanes": [
+   {
+    "flagged_streaking": false,
+    "label": "S",
+    "lane": 0,
+    "n_bands": 0,
+    "reason": null,
+    "streak_frac": 0.113,
+    "width_frac": null
+   },
+   {
+    "flagged_streaking": false,
+    "label": "R",
+    "lane": 1,
+    "n_bands": 0,
+    "reason": null,
+    "streak_frac": 0.087,
+    "width_frac": null
+   },
+   {
+    "flagged_streaking": false,
+    "label": "co",
+    "lane": 2,
+    "n_bands": 0,
+    "reason": null,
+    "streak_frac": 0.037,
+    "width_frac": null
+   },
+   {
+    "flagged_streaking": false,
+    "label": "sd",
+    "lane": 3,
+    "n_bands": 0,
+    "reason": null,
+    "streak_frac": 0.1,
+    "width_frac": null
+   }
+  ],
+  "rendered": true,
+  "sheet": "MEHQ-P21_1st_Step_6hr_22nd_July26.png",
+  "status": "refused"
+ },
+ {
+  "file": "MEHQ-P22_1st Step 6hr_22nd July26.png",
+  "lanes": [
+   {
+    "flagged_streaking": false,
+    "label": "S",
+    "lane": 0,
+    "n_bands": 1,
+    "reason": null,
+    "streak_frac": 0.145,
+    "width_frac": 0.129
+   },
+   {
+    "flagged_streaking": false,
+    "label": "R",
+    "lane": 1,
+    "n_bands": 4,
+    "reason": null,
+    "streak_frac": 0.177,
+    "width_frac": 0.065
+   },
+   {
+    "flagged_streaking": false,
+    "label": "co",
+    "lane": 2,
+    "n_bands": 3,
+    "reason": null,
+    "streak_frac": 0.065,
+    "width_frac": 0.097
+   },
+   {
+    "flagged_streaking": false,
+    "label": "sd",
+    "lane": 3,
+    "n_bands": 1,
+    "reason": null,
+    "streak_frac": 0.065,
+    "width_frac": 0.048
+   }
+  ],
+  "rendered": true,
+  "sheet": "MEHQ-P22_1st_Step_6hr_22nd_July26.png",
+  "status": "degraded"
+ },
+ {
+  "file": "MEHQ-P22_2nd Step 1hr_22nd July26.png",
+  "lanes": [
+   {
+    "flagged_streaking": false,
+    "label": "S",
+    "lane": 0,
+    "n_bands": 0,
+    "reason": null,
+    "streak_frac": 0.262,
+    "width_frac": null
+   },
+   {
+    "flagged_streaking": false,
+    "label": "R",
+    "lane": 1,
+    "n_bands": 0,
+    "reason": null,
+    "streak_frac": 0.341,
+    "width_frac": null
+   },
+   {
+    "flagged_streaking": false,
+    "label": "co",
+    "lane": 2,
+    "n_bands": 0,
+    "reason": null,
+    "streak_frac": 0.143,
+    "width_frac": null
+   },
+   {
+    "flagged_streaking": false,
+    "label": "sd",
+    "lane": 3,
+    "n_bands": 0,
+    "reason": null,
+    "streak_frac": 0.175,
+    "width_frac": null
+   }
+  ],
+  "rendered": true,
+  "sheet": "MEHQ-P22_2nd_Step_1hr_22nd_July26.png",
+  "status": "degraded"
+ },
+ {
+  "file": "MEHQ-P23_4hr_24th July26.png",
+  "lanes": [
+   {
+    "flagged_streaking": false,
+    "label": "S",
+    "lane": 0,
+    "n_bands": 0,
+    "reason": null,
+    "streak_frac": 0.244,
+    "width_frac": null
+   },
+   {
+    "flagged_streaking": false,
+    "label": "R",
+    "lane": 1,
+    "n_bands": 0,
+    "reason": null,
+    "streak_frac": 0.457,
+    "width_frac": null
+   },
+   {
+    "flagged_streaking": false,
+    "label": "co",
+    "lane": 2,
+    "n_bands": 0,
+    "reason": null,
+    "streak_frac": 0.268,
+    "width_frac": null
+   },
+   {
+    "flagged_streaking": false,
+    "label": "sd",
+    "lane": 3,
+    "n_bands": 0,
+    "reason": null,
+    "streak_frac": 0.244,
+    "width_frac": null
+   }
+  ],
+  "rendered": true,
+  "sheet": "MEHQ-P23_4hr_24th_July26.png",
+  "status": "degraded"
+ },
+ {
+  "file": "MEHQ-P23_5+2hr_25th July26.png",
+  "lanes": [
+   {
+    "flagged_streaking": false,
+    "label": "S",
+    "lane": 0,
+    "n_bands": 0,
+    "reason": null,
+    "streak_frac": 0.154,
+    "width_frac": null
+   },
+   {
+    "flagged_streaking": true,
+    "label": "R",
+    "lane": 1,
+    "n_bands": 1,
+    "reason": "a flat-topped run (100% of 1.5 FWHM above half-max) \u2014 comet/streak, not a peak",
+    "streak_frac": 0.246,
+    "width_frac": 0.215
+   },
+   {
+    "flagged_streaking": false,
+    "label": "co",
+    "lane": 2,
+    "n_bands": 1,
+    "reason": null,
+    "streak_frac": 0.154,
+    "width_frac": 0.123
+   },
+   {
+    "flagged_streaking": false,
+    "label": "sd",
+    "lane": 3,
+    "n_bands": 1,
+    "reason": null,
+    "streak_frac": 0.185,
+    "width_frac": 0.123
+   }
+  ],
+  "rendered": true,
+  "sheet": "MEHQ-P23_5_2hr_25th_July26.png",
+  "status": "degraded"
+ },
+ {
+  "file": "MEHQ-P23_5hr_24th July26.png",
+  "lanes": [
+   {
+    "flagged_streaking": false,
+    "label": "S",
+    "lane": 0,
+    "n_bands": 1,
+    "reason": null,
+    "streak_frac": 0.171,
+    "width_frac": 0.159
+   },
+   {
+    "flagged_streaking": false,
+    "label": "R",
+    "lane": 1,
+    "n_bands": 0,
+    "reason": null,
+    "streak_frac": 0.061,
+    "width_frac": null
+   },
+   {
+    "flagged_streaking": false,
+    "label": "co",
+    "lane": 2,
+    "n_bands": 1,
+    "reason": null,
+    "streak_frac": 0.11,
+    "width_frac": 0.098
+   },
+   {
+    "flagged_streaking": false,
+    "label": "sd",
+    "lane": 3,
+    "n_bands": 0,
+    "reason": null,
+    "streak_frac": 0.171,
+    "width_frac": null
+   }
+  ],
+  "rendered": true,
+  "sheet": "MEHQ-P23_5hr_24th_July26.png",
+  "status": "degraded"
+ },
+ {
+  "file": "MEHQ-P24_4hr_24th July26.png",
+  "lanes": [
+   {
+    "flagged_streaking": false,
+    "label": "S",
+    "lane": 0,
+    "n_bands": 1,
+    "reason": null,
+    "streak_frac": 0.287,
+    "width_frac": 0.162
+   },
+   {
+    "flagged_streaking": false,
+    "label": "R",
+    "lane": 1,
+    "n_bands": 1,
+    "reason": null,
+    "streak_frac": 0.404,
+    "width_frac": 0.118
+   },
+   {
+    "flagged_streaking": false,
+    "label": "co",
+    "lane": 2,
+    "n_bands": 0,
+    "reason": null,
+    "streak_frac": 0.257,
+    "width_frac": null
+   },
+   {
+    "flagged_streaking": false,
+    "label": "sd",
+    "lane": 3,
+    "n_bands": 0,
+    "reason": null,
+    "streak_frac": 0.221,
+    "width_frac": null
+   }
+  ],
+  "rendered": true,
+  "sheet": "MEHQ-P24_4hr_24th_July26.png",
+  "status": "degraded"
+ },
+ {
+  "file": "MEHQ-P24_5+2hr_25th July26.png",
+  "lanes": [
+   {
+    "flagged_streaking": true,
+    "label": "S",
+    "lane": 0,
+    "n_bands": 1,
+    "reason": "a flat-topped run (100% of 2.1 FWHM above half-max) \u2014 comet/streak, not a peak",
+    "streak_frac": 0.185,
+    "width_frac": 0.204
+   },
+   {
+    "flagged_streaking": true,
+    "label": "R",
+    "lane": 1,
+    "n_bands": 2,
+    "reason": "a flat-topped run (100% of 2.2 FWHM above half-max) \u2014 comet/streak, not a peak",
+    "streak_frac": 0.333,
+    "width_frac": 0.139
+   },
+   {
+    "flagged_streaking": false,
+    "label": "co",
+    "lane": 2,
+    "n_bands": 0,
+    "reason": null,
+    "streak_frac": 0.074,
+    "width_frac": null
+   },
+   {
+    "flagged_streaking": false,
+    "label": "sd",
+    "lane": 3,
+    "n_bands": 1,
+    "reason": null,
+    "streak_frac": 0.185,
+    "width_frac": 0.111
+   }
+  ],
+  "rendered": true,
+  "sheet": "MEHQ-P24_5_2hr_25th_July26.png",
+  "status": "degraded"
+ },
+ {
+  "file": "MEHQ-P24_5hr_24th July26.png",
+  "lanes": [
+   {
+    "flagged_streaking": false,
+    "label": "S",
+    "lane": 0,
+    "n_bands": 1,
+    "reason": null,
+    "streak_frac": 0.174,
+    "width_frac": 0.174
+   },
+   {
+    "flagged_streaking": false,
+    "label": "R",
+    "lane": 1,
+    "n_bands": 0,
+    "reason": null,
+    "streak_frac": 0.098,
+    "width_frac": null
+   },
+   {
+    "flagged_streaking": false,
+    "label": "co",
+    "lane": 2,
+    "n_bands": 1,
+    "reason": null,
+    "streak_frac": 0.098,
+    "width_frac": 0.076
+   },
+   {
+    "flagged_streaking": false,
+    "label": "sd",
+    "lane": 3,
+    "n_bands": 1,
+    "reason": null,
+    "streak_frac": 0.152,
+    "width_frac": 0.217
+   }
+  ],
+  "rendered": true,
+  "sheet": "MEHQ-P24_5hr_24th_July26.png",
+  "status": "degraded"
+ },
+ {
+  "file": "MEHQ-P25_1+2hr_25th July26.png",
+  "lanes": [
+   {
+    "flagged_streaking": true,
+    "label": "S",
+    "lane": 0,
+    "n_bands": 0,
+    "reason": "a flat-topped run (93% of 1.6 FWHM above half-max) \u2014 comet/streak, not a peak",
+    "streak_frac": 0.23,
+    "width_frac": null
+   },
+   {
+    "flagged_streaking": true,
+    "label": "R",
+    "lane": 1,
+    "n_bands": 0,
+    "reason": "a flat-topped run (94% of 1.8 FWHM above half-max) \u2014 comet/streak, not a peak",
+    "streak_frac": 0.35,
+    "width_frac": null
+   },
+   {
+    "flagged_streaking": false,
+    "label": "co",
+    "lane": 2,
+    "n_bands": 0,
+    "reason": null,
+    "streak_frac": 0.12,
+    "width_frac": null
+   },
+   {
+    "flagged_streaking": false,
+    "label": "sd",
+    "lane": 3,
+    "n_bands": 0,
+    "reason": null,
+    "streak_frac": 0.25,
+    "width_frac": null
+   }
+  ],
+  "rendered": true,
+  "sheet": "MEHQ-P25_1_2hr_25th_July26.png",
+  "status": "degraded"
+ },
+ {
+  "file": "MEHQ-P25_1hr_24th July26.png",
+  "lanes": [
+   {
+    "flagged_streaking": true,
+    "label": "S",
+    "lane": 0,
+    "n_bands": 1,
+    "reason": "a flat-topped run (85% of 2.3 FWHM above half-max) \u2014 comet/streak, not a peak",
+    "streak_frac": 0.231,
+    "width_frac": 0.208
+   },
+   {
+    "flagged_streaking": false,
+    "label": "R",
+    "lane": 1,
+    "n_bands": 2,
+    "reason": null,
+    "streak_frac": 0.523,
+    "width_frac": 0.315
+   },
+   {
+    "flagged_streaking": true,
+    "label": "co",
+    "lane": 2,
+    "n_bands": 2,
+    "reason": "a flat-topped run (93% of 2.3 FWHM above half-max) \u2014 comet/streak, not a peak",
+    "streak_frac": 0.408,
+    "width_frac": 0.285
+   },
+   {
+    "flagged_streaking": false,
+    "label": "sd",
+    "lane": 3,
+    "n_bands": 1,
+    "reason": null,
+    "streak_frac": 0.185,
+    "width_frac": 0.131
+   }
+  ],
+  "rendered": true,
+  "sheet": "MEHQ-P25_1hr_24th_July26.png",
+  "status": "degraded"
+ },
+ {
+  "file": "MEHQ-P26_1+2hr_25th July26.png",
+  "lanes": [
+   {
+    "flagged_streaking": true,
+    "label": "S",
+    "lane": 0,
+    "n_bands": 0,
+    "reason": "a flat-topped run (90% of 1.5 FWHM above half-max) \u2014 comet/streak, not a peak",
+    "streak_frac": 0.266,
+    "width_frac": null
+   },
+   {
+    "flagged_streaking": false,
+    "label": "R",
+    "lane": 1,
+    "n_bands": 0,
+    "reason": null,
+    "streak_frac": 0.046,
+    "width_frac": null
+   },
+   {
+    "flagged_streaking": false,
+    "label": "co",
+    "lane": 2,
+    "n_bands": 1,
+    "reason": null,
+    "streak_frac": 0.229,
+    "width_frac": 0.101
+   },
+   {
+    "flagged_streaking": false,
+    "label": "sd",
+    "lane": 3,
+    "n_bands": 1,
+    "reason": null,
+    "streak_frac": 0.174,
+    "width_frac": 0.11
+   }
+  ],
+  "rendered": true,
+  "sheet": "MEHQ-P26_1_2hr_25th_July26.png",
+  "status": "degraded"
+ },
+ {
+  "file": "MEHQ-P26_1hr_24th July26.png",
+  "lanes": [
+   {
+    "flagged_streaking": true,
+    "label": "S",
+    "lane": 0,
+    "n_bands": 0,
+    "reason": "a flat-topped run (100% of 2.3 FWHM above half-max) \u2014 comet/streak, not a peak",
+    "streak_frac": 0.218,
+    "width_frac": null
+   },
+   {
+    "flagged_streaking": false,
+    "label": "R",
+    "lane": 1,
+    "n_bands": 1,
+    "reason": null,
+    "streak_frac": 0.444,
+    "width_frac": 0.135
+   },
+   {
+    "flagged_streaking": true,
+    "label": "co",
+    "lane": 2,
+    "n_bands": 1,
+    "reason": "a flat-topped run (86% of 2.0 FWHM above half-max) \u2014 comet/streak, not a peak",
+    "streak_frac": 0.368,
+    "width_frac": 0.045
+   },
+   {
+    "flagged_streaking": false,
+    "label": "sd",
+    "lane": 3,
+    "n_bands": 2,
+    "reason": null,
+    "streak_frac": 0.226,
+    "width_frac": 0.098
+   }
+  ],
+  "rendered": true,
+  "sheet": "MEHQ-P26_1hr_24th_July26.png",
+  "status": "degraded"
+ },
+ {
+  "file": "MEHQ-P27-4hr_28th July26.png",
+  "lanes": [
+   {
+    "flagged_streaking": false,
+    "label": "S",
+    "lane": 0,
+    "n_bands": 0,
+    "reason": null,
+    "streak_frac": 0.165,
+    "width_frac": null
+   },
+   {
+    "flagged_streaking": false,
+    "label": "R",
+    "lane": 1,
+    "n_bands": 0,
+    "reason": null,
+    "streak_frac": 0.454,
+    "width_frac": null
+   },
+   {
+    "flagged_streaking": false,
+    "label": "co",
+    "lane": 2,
+    "n_bands": 0,
+    "reason": null,
+    "streak_frac": 0.381,
+    "width_frac": null
+   },
+   {
+    "flagged_streaking": false,
+    "label": "sd",
+    "lane": 3,
+    "n_bands": 1,
+    "reason": null,
+    "streak_frac": 0.165,
+    "width_frac": null
+   }
+  ],
+  "rendered": true,
+  "sheet": "MEHQ-P27-4hr_28th_July26.png",
+  "status": "degraded"
+ },
+ {
+  "file": "MEHQ-P28-4hr_28th July26.png",
+  "lanes": [
+   {
+    "flagged_streaking": true,
+    "label": "S",
+    "lane": 0,
+    "n_bands": 1,
+    "reason": "a flat-topped run (86% of 1.6 FWHM above half-max) \u2014 comet/streak, not a peak",
+    "streak_frac": 0.134,
+    "width_frac": 0.118
+   },
+   {
+    "flagged_streaking": false,
+    "label": "R",
+    "lane": 1,
+    "n_bands": 4,
+    "reason": null,
+    "streak_frac": 0.361,
+    "width_frac": 0.076
+   },
+   {
+    "flagged_streaking": false,
+    "label": "co",
+    "lane": 2,
+    "n_bands": 3,
+    "reason": null,
+    "streak_frac": 0.37,
+    "width_frac": 0.076
+   },
+   {
+    "flagged_streaking": false,
+    "label": "sd",
+    "lane": 3,
+    "n_bands": 2,
+    "reason": null,
+    "streak_frac": 0.134,
+    "width_frac": 0.084
+   }
+  ],
+  "rendered": true,
+  "sheet": "MEHQ-P28-4hr_28th_July26.png",
+  "status": "degraded"
+ },
+ {
+  "file": "MEHQ-P29-4hr_29th July26 (1).png",
+  "lanes": [
+   {
+    "flagged_streaking": false,
+    "label": "S",
+    "lane": 0,
+    "n_bands": 0,
+    "reason": null,
+    "streak_frac": 0.0,
+    "width_frac": null
+   },
+   {
+    "flagged_streaking": false,
+    "label": "R",
+    "lane": 1,
+    "n_bands": 2,
+    "reason": null,
+    "streak_frac": 0.089,
+    "width_frac": 0.051
+   },
+   {
+    "flagged_streaking": false,
+    "label": "co",
+    "lane": 2,
+    "n_bands": 0,
+    "reason": null,
+    "streak_frac": 0.038,
+    "width_frac": null
+   },
+   {
+    "flagged_streaking": false,
+    "label": "sd",
+    "lane": 3,
+    "n_bands": 0,
+    "reason": null,
+    "streak_frac": 0.025,
+    "width_frac": null
+   }
+  ],
+  "rendered": true,
+  "sheet": "MEHQ-P29-4hr_29th_July26__1_.png",
+  "status": "refused"
+ },
+ {
+  "file": "MEHQ-P29-4hr_29th July26.png",
+  "lanes": [
+   {
+    "flagged_streaking": false,
+    "label": "S",
+    "lane": 0,
+    "n_bands": 0,
+    "reason": null,
+    "streak_frac": 0.0,
+    "width_frac": null
+   },
+   {
+    "flagged_streaking": false,
+    "label": "R",
+    "lane": 1,
+    "n_bands": 2,
+    "reason": null,
+    "streak_frac": 0.089,
+    "width_frac": 0.051
+   },
+   {
+    "flagged_streaking": false,
+    "label": "co",
+    "lane": 2,
+    "n_bands": 0,
+    "reason": null,
+    "streak_frac": 0.038,
+    "width_frac": null
+   },
+   {
+    "flagged_streaking": false,
+    "label": "sd",
+    "lane": 3,
+    "n_bands": 0,
+    "reason": null,
+    "streak_frac": 0.025,
+    "width_frac": null
+   }
+  ],
+  "rendered": true,
+  "sheet": "MEHQ-P29-4hr_29th_July26.png",
+  "status": "refused"
+ },
+ {
+  "file": "MEHQ-P30-4hr_29th July26.png",
+  "lanes": [
+   {
+    "flagged_streaking": false,
+    "label": "S",
+    "lane": 0,
+    "n_bands": 1,
+    "reason": null,
+    "streak_frac": 0.126,
+    "width_frac": 0.126
+   },
+   {
+    "flagged_streaking": false,
+    "label": "R",
+    "lane": 1,
+    "n_bands": 3,
+    "reason": null,
+    "streak_frac": 0.288,
+    "width_frac": 0.081
+   },
+   {
+    "flagged_streaking": false,
+    "label": "co",
+    "lane": 2,
+    "n_bands": 2,
+    "reason": null,
+    "streak_frac": 0.27,
+    "width_frac": 0.108
+   },
+   {
+    "flagged_streaking": false,
+    "label": "sd",
+    "lane": 3,
+    "n_bands": 2,
+    "reason": null,
+    "streak_frac": 0.162,
+    "width_frac": 0.09
+   }
+  ],
+  "rendered": true,
+  "sheet": "MEHQ-P30-4hr_29th_July26.png",
+  "status": "degraded"
+ },
+ {
+  "file": "MEHQ-P31-4hr_30th July26.png",
+  "lanes": [
+   {
+    "flagged_streaking": false,
+    "label": "S",
+    "lane": 0,
+    "n_bands": 1,
+    "reason": null,
+    "streak_frac": 0.237,
+    "width_frac": 0.093
+   },
+   {
+    "flagged_streaking": true,
+    "label": "R",
+    "lane": 1,
+    "n_bands": 1,
+    "reason": "a flat-topped run (100% of 1.6 FWHM above half-max) \u2014 comet/streak, not a peak",
+    "streak_frac": 0.356,
+    "width_frac": 0.102
+   },
+   {
+    "flagged_streaking": true,
+    "label": "co",
+    "lane": 2,
+    "n_bands": 0,
+    "reason": "a flat-topped run (100% of 1.6 FWHM above half-max) \u2014 comet/streak, not a peak",
+    "streak_frac": 0.339,
+    "width_frac": null
+   },
+   {
+    "flagged_streaking": false,
+    "label": "sd",
+    "lane": 3,
+    "n_bands": 1,
+    "reason": null,
+    "streak_frac": 0.161,
+    "width_frac": 0.085
+   }
+  ],
+  "rendered": true,
+  "sheet": "MEHQ-P31-4hr_30th_July26.png",
+  "status": "degraded"
+ },
+ {
+  "file": "MEHQ-P32-1_3hr_4th Aug26_ACN (1).png",
+  "lanes": [
+   {
+    "flagged_streaking": false,
+    "label": "S",
+    "lane": 0,
+    "n_bands": 0,
+    "reason": null,
+    "streak_frac": 0.176,
+    "width_frac": null
+   },
+   {
+    "flagged_streaking": false,
+    "label": "R",
+    "lane": 1,
+    "n_bands": 0,
+    "reason": null,
+    "streak_frac": 0.294,
+    "width_frac": null
+   },
+   {
+    "flagged_streaking": false,
+    "label": "co",
+    "lane": 2,
+    "n_bands": 0,
+    "reason": null,
+    "streak_frac": 0.206,
+    "width_frac": null
+   },
+   {
+    "flagged_streaking": false,
+    "label": "sd",
+    "lane": 3,
+    "n_bands": 0,
+    "reason": null,
+    "streak_frac": 0.221,
+    "width_frac": null
+   }
+  ],
+  "rendered": true,
+  "sheet": "MEHQ-P32-1_3hr_4th_Aug26_ACN__1_.png",
+  "status": "degraded"
+ },
+ {
+  "file": "MEHQ-P32-1_3hr_4th Aug26_ACN (2).png",
+  "lanes": [
+   {
+    "flagged_streaking": false,
+    "label": "S",
+    "lane": 0,
+    "n_bands": 0,
+    "reason": null,
+    "streak_frac": 0.176,
+    "width_frac": null
+   },
+   {
+    "flagged_streaking": false,
+    "label": "R",
+    "lane": 1,
+    "n_bands": 0,
+    "reason": null,
+    "streak_frac": 0.294,
+    "width_frac": null
+   },
+   {
+    "flagged_streaking": false,
+    "label": "co",
+    "lane": 2,
+    "n_bands": 0,
+    "reason": null,
+    "streak_frac": 0.206,
+    "width_frac": null
+   },
+   {
+    "flagged_streaking": false,
+    "label": "sd",
+    "lane": 3,
+    "n_bands": 0,
+    "reason": null,
+    "streak_frac": 0.221,
+    "width_frac": null
+   }
+  ],
+  "rendered": true,
+  "sheet": "MEHQ-P32-1_3hr_4th_Aug26_ACN__2_.png",
+  "status": "degraded"
+ },
+ {
+  "file": "MEHQ-P32-1_3hr_4th Aug26_ACN.png",
+  "lanes": [
+   {
+    "flagged_streaking": false,
+    "label": "S",
+    "lane": 0,
+    "n_bands": 0,
+    "reason": null,
+    "streak_frac": 0.176,
+    "width_frac": null
+   },
+   {
+    "flagged_streaking": false,
+    "label": "R",
+    "lane": 1,
+    "n_bands": 0,
+    "reason": null,
+    "streak_frac": 0.294,
+    "width_frac": null
+   },
+   {
+    "flagged_streaking": false,
+    "label": "co",
+    "lane": 2,
+    "n_bands": 0,
+    "reason": null,
+    "streak_frac": 0.206,
+    "width_frac": null
+   },
+   {
+    "flagged_streaking": false,
+    "label": "sd",
+    "lane": 3,
+    "n_bands": 0,
+    "reason": null,
+    "streak_frac": 0.221,
+    "width_frac": null
+   }
+  ],
+  "rendered": true,
+  "sheet": "MEHQ-P32-1_3hr_4th_Aug26_ACN.png",
+  "status": "degraded"
+ },
+ {
+  "file": "MEHQ-P32-4hr_30th July26 (1).png",
+  "lanes": [
+   {
+    "flagged_streaking": false,
+    "label": "S",
+    "lane": 0,
+    "n_bands": 1,
+    "reason": null,
+    "streak_frac": 0.118,
+    "width_frac": 0.078
+   },
+   {
+    "flagged_streaking": false,
+    "label": "R",
+    "lane": 1,
+    "n_bands": 3,
+    "reason": null,
+    "streak_frac": 0.167,
+    "width_frac": 0.196
+   },
+   {
+    "flagged_streaking": false,
+    "label": "co",
+    "lane": 2,
+    "n_bands": 2,
+    "reason": null,
+    "streak_frac": 0.137,
+    "width_frac": 0.078
+   },
+   {
+    "flagged_streaking": false,
+    "label": "sd",
+    "lane": 3,
+    "n_bands": 1,
+    "reason": null,
+    "streak_frac": 0.108,
+    "width_frac": 0.078
+   }
+  ],
+  "rendered": true,
+  "sheet": "MEHQ-P32-4hr_30th_July26__1_.png",
+  "status": "degraded"
+ },
+ {
+  "file": "MEHQ-P32-4hr_30th July26.png",
+  "lanes": [
+   {
+    "flagged_streaking": false,
+    "label": "S",
+    "lane": 0,
+    "n_bands": 1,
+    "reason": null,
+    "streak_frac": 0.118,
+    "width_frac": 0.078
+   },
+   {
+    "flagged_streaking": false,
+    "label": "R",
+    "lane": 1,
+    "n_bands": 3,
+    "reason": null,
+    "streak_frac": 0.167,
+    "width_frac": 0.196
+   },
+   {
+    "flagged_streaking": false,
+    "label": "co",
+    "lane": 2,
+    "n_bands": 2,
+    "reason": null,
+    "streak_frac": 0.137,
+    "width_frac": 0.078
+   },
+   {
+    "flagged_streaking": false,
+    "label": "sd",
+    "lane": 3,
+    "n_bands": 1,
+    "reason": null,
+    "streak_frac": 0.108,
+    "width_frac": 0.078
+   }
+  ],
+  "rendered": true,
+  "sheet": "MEHQ-P32-4hr_30th_July26.png",
+  "status": "degraded"
+ },
+ {
+  "file": "MEHQ-P32_4+3hr_3rd Aug26 (1).png",
+  "lanes": [
+   {
+    "flagged_streaking": false,
+    "label": "S",
+    "lane": 0,
+    "n_bands": 0,
+    "reason": null,
+    "streak_frac": 0.096,
+    "width_frac": null
+   },
+   {
+    "flagged_streaking": false,
+    "label": "R",
+    "lane": 1,
+    "n_bands": 1,
+    "reason": null,
+    "streak_frac": 0.374,
+    "width_frac": 0.061
+   },
+   {
+    "flagged_streaking": false,
+    "label": "co",
+    "lane": 2,
+    "n_bands": 1,
+    "reason": null,
+    "streak_frac": 0.4,
+    "width_frac": 0.087
+   },
+   {
+    "flagged_streaking": false,
+    "label": "sd",
+    "lane": 3,
+    "n_bands": 0,
+    "reason": null,
+    "streak_frac": 0.235,
+    "width_frac": null
+   }
+  ],
+  "rendered": true,
+  "sheet": "MEHQ-P32_4_3hr_3rd_Aug26__1_.png",
+  "status": "degraded"
+ },
+ {
+  "file": "MEHQ-P32_4+3hr_3rd Aug26.png",
+  "lanes": [
+   {
+    "flagged_streaking": false,
+    "label": "S",
+    "lane": 0,
+    "n_bands": 0,
+    "reason": null,
+    "streak_frac": 0.096,
+    "width_frac": null
+   },
+   {
+    "flagged_streaking": false,
+    "label": "R",
+    "lane": 1,
+    "n_bands": 1,
+    "reason": null,
+    "streak_frac": 0.374,
+    "width_frac": 0.061
+   },
+   {
+    "flagged_streaking": false,
+    "label": "co",
+    "lane": 2,
+    "n_bands": 1,
+    "reason": null,
+    "streak_frac": 0.4,
+    "width_frac": 0.087
+   },
+   {
+    "flagged_streaking": false,
+    "label": "sd",
+    "lane": 3,
+    "n_bands": 0,
+    "reason": null,
+    "streak_frac": 0.235,
+    "width_frac": null
+   }
+  ],
+  "rendered": true,
+  "sheet": "MEHQ-P32_4_3hr_3rd_Aug26.png",
+  "status": "degraded"
+ },
+ {
+  "file": "MEHQ-P33 4hr_31st July26.png",
+  "lanes": [
+   {
+    "flagged_streaking": false,
+    "label": "S",
+    "lane": 0,
+    "n_bands": 0,
+    "reason": null,
+    "streak_frac": 0.292,
+    "width_frac": null
+   },
+   {
+    "flagged_streaking": false,
+    "label": "R",
+    "lane": 1,
+    "n_bands": 0,
+    "reason": null,
+    "streak_frac": 0.405,
+    "width_frac": null
+   },
+   {
+    "flagged_streaking": false,
+    "label": "co",
+    "lane": 2,
+    "n_bands": 0,
+    "reason": null,
+    "streak_frac": 0.431,
+    "width_frac": null
+   },
+   {
+    "flagged_streaking": false,
+    "label": "sd",
+    "lane": 3,
+    "n_bands": 1,
+    "reason": null,
+    "streak_frac": 0.195,
+    "width_frac": 0.051
+   }
+  ],
+  "rendered": true,
+  "sheet": "MEHQ-P33_4hr_31st_July26.png",
+  "status": "degraded"
+ },
+ {
+  "file": "MEHQ-P34-1_3hr_4th Aug26_ACN.png",
+  "lanes": [
+   {
+    "flagged_streaking": false,
+    "label": "S",
+    "lane": 0,
+    "n_bands": 1,
+    "reason": null,
+    "streak_frac": 0.239,
+    "width_frac": 0.111
+   },
+   {
+    "flagged_streaking": false,
+    "label": "R",
+    "lane": 1,
+    "n_bands": 3,
+    "reason": null,
+    "streak_frac": 0.359,
+    "width_frac": 0.214
+   },
+   {
+    "flagged_streaking": false,
+    "label": "co",
+    "lane": 2,
+    "n_bands": 2,
+    "reason": null,
+    "streak_frac": 0.35,
+    "width_frac": 0.231
+   },
+   {
+    "flagged_streaking": false,
+    "label": "sd",
+    "lane": 3,
+    "n_bands": 2,
+    "reason": null,
+    "streak_frac": 0.188,
+    "width_frac": 0.103
+   }
+  ],
+  "rendered": true,
+  "sheet": "MEHQ-P34-1_3hr_4th_Aug26_ACN.png",
+  "status": "succeeded"
+ },
+ {
+  "file": "MEHQ-P34_4hr_3rd Aug26.png",
+  "lanes": [
+   {
+    "flagged_streaking": false,
+    "label": "S",
+    "lane": 0,
+    "n_bands": 0,
+    "reason": null,
+    "streak_frac": 0.206,
+    "width_frac": null
+   },
+   {
+    "flagged_streaking": false,
+    "label": "R",
+    "lane": 1,
+    "n_bands": 0,
+    "reason": null,
+    "streak_frac": 0.246,
+    "width_frac": null
+   },
+   {
+    "flagged_streaking": false,
+    "label": "co",
+    "lane": 2,
+    "n_bands": 0,
+    "reason": null,
+    "streak_frac": 0.063,
+    "width_frac": null
+   },
+   {
+    "flagged_streaking": false,
+    "label": "sd",
+    "lane": 3,
+    "n_bands": 0,
+    "reason": null,
+    "streak_frac": 0.087,
+    "width_frac": null
+   }
+  ],
+  "rendered": true,
+  "sheet": "MEHQ-P34_4hr_3rd_Aug26.png",
+  "status": "degraded"
+ },
+ {
+  "file": "MEHQ-P35_4hr_4th Aug26.png",
+  "lanes": [
+   {
+    "flagged_streaking": false,
+    "label": "S",
+    "lane": 0,
+    "n_bands": 2,
+    "reason": null,
+    "streak_frac": 0.125,
+    "width_frac": 0.144
+   },
+   {
+    "flagged_streaking": false,
+    "label": "R",
+    "lane": 1,
+    "n_bands": 3,
+    "reason": null,
+    "streak_frac": 0.375,
+    "width_frac": 0.231
+   },
+   {
+    "flagged_streaking": false,
+    "label": "co",
+    "lane": 2,
+    "n_bands": 3,
+    "reason": null,
+    "streak_frac": 0.231,
+    "width_frac": 0.067
+   },
+   {
+    "flagged_streaking": false,
+    "label": "sd",
+    "lane": 3,
+    "n_bands": 2,
+    "reason": null,
+    "streak_frac": 0.106,
+    "width_frac": 0.067
+   }
+  ],
+  "rendered": true,
+  "sheet": "MEHQ-P35_4hr_4th_Aug26.png",
+  "status": "degraded"
+ },
+ {
+  "file": "MEHQ-P35_6hr_4th Aug26.png",
+  "lanes": [
+   {
+    "flagged_streaking": false,
+    "label": "S",
+    "lane": 0,
+    "n_bands": 2,
+    "reason": null,
+    "streak_frac": 0.205,
+    "width_frac": 0.076
+   },
+   {
+    "flagged_streaking": false,
+    "label": "R",
+    "lane": 1,
+    "n_bands": 3,
+    "reason": null,
+    "streak_frac": 0.402,
+    "width_frac": 0.121
+   },
+   {
+    "flagged_streaking": false,
+    "label": "co",
+    "lane": 2,
+    "n_bands": 3,
+    "reason": null,
+    "streak_frac": 0.485,
+    "width_frac": 0.068
+   },
+   {
+    "flagged_streaking": false,
+    "label": "sd",
+    "lane": 3,
+    "n_bands": 2,
+    "reason": null,
+    "streak_frac": 0.167,
+    "width_frac": 0.083
+   }
+  ],
+  "rendered": true,
+  "sheet": "MEHQ-P35_6hr_4th_Aug26.png",
+  "status": "degraded"
+ },
+ {
+  "file": "MEHQ-P36_4hr_4th Aug26.png",
+  "lanes": [
+   {
+    "flagged_streaking": false,
+    "label": "S",
+    "lane": 0,
+    "n_bands": 1,
+    "reason": null,
+    "streak_frac": 0.162,
+    "width_frac": 0.09
+   },
+   {
+    "flagged_streaking": false,
+    "label": "R",
+    "lane": 1,
+    "n_bands": 1,
+    "reason": null,
+    "streak_frac": 0.261,
+    "width_frac": 0.081
+   },
+   {
+    "flagged_streaking": false,
+    "label": "co",
+    "lane": 2,
+    "n_bands": 1,
+    "reason": null,
+    "streak_frac": 0.261,
+    "width_frac": 0.099
+   },
+   {
+    "flagged_streaking": false,
+    "label": "sd",
+    "lane": 3,
+    "n_bands": 3,
+    "reason": null,
+    "streak_frac": 0.234,
+    "width_frac": 0.162
+   }
+  ],
+  "rendered": true,
+  "sheet": "MEHQ-P36_4hr_4th_Aug26.png",
+  "status": "degraded"
+ },
+ {
+  "file": "MEHQ-P36_6hr_4th Aug26.png",
+  "lanes": [
+   {
+    "flagged_streaking": false,
+    "label": "S",
+    "lane": 0,
+    "n_bands": 2,
+    "reason": null,
+    "streak_frac": 0.212,
+    "width_frac": 0.095
+   },
+   {
+    "flagged_streaking": true,
+    "label": "R",
+    "lane": 1,
+    "n_bands": 3,
+    "reason": "a flat-topped run (88% of 2.1 FWHM above half-max) \u2014 comet/streak, not a peak",
+    "streak_frac": 0.423,
+    "width_frac": 0.263
+   },
+   {
+    "flagged_streaking": true,
+    "label": "co",
+    "lane": 2,
+    "n_bands": 2,
+    "reason": "a flat-topped contiguous run 3.6 FWHM long is above 2 sigma after the fitted peaks are removed (limit 2.5)",
+    "streak_frac": 0.54,
+    "width_frac": 0.117
+   },
+   {
+    "flagged_streaking": false,
+    "label": "sd",
+    "lane": 3,
+    "n_bands": 2,
+    "reason": null,
+    "streak_frac": 0.168,
+    "width_frac": 0.066
+   }
+  ],
+  "rendered": true,
+  "sheet": "MEHQ-P36_6hr_4th_Aug26.png",
+  "status": "degraded"
+ },
+ {
+  "file": "MEHQ-P37-4hr_6th Aug26.png",
+  "lanes": [
+   {
+    "flagged_streaking": false,
+    "label": "S",
+    "lane": 0,
+    "n_bands": 1,
+    "reason": null,
+    "streak_frac": 0.215,
+    "width_frac": 0.119
+   },
+   {
+    "flagged_streaking": true,
+    "label": "R",
+    "lane": 1,
+    "n_bands": 1,
+    "reason": "a flat-topped run (100% of 1.7 FWHM above half-max) \u2014 comet/streak, not a peak",
+    "streak_frac": 0.341,
+    "width_frac": 0.133
+   },
+   {
+    "flagged_streaking": false,
+    "label": "co",
+    "lane": 2,
+    "n_bands": 2,
+    "reason": null,
+    "streak_frac": 0.23,
+    "width_frac": 0.156
+   },
+   {
+    "flagged_streaking": false,
+    "label": "sd",
+    "lane": 3,
+    "n_bands": 1,
+    "reason": null,
+    "streak_frac": 0.111,
+    "width_frac": 0.059
+   }
+  ],
+  "rendered": true,
+  "sheet": "MEHQ-P37-4hr_6th_Aug26.png",
+  "status": "degraded"
+ },
+ {
+  "file": "MEHQ-P37-7hr_6th Aug26.png",
+  "lanes": [
+   {
+    "flagged_streaking": false,
+    "label": "S",
+    "lane": 0,
+    "n_bands": 0,
+    "reason": null,
+    "streak_frac": 0.172,
+    "width_frac": null
+   },
+   {
+    "flagged_streaking": false,
+    "label": "R",
+    "lane": 1,
+    "n_bands": 1,
+    "reason": null,
+    "streak_frac": 0.351,
+    "width_frac": 0.155
+   },
+   {
+    "flagged_streaking": false,
+    "label": "co",
+    "lane": 2,
+    "n_bands": 2,
+    "reason": null,
+    "streak_frac": 0.506,
+    "width_frac": 0.121
+   },
+   {
+    "flagged_streaking": false,
+    "label": "sd",
+    "lane": 3,
+    "n_bands": 1,
+    "reason": null,
+    "streak_frac": 0.264,
+    "width_frac": 0.167
+   }
+  ],
+  "rendered": true,
+  "sheet": "MEHQ-P37-7hr_6th_Aug26.png",
+  "status": "degraded"
+ },
+ {
+  "file": "MEHQ-P38-1st Step_3hr_6th Aug26.png",
+  "lanes": [
+   {
+    "flagged_streaking": false,
+    "label": "S",
+    "lane": 0,
+    "n_bands": 0,
+    "reason": null,
+    "streak_frac": 0.218,
+    "width_frac": null
+   },
+   {
+    "flagged_streaking": true,
+    "label": "R",
+    "lane": 1,
+    "n_bands": 1,
+    "reason": "tail ratio tau/sigma 5.2 > 3.0 with 3.0 FWHM of unexplained elevation",
+    "streak_frac": 0.361,
+    "width_frac": 0.193
+   },
+   {
+    "flagged_streaking": false,
+    "label": "co",
+    "lane": 2,
+    "n_bands": 0,
+    "reason": null,
+    "streak_frac": 0.286,
+    "width_frac": null
+   },
+   {
+    "flagged_streaking": true,
+    "label": "sd",
+    "lane": 3,
+    "n_bands": 1,
+    "reason": "tail ratio tau/sigma 4.2 > 3.0 with 2.8 FWHM of unexplained elevation",
+    "streak_frac": 0.218,
+    "width_frac": 0.202
+   }
+  ],
+  "rendered": true,
+  "sheet": "MEHQ-P38-1st_Step_3hr_6th_Aug26.png",
+  "status": "degraded"
+ },
+ {
+  "file": "MEHQ-P38-1st Step_6hr_6th Aug26.png",
+  "lanes": [
+   {
+    "flagged_streaking": false,
+    "label": "S",
+    "lane": 0,
+    "n_bands": 0,
+    "reason": null,
+    "streak_frac": 0.216,
+    "width_frac": null
+   },
+   {
+    "flagged_streaking": true,
+    "label": "R",
+    "lane": 1,
+    "n_bands": 1,
+    "reason": "tail ratio tau/sigma 3.7 > 3.0 with 2.9 FWHM of unexplained elevation",
+    "streak_frac": 0.357,
+    "width_frac": 0.168
+   },
+   {
+    "flagged_streaking": false,
+    "label": "co",
+    "lane": 2,
+    "n_bands": 0,
+    "reason": null,
+    "streak_frac": 0.292,
+    "width_frac": null
+   },
+   {
+    "flagged_streaking": false,
+    "label": "sd",
+    "lane": 3,
+    "n_bands": 1,
+    "reason": null,
+    "streak_frac": 0.265,
+    "width_frac": 0.146
+   }
+  ],
+  "rendered": true,
+  "sheet": "MEHQ-P38-1st_Step_6hr_6th_Aug26.png",
+  "status": "degraded"
+ },
+ {
+  "file": "MEHQ-P39_3hr_6th Aug26.png",
+  "lanes": [
+   {
+    "flagged_streaking": false,
+    "label": "S",
+    "lane": 0,
+    "n_bands": 1,
+    "reason": null,
+    "streak_frac": 0.13,
+    "width_frac": 0.092
+   },
+   {
+    "flagged_streaking": false,
+    "label": "R",
+    "lane": 1,
+    "n_bands": 1,
+    "reason": null,
+    "streak_frac": 0.244,
+    "width_frac": 0.206
+   },
+   {
+    "flagged_streaking": false,
+    "label": "co",
+    "lane": 2,
+    "n_bands": 1,
+    "reason": null,
+    "streak_frac": 0.267,
+    "width_frac": 0.267
+   },
+   {
+    "flagged_streaking": false,
+    "label": "sd",
+    "lane": 3,
+    "n_bands": 0,
+    "reason": null,
+    "streak_frac": 0.038,
+    "width_frac": null
+   }
+  ],
+  "rendered": true,
+  "sheet": "MEHQ-P39_3hr_6th_Aug26.png",
+  "status": "degraded"
+ },
+ {
+  "file": "MEHQ-P40_3hr_6th Aug26.png",
+  "lanes": [
+   {
+    "flagged_streaking": false,
+    "label": "S",
+    "lane": 0,
+    "n_bands": 1,
+    "reason": null,
+    "streak_frac": 0.099,
+    "width_frac": 0.076
+   },
+   {
+    "flagged_streaking": true,
+    "label": "R",
+    "lane": 1,
+    "n_bands": 1,
+    "reason": "tail ratio tau/sigma 3.5 > 3.0 with 3.1 FWHM of unexplained elevation",
+    "streak_frac": 0.26,
+    "width_frac": 0.168
+   },
+   {
+    "flagged_streaking": true,
+    "label": "co",
+    "lane": 2,
+    "n_bands": 1,
+    "reason": "tail ratio tau/sigma 5.2 > 3.0 with 3.0 FWHM of unexplained elevation",
+    "streak_frac": 0.244,
+    "width_frac": 0.145
+   },
+   {
+    "flagged_streaking": false,
+    "label": "sd",
+    "lane": 3,
+    "n_bands": 0,
+    "reason": null,
+    "streak_frac": 0.069,
+    "width_frac": null
+   }
+  ],
+  "rendered": true,
+  "sheet": "MEHQ-P40_3hr_6th_Aug26.png",
+  "status": "degraded"
+ },
+ {
+  "file": "MEHQ-P41 Step 1-6hr_10th Aug26.png",
+  "lanes": [
+   {
+    "flagged_streaking": false,
+    "label": "S",
+    "lane": 0,
+    "n_bands": 1,
+    "reason": null,
+    "streak_frac": 0.252,
+    "width_frac": 0.092
+   },
+   {
+    "flagged_streaking": false,
+    "label": "R",
+    "lane": 1,
+    "n_bands": 2,
+    "reason": null,
+    "streak_frac": 0.405,
+    "width_frac": null
+   },
+   {
+    "flagged_streaking": false,
+    "label": "co",
+    "lane": 2,
+    "n_bands": 1,
+    "reason": null,
+    "streak_frac": 0.321,
+    "width_frac": 0.099
+   },
+   {
+    "flagged_streaking": false,
+    "label": "sd",
+    "lane": 3,
+    "n_bands": 0,
+    "reason": null,
+    "streak_frac": 0.282,
+    "width_frac": null
+   }
+  ],
+  "rendered": true,
+  "sheet": "MEHQ-P41_Step_1-6hr_10th_Aug26.png",
+  "status": "degraded"
+ },
+ {
+  "file": "MEHQ-P42 Step 1-6hr_10th Aug26.png",
+  "lanes": [
+   {
+    "flagged_streaking": false,
+    "label": "S",
+    "lane": 0,
+    "n_bands": 1,
+    "reason": null,
+    "streak_frac": 0.138,
+    "width_frac": 0.073
+   },
+   {
+    "flagged_streaking": false,
+    "label": "R",
+    "lane": 1,
+    "n_bands": 1,
+    "reason": null,
+    "streak_frac": 0.358,
+    "width_frac": 0.26
+   },
+   {
+    "flagged_streaking": true,
+    "label": "co",
+    "lane": 2,
+    "n_bands": 1,
+    "reason": "a flat-topped contiguous run 3.3 FWHM long is above 2 sigma after the fitted peaks are removed (limit 2.5)",
+    "streak_frac": 0.341,
+    "width_frac": null
+   },
+   {
+    "flagged_streaking": false,
+    "label": "sd",
+    "lane": 3,
+    "n_bands": 0,
+    "reason": null,
+    "streak_frac": 0.041,
+    "width_frac": null
+   }
+  ],
+  "rendered": true,
+  "sheet": "MEHQ-P42_Step_1-6hr_10th_Aug26.png",
+  "status": "degraded"
+ },
+ {
+  "file": "MEHQ-P43 Step 1 6hr_10th Aug26.png",
+  "lanes": [
+   {
+    "flagged_streaking": false,
+    "label": "S",
+    "lane": 0,
+    "n_bands": 1,
+    "reason": null,
+    "streak_frac": 0.2,
+    "width_frac": 0.089
+   },
+   {
+    "flagged_streaking": true,
+    "label": "R",
+    "lane": 1,
+    "n_bands": 1,
+    "reason": "a flat-topped contiguous run 3.5 FWHM long is above 2 sigma after the fitted peaks are removed (limit 2.5)",
+    "streak_frac": 0.422,
+    "width_frac": 0.267
+   },
+   {
+    "flagged_streaking": true,
+    "label": "co",
+    "lane": 2,
+    "n_bands": 0,
+    "reason": "a flat-topped contiguous run 3.6 FWHM long is above 2 sigma after the fitted peaks are removed (limit 2.5)",
+    "streak_frac": 0.43,
+    "width_frac": null
+   },
+   {
+    "flagged_streaking": false,
+    "label": "sd",
+    "lane": 3,
+    "n_bands": 0,
+    "reason": null,
+    "streak_frac": 0.126,
+    "width_frac": null
+   }
+  ],
+  "rendered": true,
+  "sheet": "MEHQ-P43_Step_1_6hr_10th_Aug26.png",
+  "status": "degraded"
+ },
+ {
+  "file": "MEHQ-P44 Step 1 6hr_10th Aug26.png",
+  "lanes": [
+   {
+    "flagged_streaking": false,
+    "label": "S",
+    "lane": 0,
+    "n_bands": 1,
+    "reason": null,
+    "streak_frac": 0.15,
+    "width_frac": 0.08
+   },
+   {
+    "flagged_streaking": true,
+    "label": "R",
+    "lane": 1,
+    "n_bands": 1,
+    "reason": "tail ratio tau/sigma 9.4 > 3.0 with 3.8 FWHM of unexplained elevation",
+    "streak_frac": 0.299,
+    "width_frac": 0.193
+   },
+   {
+    "flagged_streaking": false,
+    "label": "co",
+    "lane": 2,
+    "n_bands": 0,
+    "reason": null,
+    "streak_frac": 0.332,
+    "width_frac": null
+   },
+   {
+    "flagged_streaking": false,
+    "label": "sd",
+    "lane": 3,
+    "n_bands": 0,
+    "reason": null,
+    "streak_frac": 0.086,
+    "width_frac": null
+   }
+  ],
+  "rendered": true,
+  "sheet": "MEHQ-P44_Step_1_6hr_10th_Aug26.png",
+  "status": "degraded"
+ },
+ {
+  "file": "MEHQ-P45 Step 1_4hr_11th Aug26.png",
+  "lanes": [
+   {
+    "flagged_streaking": false,
+    "label": "S",
+    "lane": 0,
+    "n_bands": 1,
+    "reason": null,
+    "streak_frac": 0.164,
+    "width_frac": 0.09
+   },
+   {
+    "flagged_streaking": false,
+    "label": "R",
+    "lane": 1,
+    "n_bands": 2,
+    "reason": null,
+    "streak_frac": 0.287,
+    "width_frac": 0.082
+   },
+   {
+    "flagged_streaking": false,
+    "label": "co",
+    "lane": 2,
+    "n_bands": 1,
+    "reason": null,
+    "streak_frac": 0.238,
+    "width_frac": 0.09
+   },
+   {
+    "flagged_streaking": false,
+    "label": "sd",
+    "lane": 3,
+    "n_bands": 0,
+    "reason": null,
+    "streak_frac": 0.107,
+    "width_frac": null
+   }
+  ],
+  "rendered": true,
+  "sheet": "MEHQ-P45_Step_1_4hr_11th_Aug26.png",
+  "status": "degraded"
+ },
+ {
+  "file": "MEHQ-P46 Step 1_4hr_11th Aug26.png",
+  "lanes": [
+   {
+    "flagged_streaking": false,
+    "label": "S",
+    "lane": 0,
+    "n_bands": 1,
+    "reason": null,
+    "streak_frac": 0.177,
+    "width_frac": 0.123
+   },
+   {
+    "flagged_streaking": true,
+    "label": "R",
+    "lane": 1,
+    "n_bands": 1,
+    "reason": "a flat-topped contiguous run 3.7 FWHM long is above 2 sigma after the fitted peaks are removed (limit 2.5)",
+    "streak_frac": 0.377,
+    "width_frac": 0.346
+   },
+   {
+    "flagged_streaking": false,
+    "label": "co",
+    "lane": 2,
+    "n_bands": 0,
+    "reason": null,
+    "streak_frac": 0.346,
+    "width_frac": null
+   },
+   {
+    "flagged_streaking": true,
+    "label": "sd",
+    "lane": 3,
+    "n_bands": 0,
+    "reason": "a flat-topped run (100% of 1.6 FWHM above half-max) \u2014 comet/streak, not a peak",
+    "streak_frac": 0.177,
+    "width_frac": null
+   }
+  ],
+  "rendered": true,
+  "sheet": "MEHQ-P46_Step_1_4hr_11th_Aug26.png",
+  "status": "degraded"
+ },
+ {
+  "file": "PER-P19-Opt 1-2hr.png",
+  "lanes": [
+   {
+    "flagged_streaking": false,
+    "label": "S",
+    "lane": 0,
+    "n_bands": 0,
+    "reason": null,
+    "streak_frac": 0.204,
+    "width_frac": null
+   },
+   {
+    "flagged_streaking": true,
+    "label": "R",
+    "lane": 1,
+    "n_bands": 1,
+    "reason": "a flat-topped run (88% of 2.5 FWHM above half-max) \u2014 comet/streak, not a peak",
+    "streak_frac": 0.327,
+    "width_frac": 0.274
+   },
+   {
+    "flagged_streaking": false,
+    "label": "co",
+    "lane": 2,
+    "n_bands": 0,
+    "reason": null,
+    "streak_frac": 0.283,
+    "width_frac": null
+   },
+   {
+    "flagged_streaking": false,
+    "label": "sd",
+    "lane": 3,
+    "n_bands": 0,
+    "reason": null,
+    "streak_frac": 0.204,
+    "width_frac": null
+   }
+  ],
+  "rendered": true,
+  "sheet": "PER-P19-Opt_1-2hr.png",
+  "status": "degraded"
+ },
+ {
+  "file": "PER-P19-Opt 1-4hr.png",
+  "lanes": [
+   {
+    "flagged_streaking": false,
+    "label": "S",
+    "lane": 0,
+    "n_bands": 1,
+    "reason": null,
+    "streak_frac": 0.168,
+    "width_frac": 0.119
+   },
+   {
+    "flagged_streaking": true,
+    "label": "R",
+    "lane": 1,
+    "n_bands": 1,
+    "reason": "a flat-topped run (90% of 2.3 FWHM above half-max) \u2014 comet/streak, not a peak",
+    "streak_frac": 0.277,
+    "width_frac": 0.228
+   },
+   {
+    "flagged_streaking": false,
+    "label": "co",
+    "lane": 2,
+    "n_bands": 0,
+    "reason": null,
+    "streak_frac": 0.277,
+    "width_frac": null
+   },
+   {
+    "flagged_streaking": false,
+    "label": "sd",
+    "lane": 3,
+    "n_bands": 0,
+    "reason": null,
+    "streak_frac": 0.168,
+    "width_frac": null
+   }
+  ],
+  "rendered": true,
+  "sheet": "PER-P19-Opt_1-4hr.png",
+  "status": "degraded"
+ },
+ {
+  "file": "PER-P19-Opt 1-6hr.png",
+  "lanes": [
+   {
+    "flagged_streaking": false,
+    "label": "S",
+    "lane": 0,
+    "n_bands": 1,
+    "reason": null,
+    "streak_frac": 0.239,
+    "width_frac": 0.156
+   },
+   {
+    "flagged_streaking": true,
+    "label": "R",
+    "lane": 1,
+    "n_bands": 1,
+    "reason": "a flat-topped contiguous run 2.8 FWHM long is above 2 sigma after the fitted peaks are removed (limit 2.5)",
+    "streak_frac": 0.358,
+    "width_frac": 0.22
+   },
+   {
+    "flagged_streaking": true,
+    "label": "co",
+    "lane": 2,
+    "n_bands": 0,
+    "reason": "a flat-topped run (100% of 2.1 FWHM above half-max) \u2014 comet/streak, not a peak",
+    "streak_frac": 0.266,
+    "width_frac": null
+   },
+   {
+    "flagged_streaking": false,
+    "label": "sd",
+    "lane": 3,
+    "n_bands": 0,
+    "reason": null,
+    "streak_frac": 0.128,
+    "width_frac": null
+   }
+  ],
+  "rendered": true,
+  "sheet": "PER-P19-Opt_1-6hr.png",
+  "status": "degraded"
+ },
+ {
+  "file": "PER-P19-Opt 2-2hr.png",
+  "lanes": [
+   {
+    "flagged_streaking": false,
+    "label": "S",
+    "lane": 0,
+    "n_bands": 0,
+    "reason": null,
+    "streak_frac": 0.132,
+    "width_frac": null
+   },
+   {
+    "flagged_streaking": false,
+    "label": "R",
+    "lane": 1,
+    "n_bands": 1,
+    "reason": null,
+    "streak_frac": 0.34,
+    "width_frac": 0.217
+   },
+   {
+    "flagged_streaking": false,
+    "label": "co",
+    "lane": 2,
+    "n_bands": 1,
+    "reason": null,
+    "streak_frac": 0.33,
+    "width_frac": 0.255
+   },
+   {
+    "flagged_streaking": false,
+    "label": "sd",
+    "lane": 3,
+    "n_bands": 0,
+    "reason": null,
+    "streak_frac": 0.16,
+    "width_frac": null
+   }
+  ],
+  "rendered": true,
+  "sheet": "PER-P19-Opt_2-2hr.png",
+  "status": "degraded"
+ },
+ {
+  "file": "PER-P19-Opt 2-4hr.png",
+  "lanes": [
+   {
+    "flagged_streaking": false,
+    "label": "S",
+    "lane": 0,
+    "n_bands": 1,
+    "reason": null,
+    "streak_frac": 0.203,
+    "width_frac": 0.161
+   },
+   {
+    "flagged_streaking": true,
+    "label": "R",
+    "lane": 1,
+    "n_bands": 0,
+    "reason": "a flat-topped run (86% of 1.9 FWHM above half-max) \u2014 comet/streak, not a peak",
+    "streak_frac": 0.322,
+    "width_frac": null
+   },
+   {
+    "flagged_streaking": true,
+    "label": "co",
+    "lane": 2,
+    "n_bands": 1,
+    "reason": "a flat-topped contiguous run 3.4 FWHM long is above 2 sigma after the fitted peaks are removed (limit 2.5)",
+    "streak_frac": 0.415,
+    "width_frac": 0.051
+   },
+   {
+    "flagged_streaking": false,
+    "label": "sd",
+    "lane": 3,
+    "n_bands": 0,
+    "reason": null,
+    "streak_frac": 0.178,
+    "width_frac": null
+   }
+  ],
+  "rendered": true,
+  "sheet": "PER-P19-Opt_2-4hr.png",
+  "status": "degraded"
+ },
+ {
+  "file": "PER-P19-Opt 2-6hr.png",
+  "lanes": [
+   {
+    "flagged_streaking": false,
+    "label": "S",
+    "lane": 0,
+    "n_bands": 0,
+    "reason": null,
+    "streak_frac": 0.215,
+    "width_frac": null
+   },
+   {
+    "flagged_streaking": true,
+    "label": "R",
+    "lane": 1,
+    "n_bands": 1,
+    "reason": "a flat-topped contiguous run 2.9 FWHM long is above 2 sigma after the fitted peaks are removed (limit 2.5)",
+    "streak_frac": 0.385,
+    "width_frac": 0.311
+   },
+   {
+    "flagged_streaking": false,
+    "label": "co",
+    "lane": 2,
+    "n_bands": 0,
+    "reason": null,
+    "streak_frac": 0.319,
+    "width_frac": null
+   },
+   {
+    "flagged_streaking": false,
+    "label": "sd",
+    "lane": 3,
+    "n_bands": 0,
+    "reason": null,
+    "streak_frac": 0.259,
+    "width_frac": null
+   }
+  ],
+  "rendered": true,
+  "sheet": "PER-P19-Opt_2-6hr.png",
+  "status": "degraded"
+ },
+ {
+  "file": "PER-P19-Opt 3-2hr_18th July26.png",
+  "lanes": [
+   {
+    "flagged_streaking": false,
+    "label": "S",
+    "lane": 0,
+    "n_bands": 1,
+    "reason": null,
+    "streak_frac": 0.198,
+    "width_frac": 0.127
+   },
+   {
+    "flagged_streaking": true,
+    "label": "R",
+    "lane": 1,
+    "n_bands": 0,
+    "reason": "a flat-topped contiguous run 2.5 FWHM long is above 2 sigma after the fitted peaks are removed (limit 2.5)",
+    "streak_frac": 0.278,
+    "width_frac": null
+   },
+   {
+    "flagged_streaking": true,
+    "label": "co",
+    "lane": 2,
+    "n_bands": 0,
+    "reason": "a flat-topped run (89% of 2.4 FWHM above half-max) \u2014 comet/streak, not a peak",
+    "streak_frac": 0.341,
+    "width_frac": null
+   },
+   {
+    "flagged_streaking": false,
+    "label": "sd",
+    "lane": 3,
+    "n_bands": 0,
+    "reason": null,
+    "streak_frac": 0.071,
+    "width_frac": null
+   }
+  ],
+  "rendered": true,
+  "sheet": "PER-P19-Opt_3-2hr_18th_July26.png",
+  "status": "degraded"
+ },
+ {
+  "file": "PER-P19-Opt 3-4hr_18th July26.png",
+  "lanes": [
+   {
+    "flagged_streaking": false,
+    "label": "S",
+    "lane": 0,
+    "n_bands": 1,
+    "reason": null,
+    "streak_frac": 0.164,
+    "width_frac": 0.143
+   },
+   {
+    "flagged_streaking": false,
+    "label": "R",
+    "lane": 1,
+    "n_bands": 1,
+    "reason": null,
+    "streak_frac": 0.321,
+    "width_frac": null
+   },
+   {
+    "flagged_streaking": false,
+    "label": "co",
+    "lane": 2,
+    "n_bands": 0,
+    "reason": null,
+    "streak_frac": 0.229,
+    "width_frac": null
+   },
+   {
+    "flagged_streaking": false,
+    "label": "sd",
+    "lane": 3,
+    "n_bands": 0,
+    "reason": null,
+    "streak_frac": 0.186,
+    "width_frac": null
+   }
+  ],
+  "rendered": true,
+  "sheet": "PER-P19-Opt_3-4hr_18th_July26.png",
+  "status": "degraded"
+ },
+ {
+  "file": "PER-P19-Opt 3-6hr_18th July26.png",
+  "lanes": [
+   {
+    "flagged_streaking": false,
+    "label": "S",
+    "lane": 0,
+    "n_bands": 1,
+    "reason": null,
+    "streak_frac": 0.184,
+    "width_frac": 0.106
+   },
+   {
+    "flagged_streaking": false,
+    "label": "R",
+    "lane": 1,
+    "n_bands": 0,
+    "reason": null,
+    "streak_frac": 0.323,
+    "width_frac": null
+   },
+   {
+    "flagged_streaking": false,
+    "label": "co",
+    "lane": 2,
+    "n_bands": 0,
+    "reason": null,
+    "streak_frac": 0.336,
+    "width_frac": null
+   },
+   {
+    "flagged_streaking": false,
+    "label": "sd",
+    "lane": 3,
+    "n_bands": 0,
+    "reason": null,
+    "streak_frac": 0.161,
+    "width_frac": null
+   }
+  ],
+  "rendered": true,
+  "sheet": "PER-P19-Opt_3-6hr_18th_July26.png",
+  "status": "degraded"
+ },
+ {
+  "file": "PER-P19-Opt 3-Hexane_22nd July26.png",
+  "lanes": [
+   {
+    "flagged_streaking": false,
+    "label": "S",
+    "lane": 0,
+    "n_bands": 1,
+    "reason": null,
+    "streak_frac": 0.305,
+    "width_frac": 0.267
+   },
+   {
+    "flagged_streaking": false,
+    "label": "R",
+    "lane": 1,
+    "n_bands": 0,
+    "reason": null,
+    "streak_frac": 0.343,
+    "width_frac": null
+   },
+   {
+    "flagged_streaking": false,
+    "label": "co",
+    "lane": 2,
+    "n_bands": 0,
+    "reason": null,
+    "streak_frac": 0.381,
+    "width_frac": null
+   },
+   {
+    "flagged_streaking": false,
+    "label": "sd",
+    "lane": 3,
+    "n_bands": 0,
+    "reason": null,
+    "streak_frac": 0.343,
+    "width_frac": null
+   }
+  ],
+  "rendered": true,
+  "sheet": "PER-P19-Opt_3-Hexane_22nd_July26.png",
+  "status": "degraded"
+ },
+ {
+  "file": "PER-P19-Opt 3-Methanol_22nd July26.png",
+  "lanes": [
+   {
+    "flagged_streaking": false,
+    "label": "S",
+    "lane": 0,
+    "n_bands": 0,
+    "reason": null,
+    "streak_frac": 0.195,
+    "width_frac": null
+   },
+   {
+    "flagged_streaking": false,
+    "label": "R",
+    "lane": 1,
+    "n_bands": 0,
+    "reason": null,
+    "streak_frac": 0.285,
+    "width_frac": null
+   },
+   {
+    "flagged_streaking": false,
+    "label": "co",
+    "lane": 2,
+    "n_bands": 0,
+    "reason": null,
+    "streak_frac": 0.252,
+    "width_frac": null
+   },
+   {
+    "flagged_streaking": false,
+    "label": "sd",
+    "lane": 3,
+    "n_bands": 1,
+    "reason": null,
+    "streak_frac": 0.244,
+    "width_frac": 0.106
+   }
+  ],
+  "rendered": true,
+  "sheet": "PER-P19-Opt_3-Methanol_22nd_July26.png",
+  "status": "degraded"
+ },
+ {
+  "file": "PER-P19-Opt 4-2hr_18th July26.png",
+  "lanes": [
+   {
+    "flagged_streaking": false,
+    "label": "S",
+    "lane": 0,
+    "n_bands": 0,
+    "reason": null,
+    "streak_frac": 0.159,
+    "width_frac": null
+   },
+   {
+    "flagged_streaking": false,
+    "label": "R",
+    "lane": 1,
+    "n_bands": 0,
+    "reason": null,
+    "streak_frac": 0.275,
+    "width_frac": null
+   },
+   {
+    "flagged_streaking": false,
+    "label": "co",
+    "lane": 2,
+    "n_bands": 0,
+    "reason": null,
+    "streak_frac": 0.326,
+    "width_frac": null
+   },
+   {
+    "flagged_streaking": false,
+    "label": "sd",
+    "lane": 3,
+    "n_bands": 0,
+    "reason": null,
+    "streak_frac": 0.159,
+    "width_frac": null
+   }
+  ],
+  "rendered": true,
+  "sheet": "PER-P19-Opt_4-2hr_18th_July26.png",
+  "status": "degraded"
+ },
+ {
+  "file": "PER-P19-Opt 4-4hr_18th July26.png",
+  "lanes": [
+   {
+    "flagged_streaking": false,
+    "label": "S",
+    "lane": 0,
+    "n_bands": 1,
+    "reason": null,
+    "streak_frac": 0.152,
+    "width_frac": 0.083
+   },
+   {
+    "flagged_streaking": false,
+    "label": "R",
+    "lane": 1,
+    "n_bands": 1,
+    "reason": null,
+    "streak_frac": 0.317,
+    "width_frac": 0.31
+   },
+   {
+    "flagged_streaking": false,
+    "label": "co",
+    "lane": 2,
+    "n_bands": 0,
+    "reason": null,
+    "streak_frac": 0.352,
+    "width_frac": null
+   },
+   {
+    "flagged_streaking": false,
+    "label": "sd",
+    "lane": 3,
+    "n_bands": 0,
+    "reason": null,
+    "streak_frac": 0.138,
+    "width_frac": null
+   }
+  ],
+  "rendered": true,
+  "sheet": "PER-P19-Opt_4-4hr_18th_July26.png",
+  "status": "degraded"
+ },
+ {
+  "file": "PER-P19-Opt 4-6hr_18th July26.png",
+  "lanes": [
+   {
+    "flagged_streaking": false,
+    "label": "S",
+    "lane": 0,
+    "n_bands": 0,
+    "reason": null,
+    "streak_frac": 0.189,
+    "width_frac": null
+   },
+   {
+    "flagged_streaking": false,
+    "label": "R",
+    "lane": 1,
+    "n_bands": 0,
+    "reason": null,
+    "streak_frac": 0.389,
+    "width_frac": null
+   },
+   {
+    "flagged_streaking": false,
+    "label": "co",
+    "lane": 2,
+    "n_bands": 0,
+    "reason": null,
+    "streak_frac": 0.36,
+    "width_frac": null
+   },
+   {
+    "flagged_streaking": false,
+    "label": "sd",
+    "lane": 3,
+    "n_bands": 0,
+    "reason": null,
+    "streak_frac": 0.189,
+    "width_frac": null
+   }
+  ],
+  "rendered": true,
+  "sheet": "PER-P19-Opt_4-6hr_18th_July26.png",
+  "status": "degraded"
+ },
+ {
+  "file": "PER-P19-Opt 4-Hexane_22nd July26.png",
+  "lanes": [
+   {
+    "flagged_streaking": false,
+    "label": "S",
+    "lane": 0,
+    "n_bands": 1,
+    "reason": null,
+    "streak_frac": 0.312,
+    "width_frac": 0.184
+   },
+   {
+    "flagged_streaking": false,
+    "label": "R",
+    "lane": 1,
+    "n_bands": 0,
+    "reason": null,
+    "streak_frac": 0.319,
+    "width_frac": null
+   },
+   {
+    "flagged_streaking": false,
+    "label": "co",
+    "lane": 2,
+    "n_bands": 0,
+    "reason": null,
+    "streak_frac": 0.369,
+    "width_frac": null
+   },
+   {
+    "flagged_streaking": true,
+    "label": "sd",
+    "lane": 3,
+    "n_bands": 1,
+    "reason": "tail ratio tau/sigma 3.2 > 3.0 with 3.1 FWHM of unexplained elevation",
+    "streak_frac": 0.277,
+    "width_frac": 0.213
+   }
+  ],
+  "rendered": true,
+  "sheet": "PER-P19-Opt_4-Hexane_22nd_July26.png",
+  "status": "degraded"
+ },
+ {
+  "file": "PER-P19-Opt 4-Methanol_22nd July26.png",
+  "lanes": [
+   {
+    "flagged_streaking": false,
+    "label": "S",
+    "lane": 0,
+    "n_bands": 0,
+    "reason": null,
+    "streak_frac": 0.152,
+    "width_frac": null
+   },
+   {
+    "flagged_streaking": false,
+    "label": "R",
+    "lane": 1,
+    "n_bands": 0,
+    "reason": null,
+    "streak_frac": 0.331,
+    "width_frac": null
+   },
+   {
+    "flagged_streaking": false,
+    "label": "co",
+    "lane": 2,
+    "n_bands": 0,
+    "reason": null,
+    "streak_frac": 0.228,
+    "width_frac": null
+   },
+   {
+    "flagged_streaking": false,
+    "label": "sd",
+    "lane": 3,
+    "n_bands": 1,
+    "reason": null,
+    "streak_frac": 0.221,
+    "width_frac": 0.09
+   }
+  ],
+  "rendered": true,
+  "sheet": "PER-P19-Opt_4-Methanol_22nd_July26.png",
+  "status": "degraded"
+ },
+ {
+  "file": "PER-P19-Opt 5-4hr MeOH_21st July26 .png",
+  "lanes": [
+   {
+    "flagged_streaking": false,
+    "label": "S",
+    "lane": 0,
+    "n_bands": 1,
+    "reason": null,
+    "streak_frac": 0.207,
+    "width_frac": 0.172
+   },
+   {
+    "flagged_streaking": false,
+    "label": "R",
+    "lane": 1,
+    "n_bands": 1,
+    "reason": null,
+    "streak_frac": 0.322,
+    "width_frac": 0.322
+   },
+   {
+    "flagged_streaking": false,
+    "label": "co",
+    "lane": 2,
+    "n_bands": 0,
+    "reason": null,
+    "streak_frac": 0.241,
+    "width_frac": null
+   },
+   {
+    "flagged_streaking": false,
+    "label": "sd",
+    "lane": 3,
+    "n_bands": 0,
+    "reason": null,
+    "streak_frac": 0.218,
+    "width_frac": null
+   }
+  ],
+  "rendered": true,
+  "sheet": "PER-P19-Opt_5-4hr_MeOH_21st_July26_.png",
+  "status": "degraded"
+ },
+ {
+  "file": "PER-P19-Opt 5-6hr MeOH_21st July26.png",
+  "lanes": [
+   {
+    "flagged_streaking": false,
+    "label": "S",
+    "lane": 0,
+    "n_bands": 1,
+    "reason": null,
+    "streak_frac": 0.098,
+    "width_frac": 0.122
+   },
+   {
+    "flagged_streaking": false,
+    "label": "R",
+    "lane": 1,
+    "n_bands": 2,
+    "reason": null,
+    "streak_frac": 0.122,
+    "width_frac": 0.329
+   },
+   {
+    "flagged_streaking": false,
+    "label": "co",
+    "lane": 2,
+    "n_bands": 1,
+    "reason": null,
+    "streak_frac": 0.037,
+    "width_frac": null
+   },
+   {
+    "flagged_streaking": false,
+    "label": "sd",
+    "lane": 3,
+    "n_bands": 0,
+    "reason": null,
+    "streak_frac": 0.012,
+    "width_frac": null
+   }
+  ],
+  "rendered": true,
+  "sheet": "PER-P19-Opt_5-6hr_MeOH_21st_July26.png",
+  "status": "refused"
+ },
+ {
+  "file": "Scale-up_MEHQ-P20-Step-1_3.5hr_30th July26.png",
+  "lanes": [
+   {
+    "flagged_streaking": true,
+    "label": "S",
+    "lane": 0,
+    "n_bands": 0,
+    "reason": "a flat-topped run (85% of 1.6 FWHM above half-max) \u2014 comet/streak, not a peak",
+    "streak_frac": 0.241,
+    "width_frac": null
+   },
+   {
+    "flagged_streaking": true,
+    "label": "R",
+    "lane": 1,
+    "n_bands": 1,
+    "reason": "a flat-topped contiguous run 2.8 FWHM long is above 2 sigma after the fitted peaks are removed (limit 2.5)",
+    "streak_frac": 0.393,
+    "width_frac": 0.262
+   },
+   {
+    "flagged_streaking": true,
+    "label": "co",
+    "lane": 2,
+    "n_bands": 0,
+    "reason": "a flat-topped run (89% of 2.2 FWHM above half-max) \u2014 comet/streak, not a peak",
+    "streak_frac": 0.248,
+    "width_frac": null
+   },
+   {
+    "flagged_streaking": true,
+    "label": "sd",
+    "lane": 3,
+    "n_bands": 2,
+    "reason": "a flat-topped contiguous run 2.7 FWHM long is above 2 sigma after the fitted peaks are removed (limit 2.5)",
+    "streak_frac": 0.372,
+    "width_frac": 0.262
+   }
+  ],
+  "rendered": true,
+  "sheet": "Scale-up_MEHQ-P20-Step-1_3.5hr_30th_July26.png",
+  "status": "degraded"
+ }
+]

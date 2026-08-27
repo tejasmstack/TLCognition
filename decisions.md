@@ -717,3 +717,19 @@ The mechanism of the cost is worth keeping: merging clusters averages together m
 estimates, and the extra ones are precisely those that disagreed enough to have formed their own
 cluster. If wide bands ever do matter here, the fix belongs in the per-config position estimate, not
 in the clustering.
+
+## D-038 — A lane is only "empty" if the test had the power to say so (2026-08-27)
+`is_empty` now requires the surrogate null to have been usable for that lane. Usable is defined as the
+saturation condition it protects against: the gutter that builds the null must not contain a feature
+that is both unmistakably a band (>= 8 sigma, beyond what noise over an analysable band can reach) and
+stronger than anything in the lane being tested. When it does, the plate carries
+`E_NULL_NOT_CONSTRUCTIBLE` with the measured gutter strength, and the reaction reading reports the
+plate as untested rather than clean.
+
+The condition is written as the failure mode rather than as a threshold on plate quality, which is why
+it is inert where the null is fine: 0 of 12 synthetic plates trigger it, so Gates 4 and 5 are
+unaffected, while 40 of 66 real plates do.
+
+**Revisit when** a null that needs no signal-free region exists (M-030's closing note). Then these
+plates get tested instead of refused, and this condition becomes the switch that chooses the null
+rather than the one that refuses.

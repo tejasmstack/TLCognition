@@ -143,6 +143,23 @@ def e_noise_structured(vif: float) -> Refusal:
                    {"vif": round(vif, 3), "gate": VIF_ABSTAIN})
 
 
+def e_null_not_constructible(clean_cols: int, needed: int, gutter_max_z: float) -> Refusal:
+    """M-030: the S1 surrogate null is built from the gutters between the lanes, which assumes the
+    gutters hold no chemistry. When bands are broad relative to the lane pitch they bleed across the
+    gutters, and the null then contains the very signal it is meant to test against — every p
+    saturates at 1 and nothing is ever accepted. Reporting the lane as empty in that state is a
+    silent false negative; this refusal is what the system says instead."""
+    return Refusal(
+        "E_NULL_NOT_CONSTRUCTIBLE",
+        f"There is no band-free strip on this plate to test against: the gaps between the lanes carry "
+        f"signal up to {gutter_max_z:.0f} sigma, so a band here cannot be distinguished from the plate's "
+        f"own background by this method.",
+        "Spot the lanes further apart, or load less so the bands stay inside their lanes; a plate with "
+        "clear gaps between the lanes can be tested properly.",
+        {"clean_gutter_columns": clean_cols, "columns_needed": needed, "gutter_max_z": round(gutter_max_z, 1)},
+    )
+
+
 def e_lane_count_unknown() -> Refusal:
     return Refusal("E_LANE_COUNT_UNKNOWN", "The number of lanes could not be read from the plate.",
                    "Enter the number of lanes.", {})

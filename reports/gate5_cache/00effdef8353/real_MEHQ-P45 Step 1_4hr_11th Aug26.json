@@ -1,0 +1,1 @@
+{"file": "MEHQ-P45 Step 1_4hr_11th Aug26.png", "n_refusals": 5, "n_spots": 4, "refusal_codes": ["E_CLIP_PHOTOMETRY", "E_LANE_COUNT_UNKNOWN", "E_NO_FRONT", "E_NO_REFERENCE_LANE", "E_NULL_NOT_CONSTRUCTIBLE"], "schema_valid": true, "silent_nulls": [], "status": "degraded", "verdict": "positions_only"}

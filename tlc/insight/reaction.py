@@ -268,6 +268,15 @@ def analyse_reaction(result: dict, profiles: dict[int, np.ndarray] | None = None
         refusals.append({"code": "E_NO_SM_ANCHOR",
                          "message": "The starting-material lane has no band strong enough to anchor a comparison.",
                          "remedy": "Spot the starting material in its own lane, labelled S, at a load you can see."})
+    # a plate whose surrogate null could not be built has not been tested, and the reading must say
+    # so rather than letting "no band found" stand as a finding (M-030)
+    null_ref = next((r for r in result.get("refusals", []) if r.get("code") == "E_NULL_NOT_CONSTRUCTIBLE"), None)
+    if null_ref:
+        refusals.append({"code": null_ref["code"], "message": null_ref["message"], "remedy": null_ref["remedy"]})
+        caveats.append(
+            "On this plate the gaps between the lanes carry as much signal as the lanes do, so the test "
+            "that decides whether a band is real could not be run on every lane. Where a band is reported "
+            "it was still tested; where a lane looks empty, treat that as untested rather than clean.")
     if product_anchor is None:
         refusals.append({"code": "E_NO_PRODUCT_ANCHOR",
                          "message": "The product-standard lane has no band strong enough to anchor a comparison.",
@@ -302,7 +311,7 @@ def analyse_reaction(result: dict, profiles: dict[int, np.ndarray] | None = None
         headline = headline.rstrip(".") + " — but the evidence for this is weak; treat it as a question, not an answer."
 
     plain, chem = _narrate(verdict, assignments, quant, shift, cospot, sm_anchor, product_anchor,
-                           impurities, r_streaking, roles_present, grade)
+                           impurities, r_streaking, roles_present, grade, untested=bool(null_ref))
 
     caveats.extend([
         "Position tells you two compounds could be the same; it never proves they are. Two different "
@@ -630,7 +639,7 @@ def _verdict(assignments, sm_anchor, product_anchor, R, quant, streaking):
 
 
 def _narrate(verdict, assignments, quant, shift, cospot, sm_anchor, product_anchor, impurities,
-             streaking, roles_present, grade) -> tuple[list[str], list[str]]:
+             streaking, roles_present, grade, untested: bool = False) -> tuple[list[str], list[str]]:
     """Two voices over the same facts: one for someone who has never read a plate, one for a chemist."""
     plain: list[str] = []
     chem: list[str] = []
@@ -668,6 +677,10 @@ def _narrate(verdict, assignments, quant, shift, cospot, sm_anchor, product_anch
         plain.append("**The answer: nothing seems to have converted yet.** The reaction lane shows the starting "
                      "material and no band where the product standard runs. That means either the reaction has "
                      "not started, or any product present is below what this photograph can show.")
+    elif untested:
+        plain.append("**The answer: this plate has not been tested.** The lanes on it run into each other, so there "
+                     "is no clear gap the system can use as a blank to judge against. Anything it did find is "
+                     "reported below, but a lane that looks empty here has not been shown to be empty.")
     else:
         plain.append("**The answer: this plate cannot tell you.** The reference lanes that anchor the comparison "
                      "are missing or too faint, so nothing in the reaction lane can be identified with confidence.")
