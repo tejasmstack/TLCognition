@@ -1,0 +1,2047 @@
+{
+ "plates": [
+  {
+   "bands": [
+    {
+     "agreement": 0.442,
+     "fwhm_px": 8.0,
+     "lane": 1,
+     "nominal_fwhm_px": 8.9,
+     "ratio": 0.899,
+     "snr": 13.4,
+     "status": "candidate",
+     "y": 77.3
+    },
+    {
+     "agreement": 0.409,
+     "fwhm_px": 5.0,
+     "lane": 3,
+     "nominal_fwhm_px": 8.9,
+     "ratio": 0.562,
+     "snr": 21.4,
+     "status": "candidate",
+     "y": 32.5
+    }
+   ],
+   "file": "MEHQ-P20_1st Step 3hr_21st July26.png",
+   "pitch": 21.0,
+   "plate_h": 151,
+   "plate_w": 84
+  },
+  {
+   "bands": [
+    {
+     "agreement": 0.648,
+     "fwhm_px": 12.0,
+     "lane": 0,
+     "nominal_fwhm_px": 9.2,
+     "ratio": 1.302,
+     "snr": 26.3,
+     "status": "confirmed",
+     "y": 79.2
+    },
+    {
+     "agreement": 0.852,
+     "fwhm_px": 13.0,
+     "lane": 1,
+     "nominal_fwhm_px": 9.2,
+     "ratio": 1.41,
+     "snr": 38.1,
+     "status": "confirmed",
+     "y": 86.6
+    },
+    {
+     "agreement": 0.98,
+     "fwhm_px": 8.0,
+     "lane": 3,
+     "nominal_fwhm_px": 9.2,
+     "ratio": 0.868,
+     "snr": 64.1,
+     "status": "confirmed",
+     "y": 36.3
+    },
+    {
+     "agreement": 0.638,
+     "fwhm_px": 12.0,
+     "lane": 3,
+     "nominal_fwhm_px": 9.2,
+     "ratio": 1.302,
+     "snr": 27.8,
+     "status": "confirmed",
+     "y": 90.4
+    }
+   ],
+   "file": "MEHQ-P20_2nd Step 1hr_21st July26.png",
+   "pitch": 21.8,
+   "plate_h": 171,
+   "plate_w": 87
+  },
+  {
+   "bands": [],
+   "file": "MEHQ-P21_1st Step 6hr_22nd July26.png",
+   "pitch": 14.8,
+   "plate_h": 128,
+   "plate_w": 59
+  },
+  {
+   "bands": [
+    {
+     "agreement": 0.98,
+     "fwhm_px": 8.0,
+     "lane": 0,
+     "nominal_fwhm_px": 5.9,
+     "ratio": 1.348,
+     "snr": 5.8,
+     "status": "confirmed",
+     "y": 62.8
+    },
+    {
+     "agreement": 0.98,
+     "fwhm_px": 3.0,
+     "lane": 1,
+     "nominal_fwhm_px": 5.9,
+     "ratio": 0.506,
+     "snr": 5.8,
+     "status": "confirmed",
+     "y": 21.8
+    },
+    {
+     "agreement": 0.523,
+     "fwhm_px": 3.0,
+     "lane": 1,
+     "nominal_fwhm_px": 5.9,
+     "ratio": 0.506,
+     "snr": 3.8,
+     "status": "confirmed",
+     "y": 33.1
+    },
+    {
+     "agreement": 0.98,
+     "fwhm_px": 4.0,
+     "lane": 1,
+     "nominal_fwhm_px": 5.9,
+     "ratio": 0.674,
+     "snr": 5.3,
+     "status": "confirmed",
+     "y": 66.5
+    },
+    {
+     "agreement": 0.697,
+     "fwhm_px": 4.0,
+     "lane": 1,
+     "nominal_fwhm_px": 5.9,
+     "ratio": 0.674,
+     "snr": 8.6,
+     "status": "confirmed",
+     "y": 77.6
+    },
+    {
+     "agreement": 0.98,
+     "fwhm_px": 2.0,
+     "lane": 2,
+     "nominal_fwhm_px": 5.9,
+     "ratio": 0.337,
+     "snr": 5.0,
+     "status": "confirmed",
+     "y": 21.9
+    },
+    {
+     "agreement": 0.446,
+     "fwhm_px": 2.0,
+     "lane": 2,
+     "nominal_fwhm_px": 5.9,
+     "ratio": 0.337,
+     "snr": 3.2,
+     "status": "candidate",
+     "y": 32.9
+    },
+    {
+     "agreement": 0.489,
+     "fwhm_px": 6.0,
+     "lane": 2,
+     "nominal_fwhm_px": 5.9,
+     "ratio": 1.011,
+     "snr": 9.6,
+     "status": "candidate",
+     "y": 78.0
+    },
+    {
+     "agreement": 0.98,
+     "fwhm_px": 2.0,
+     "lane": 3,
+     "nominal_fwhm_px": 5.9,
+     "ratio": 0.337,
+     "snr": 8.4,
+     "status": "confirmed",
+     "y": 22.4
+    }
+   ],
+   "file": "MEHQ-P22_1st Step 6hr_22nd July26.png",
+   "pitch": 14.0,
+   "plate_h": 102,
+   "plate_w": 56
+  },
+  {
+   "bands": [],
+   "file": "MEHQ-P22_2nd Step 1hr_22nd July26.png",
+   "pitch": 24.0,
+   "plate_h": 196,
+   "plate_w": 96
+  },
+  {
+   "bands": [],
+   "file": "MEHQ-P23_4hr_24th July26.png",
+   "pitch": 30.2,
+   "plate_h": 203,
+   "plate_w": 121
+  },
+  {
+   "bands": [
+    {
+     "agreement": 0.599,
+     "fwhm_px": 8.0,
+     "lane": 2,
+     "nominal_fwhm_px": 7.2,
+     "ratio": 1.11,
+     "snr": 8.1,
+     "status": "confirmed",
+     "y": 52.9
+    },
+    {
+     "agreement": 0.559,
+     "fwhm_px": 9.0,
+     "lane": 3,
+     "nominal_fwhm_px": 7.2,
+     "ratio": 1.249,
+     "snr": 8.0,
+     "status": "confirmed",
+     "y": 56.6
+    }
+   ],
+   "file": "MEHQ-P23_5+2hr_25th July26.png",
+   "pitch": 17.0,
+   "plate_h": 107,
+   "plate_w": 68
+  },
+  {
+   "bands": [
+    {
+     "agreement": 0.48,
+     "fwhm_px": 15.0,
+     "lane": 0,
+     "nominal_fwhm_px": 9.0,
+     "ratio": 1.665,
+     "snr": 5.2,
+     "status": "candidate",
+     "y": 90.7
+    },
+    {
+     "agreement": 0.449,
+     "fwhm_px": 9.0,
+     "lane": 2,
+     "nominal_fwhm_px": 9.0,
+     "ratio": 0.999,
+     "snr": 5.4,
+     "status": "candidate",
+     "y": 57.9
+    }
+   ],
+   "file": "MEHQ-P23_5hr_24th July26.png",
+   "pitch": 21.2,
+   "plate_h": 132,
+   "plate_w": 85
+  },
+  {
+   "bands": [
+    {
+     "agreement": 0.587,
+     "fwhm_px": 22.0,
+     "lane": 0,
+     "nominal_fwhm_px": 14.3,
+     "ratio": 1.538,
+     "snr": 20.5,
+     "status": "confirmed",
+     "y": 158.1
+    },
+    {
+     "agreement": 0.587,
+     "fwhm_px": 16.0,
+     "lane": 1,
+     "nominal_fwhm_px": 14.3,
+     "ratio": 1.118,
+     "snr": 19.8,
+     "status": "confirmed",
+     "y": 122.2
+    }
+   ],
+   "file": "MEHQ-P24_4hr_24th July26.png",
+   "pitch": 33.8,
+   "plate_h": 214,
+   "plate_w": 135
+  },
+  {
+   "bands": [
+    {
+     "agreement": 0.498,
+     "fwhm_px": 3.0,
+     "lane": 3,
+     "nominal_fwhm_px": 8.9,
+     "ratio": 0.337,
+     "snr": 6.4,
+     "status": "candidate",
+     "y": 43.2
+    }
+   ],
+   "file": "MEHQ-P24_5+2hr_25th July26.png",
+   "pitch": 21.0,
+   "plate_h": 165,
+   "plate_w": 84
+  },
+  {
+   "bands": [
+    {
+     "agreement": 0.571,
+     "fwhm_px": 16.0,
+     "lane": 0,
+     "nominal_fwhm_px": 8.7,
+     "ratio": 1.841,
+     "snr": 6.5,
+     "status": "confirmed",
+     "y": 98.7
+    },
+    {
+     "agreement": 0.449,
+     "fwhm_px": 3.0,
+     "lane": 2,
+     "nominal_fwhm_px": 8.7,
+     "ratio": 0.345,
+     "snr": 4.5,
+     "status": "candidate",
+     "y": 55.3
+    },
+    {
+     "agreement": 0.414,
+     "fwhm_px": 11.0,
+     "lane": 3,
+     "nominal_fwhm_px": 8.7,
+     "ratio": 1.266,
+     "snr": 6.0,
+     "status": "candidate",
+     "y": 33.6
+    }
+   ],
+   "file": "MEHQ-P24_5hr_24th July26.png",
+   "pitch": 20.5,
+   "plate_h": 145,
+   "plate_w": 82
+  },
+  {
+   "bands": [],
+   "file": "MEHQ-P25_1+2hr_25th July26.png",
+   "pitch": 22.2,
+   "plate_h": 159,
+   "plate_w": 89
+  },
+  {
+   "bands": [
+    {
+     "agreement": 0.777,
+     "fwhm_px": 20.0,
+     "lane": 1,
+     "nominal_fwhm_px": 11.6,
+     "ratio": 1.731,
+     "snr": 8.5,
+     "status": "confirmed",
+     "y": 57.3
+    },
+    {
+     "agreement": 0.697,
+     "fwhm_px": 16.0,
+     "lane": 1,
+     "nominal_fwhm_px": 11.6,
+     "ratio": 1.385,
+     "snr": 11.9,
+     "status": "confirmed",
+     "y": 148.7
+    },
+    {
+     "agreement": 0.852,
+     "fwhm_px": 17.0,
+     "lane": 3,
+     "nominal_fwhm_px": 11.6,
+     "ratio": 1.472,
+     "snr": 12.7,
+     "status": "confirmed",
+     "y": 51.7
+    }
+   ],
+   "file": "MEHQ-P25_1hr_24th July26.png",
+   "pitch": 27.2,
+   "plate_h": 207,
+   "plate_w": 109
+  },
+  {
+   "bands": [
+    {
+     "agreement": 0.48,
+     "fwhm_px": 13.0,
+     "lane": 2,
+     "nominal_fwhm_px": 13.2,
+     "ratio": 0.981,
+     "snr": 14.8,
+     "status": "candidate",
+     "y": 62.1
+    },
+    {
+     "agreement": 0.409,
+     "fwhm_px": 13.0,
+     "lane": 3,
+     "nominal_fwhm_px": 13.2,
+     "ratio": 0.981,
+     "snr": 13.6,
+     "status": "candidate",
+     "y": 71.9
+    }
+   ],
+   "file": "MEHQ-P26_1+2hr_25th July26.png",
+   "pitch": 31.2,
+   "plate_h": 179,
+   "plate_w": 125
+  },
+  {
+   "bands": [
+    {
+     "agreement": 0.777,
+     "fwhm_px": 20.0,
+     "lane": 1,
+     "nominal_fwhm_px": 10.7,
+     "ratio": 1.869,
+     "snr": 11.4,
+     "status": "confirmed",
+     "y": 102.5
+    },
+    {
+     "agreement": 0.621,
+     "fwhm_px": 8.0,
+     "lane": 3,
+     "nominal_fwhm_px": 10.7,
+     "ratio": 0.747,
+     "snr": 9.4,
+     "status": "confirmed",
+     "y": 55.7
+    },
+    {
+     "agreement": 0.61,
+     "fwhm_px": 13.0,
+     "lane": 3,
+     "nominal_fwhm_px": 10.7,
+     "ratio": 1.215,
+     "snr": 9.8,
+     "status": "confirmed",
+     "y": 99.0
+    }
+   ],
+   "file": "MEHQ-P26_1hr_24th July26.png",
+   "pitch": 25.2,
+   "plate_h": 211,
+   "plate_w": 101
+  },
+  {
+   "bands": [
+    {
+     "agreement": 0.484,
+     "fwhm_px": 6.0,
+     "lane": 3,
+     "nominal_fwhm_px": 12.2,
+     "ratio": 0.492,
+     "snr": 15.9,
+     "status": "candidate",
+     "y": 30.4
+    }
+   ],
+   "file": "MEHQ-P27-4hr_28th July26.png",
+   "pitch": 28.8,
+   "plate_h": 159,
+   "plate_w": 115
+  },
+  {
+   "bands": [
+    {
+     "agreement": 0.493,
+     "fwhm_px": 4.0,
+     "lane": 1,
+     "nominal_fwhm_px": 8.7,
+     "ratio": 0.46,
+     "snr": 6.5,
+     "status": "candidate",
+     "y": 92.9
+    },
+    {
+     "agreement": 0.98,
+     "fwhm_px": 3.0,
+     "lane": 1,
+     "nominal_fwhm_px": 8.7,
+     "ratio": 0.345,
+     "snr": 19.4,
+     "status": "confirmed",
+     "y": 115.8
+    },
+    {
+     "agreement": 0.937,
+     "fwhm_px": 8.0,
+     "lane": 1,
+     "nominal_fwhm_px": 8.7,
+     "ratio": 0.921,
+     "snr": 21.8,
+     "status": "confirmed",
+     "y": 146.1
+    },
+    {
+     "agreement": 0.482,
+     "fwhm_px": 2.0,
+     "lane": 2,
+     "nominal_fwhm_px": 8.7,
+     "ratio": 0.23,
+     "snr": 6.5,
+     "status": "candidate",
+     "y": 57.7
+    },
+    {
+     "agreement": 0.98,
+     "fwhm_px": 4.0,
+     "lane": 2,
+     "nominal_fwhm_px": 8.7,
+     "ratio": 0.46,
+     "snr": 20.6,
+     "status": "confirmed",
+     "y": 114.2
+    },
+    {
+     "agreement": 0.678,
+     "fwhm_px": 7.0,
+     "lane": 2,
+     "nominal_fwhm_px": 8.7,
+     "ratio": 0.806,
+     "snr": 24.6,
+     "status": "confirmed",
+     "y": 148.0
+    },
+    {
+     "agreement": 0.678,
+     "fwhm_px": 10.0,
+     "lane": 3,
+     "nominal_fwhm_px": 8.7,
+     "ratio": 1.151,
+     "snr": 8.4,
+     "status": "confirmed",
+     "y": 90.6
+    }
+   ],
+   "file": "MEHQ-P28-4hr_28th July26.png",
+   "pitch": 20.5,
+   "plate_h": 189,
+   "plate_w": 82
+  },
+  {
+   "bands": [
+    {
+     "agreement": 0.613,
+     "fwhm_px": 7.0,
+     "lane": 1,
+     "nominal_fwhm_px": 7.1,
+     "ratio": 0.986,
+     "snr": 3.3,
+     "status": "confirmed",
+     "y": 53.4
+    },
+    {
+     "agreement": 0.629,
+     "fwhm_px": 4.0,
+     "lane": 1,
+     "nominal_fwhm_px": 7.1,
+     "ratio": 0.563,
+     "snr": 11.0,
+     "status": "confirmed",
+     "y": 90.2
+    },
+    {
+     "agreement": 0.432,
+     "fwhm_px": 5.0,
+     "lane": 2,
+     "nominal_fwhm_px": 7.1,
+     "ratio": 0.704,
+     "snr": 9.9,
+     "status": "candidate",
+     "y": 90.0
+    }
+   ],
+   "file": "MEHQ-P29-4hr_29th July26 (1).png",
+   "pitch": 16.8,
+   "plate_h": 122,
+   "plate_w": 67
+  },
+  {
+   "bands": [
+    {
+     "agreement": 0.613,
+     "fwhm_px": 7.0,
+     "lane": 1,
+     "nominal_fwhm_px": 7.1,
+     "ratio": 0.986,
+     "snr": 3.3,
+     "status": "confirmed",
+     "y": 53.4
+    },
+    {
+     "agreement": 0.629,
+     "fwhm_px": 4.0,
+     "lane": 1,
+     "nominal_fwhm_px": 7.1,
+     "ratio": 0.563,
+     "snr": 11.0,
+     "status": "confirmed",
+     "y": 90.2
+    },
+    {
+     "agreement": 0.432,
+     "fwhm_px": 5.0,
+     "lane": 2,
+     "nominal_fwhm_px": 7.1,
+     "ratio": 0.704,
+     "snr": 9.9,
+     "status": "candidate",
+     "y": 90.0
+    }
+   ],
+   "file": "MEHQ-P29-4hr_29th July26.png",
+   "pitch": 16.8,
+   "plate_h": 122,
+   "plate_w": 67
+  },
+  {
+   "bands": [
+    {
+     "agreement": 0.98,
+     "fwhm_px": 13.0,
+     "lane": 0,
+     "nominal_fwhm_px": 9.9,
+     "ratio": 1.319,
+     "snr": 9.3,
+     "status": "confirmed",
+     "y": 128.5
+    },
+    {
+     "agreement": 0.857,
+     "fwhm_px": 17.0,
+     "lane": 1,
+     "nominal_fwhm_px": 9.9,
+     "ratio": 1.725,
+     "snr": 6.1,
+     "status": "confirmed",
+     "y": 91.8
+    },
+    {
+     "agreement": 0.735,
+     "fwhm_px": 19.0,
+     "lane": 1,
+     "nominal_fwhm_px": 9.9,
+     "ratio": 1.928,
+     "snr": 9.3,
+     "status": "confirmed",
+     "y": 105.7
+    },
+    {
+     "agreement": 0.852,
+     "fwhm_px": 6.0,
+     "lane": 1,
+     "nominal_fwhm_px": 9.9,
+     "ratio": 0.609,
+     "snr": 15.4,
+     "status": "confirmed",
+     "y": 135.5
+    },
+    {
+     "agreement": 0.941,
+     "fwhm_px": 2.0,
+     "lane": 2,
+     "nominal_fwhm_px": 9.9,
+     "ratio": 0.203,
+     "snr": 4.4,
+     "status": "confirmed",
+     "y": 112.0
+    },
+    {
+     "agreement": 0.786,
+     "fwhm_px": 8.0,
+     "lane": 2,
+     "nominal_fwhm_px": 9.9,
+     "ratio": 0.812,
+     "snr": 15.8,
+     "status": "confirmed",
+     "y": 136.8
+    },
+    {
+     "agreement": 0.98,
+     "fwhm_px": 12.0,
+     "lane": 3,
+     "nominal_fwhm_px": 9.9,
+     "ratio": 1.218,
+     "snr": 11.0,
+     "status": "confirmed",
+     "y": 86.3
+    }
+   ],
+   "file": "MEHQ-P30-4hr_29th July26.png",
+   "pitch": 23.2,
+   "plate_h": 170,
+   "plate_w": 93
+  },
+  {
+   "bands": [
+    {
+     "agreement": 0.529,
+     "fwhm_px": 13.0,
+     "lane": 0,
+     "nominal_fwhm_px": 11.6,
+     "ratio": 1.125,
+     "snr": 8.9,
+     "status": "confirmed",
+     "y": 133.4
+    },
+    {
+     "agreement": 0.48,
+     "fwhm_px": 11.0,
+     "lane": 3,
+     "nominal_fwhm_px": 11.6,
+     "ratio": 0.952,
+     "snr": 8.8,
+     "status": "candidate",
+     "y": 89.3
+    }
+   ],
+   "file": "MEHQ-P31-4hr_30th July26.png",
+   "pitch": 27.2,
+   "plate_h": 185,
+   "plate_w": 109
+  },
+  {
+   "bands": [],
+   "file": "MEHQ-P32-1_3hr_4th Aug26_ACN (1).png",
+   "pitch": 17.2,
+   "plate_h": 113,
+   "plate_w": 69
+  },
+  {
+   "bands": [],
+   "file": "MEHQ-P32-1_3hr_4th Aug26_ACN (2).png",
+   "pitch": 17.2,
+   "plate_h": 113,
+   "plate_w": 69
+  },
+  {
+   "bands": [],
+   "file": "MEHQ-P32-1_3hr_4th Aug26_ACN.png",
+   "pitch": 17.2,
+   "plate_h": 113,
+   "plate_w": 69
+  },
+  {
+   "bands": [
+    {
+     "agreement": 0.896,
+     "fwhm_px": 10.0,
+     "lane": 0,
+     "nominal_fwhm_px": 9.0,
+     "ratio": 1.11,
+     "snr": 5.7,
+     "status": "confirmed",
+     "y": 115.7
+    },
+    {
+     "agreement": 0.483,
+     "fwhm_px": 3.0,
+     "lane": 1,
+     "nominal_fwhm_px": 9.0,
+     "ratio": 0.333,
+     "snr": 2.8,
+     "status": "candidate",
+     "y": 86.0
+    },
+    {
+     "agreement": 0.595,
+     "fwhm_px": 5.0,
+     "lane": 1,
+     "nominal_fwhm_px": 9.0,
+     "ratio": 0.555,
+     "snr": 11.7,
+     "status": "confirmed",
+     "y": 117.1
+    },
+    {
+     "agreement": 0.98,
+     "fwhm_px": 6.0,
+     "lane": 1,
+     "nominal_fwhm_px": 9.0,
+     "ratio": 0.666,
+     "snr": 11.7,
+     "status": "confirmed",
+     "y": 123.9
+    },
+    {
+     "agreement": 0.98,
+     "fwhm_px": 5.0,
+     "lane": 2,
+     "nominal_fwhm_px": 9.0,
+     "ratio": 0.555,
+     "snr": 7.9,
+     "status": "confirmed",
+     "y": 112.0
+    },
+    {
+     "agreement": 0.544,
+     "fwhm_px": 9.0,
+     "lane": 2,
+     "nominal_fwhm_px": 9.0,
+     "ratio": 0.999,
+     "snr": 17.9,
+     "status": "confirmed",
+     "y": 124.4
+    },
+    {
+     "agreement": 0.476,
+     "fwhm_px": 9.0,
+     "lane": 3,
+     "nominal_fwhm_px": 9.0,
+     "ratio": 0.999,
+     "snr": 4.1,
+     "status": "candidate",
+     "y": 80.9
+    }
+   ],
+   "file": "MEHQ-P32-4hr_30th July26 (1).png",
+   "pitch": 21.2,
+   "plate_h": 158,
+   "plate_w": 85
+  },
+  {
+   "bands": [
+    {
+     "agreement": 0.896,
+     "fwhm_px": 10.0,
+     "lane": 0,
+     "nominal_fwhm_px": 9.0,
+     "ratio": 1.11,
+     "snr": 5.7,
+     "status": "confirmed",
+     "y": 115.7
+    },
+    {
+     "agreement": 0.483,
+     "fwhm_px": 3.0,
+     "lane": 1,
+     "nominal_fwhm_px": 9.0,
+     "ratio": 0.333,
+     "snr": 2.8,
+     "status": "candidate",
+     "y": 86.0
+    },
+    {
+     "agreement": 0.595,
+     "fwhm_px": 5.0,
+     "lane": 1,
+     "nominal_fwhm_px": 9.0,
+     "ratio": 0.555,
+     "snr": 11.7,
+     "status": "confirmed",
+     "y": 117.1
+    },
+    {
+     "agreement": 0.98,
+     "fwhm_px": 6.0,
+     "lane": 1,
+     "nominal_fwhm_px": 9.0,
+     "ratio": 0.666,
+     "snr": 11.7,
+     "status": "confirmed",
+     "y": 123.9
+    },
+    {
+     "agreement": 0.98,
+     "fwhm_px": 5.0,
+     "lane": 2,
+     "nominal_fwhm_px": 9.0,
+     "ratio": 0.555,
+     "snr": 7.9,
+     "status": "confirmed",
+     "y": 112.0
+    },
+    {
+     "agreement": 0.544,
+     "fwhm_px": 9.0,
+     "lane": 2,
+     "nominal_fwhm_px": 9.0,
+     "ratio": 0.999,
+     "snr": 17.9,
+     "status": "confirmed",
+     "y": 124.4
+    },
+    {
+     "agreement": 0.476,
+     "fwhm_px": 9.0,
+     "lane": 3,
+     "nominal_fwhm_px": 9.0,
+     "ratio": 0.999,
+     "snr": 4.1,
+     "status": "candidate",
+     "y": 80.9
+    }
+   ],
+   "file": "MEHQ-P32-4hr_30th July26.png",
+   "pitch": 21.2,
+   "plate_h": 158,
+   "plate_w": 85
+  },
+  {
+   "bands": [
+    {
+     "agreement": 0.659,
+     "fwhm_px": 9.0,
+     "lane": 1,
+     "nominal_fwhm_px": 11.2,
+     "ratio": 0.801,
+     "snr": 23.1,
+     "status": "confirmed",
+     "y": 136.1
+    },
+    {
+     "agreement": 0.463,
+     "fwhm_px": 12.0,
+     "lane": 2,
+     "nominal_fwhm_px": 11.2,
+     "ratio": 1.068,
+     "snr": 32.7,
+     "status": "candidate",
+     "y": 137.9
+    }
+   ],
+   "file": "MEHQ-P32_4+3hr_3rd Aug26 (1).png",
+   "pitch": 26.5,
+   "plate_h": 180,
+   "plate_w": 106
+  },
+  {
+   "bands": [
+    {
+     "agreement": 0.659,
+     "fwhm_px": 9.0,
+     "lane": 1,
+     "nominal_fwhm_px": 11.2,
+     "ratio": 0.801,
+     "snr": 23.1,
+     "status": "confirmed",
+     "y": 136.1
+    },
+    {
+     "agreement": 0.463,
+     "fwhm_px": 12.0,
+     "lane": 2,
+     "nominal_fwhm_px": 11.2,
+     "ratio": 1.068,
+     "snr": 32.7,
+     "status": "candidate",
+     "y": 137.9
+    }
+   ],
+   "file": "MEHQ-P32_4+3hr_3rd Aug26.png",
+   "pitch": 26.5,
+   "plate_h": 180,
+   "plate_w": 106
+  },
+  {
+   "bands": [
+    {
+     "agreement": 0.406,
+     "fwhm_px": 10.0,
+     "lane": 3,
+     "nominal_fwhm_px": 16.0,
+     "ratio": 0.625,
+     "snr": 29.7,
+     "status": "candidate",
+     "y": 56.0
+    }
+   ],
+   "file": "MEHQ-P33 4hr_31st July26.png",
+   "pitch": 37.8,
+   "plate_h": 298,
+   "plate_w": 151
+  },
+  {
+   "bands": [
+    {
+     "agreement": 0.937,
+     "fwhm_px": 16.0,
+     "lane": 0,
+     "nominal_fwhm_px": 10.8,
+     "ratio": 1.48,
+     "snr": 12.8,
+     "status": "confirmed",
+     "y": 133.7
+    },
+    {
+     "agreement": 0.98,
+     "fwhm_px": 16.0,
+     "lane": 1,
+     "nominal_fwhm_px": 10.8,
+     "ratio": 1.48,
+     "snr": 11.0,
+     "status": "confirmed",
+     "y": 89.4
+    },
+    {
+     "agreement": 0.98,
+     "fwhm_px": 17.0,
+     "lane": 1,
+     "nominal_fwhm_px": 10.8,
+     "ratio": 1.573,
+     "snr": 12.7,
+     "status": "confirmed",
+     "y": 135.1
+    },
+    {
+     "agreement": 0.98,
+     "fwhm_px": 16.0,
+     "lane": 2,
+     "nominal_fwhm_px": 10.8,
+     "ratio": 1.48,
+     "snr": 9.3,
+     "status": "confirmed",
+     "y": 90.6
+    },
+    {
+     "agreement": 0.98,
+     "fwhm_px": 6.0,
+     "lane": 2,
+     "nominal_fwhm_px": 10.8,
+     "ratio": 0.555,
+     "snr": 10.6,
+     "status": "confirmed",
+     "y": 136.8
+    },
+    {
+     "agreement": 0.937,
+     "fwhm_px": 13.0,
+     "lane": 3,
+     "nominal_fwhm_px": 10.8,
+     "ratio": 1.203,
+     "snr": 13.9,
+     "status": "confirmed",
+     "y": 88.4
+    }
+   ],
+   "file": "MEHQ-P34-1_3hr_4th Aug26_ACN.png",
+   "pitch": 25.5,
+   "plate_h": 183,
+   "plate_w": 102
+  },
+  {
+   "bands": [],
+   "file": "MEHQ-P34_4hr_3rd Aug26.png",
+   "pitch": 38.0,
+   "plate_h": 206,
+   "plate_w": 152
+  },
+  {
+   "bands": [
+    {
+     "agreement": 0.598,
+     "fwhm_px": 15.0,
+     "lane": 0,
+     "nominal_fwhm_px": 9.6,
+     "ratio": 1.555,
+     "snr": 5.1,
+     "status": "confirmed",
+     "y": 110.3
+    },
+    {
+     "agreement": 0.98,
+     "fwhm_px": 21.0,
+     "lane": 1,
+     "nominal_fwhm_px": 9.6,
+     "ratio": 2.178,
+     "snr": 7.9,
+     "status": "confirmed",
+     "y": 73.9
+    },
+    {
+     "agreement": 0.684,
+     "fwhm_px": 12.0,
+     "lane": 1,
+     "nominal_fwhm_px": 9.6,
+     "ratio": 1.244,
+     "snr": 9.7,
+     "status": "confirmed",
+     "y": 96.1
+    },
+    {
+     "agreement": 0.98,
+     "fwhm_px": 6.0,
+     "lane": 1,
+     "nominal_fwhm_px": 9.6,
+     "ratio": 0.622,
+     "snr": 19.5,
+     "status": "confirmed",
+     "y": 126.5
+    },
+    {
+     "agreement": 0.98,
+     "fwhm_px": 5.0,
+     "lane": 2,
+     "nominal_fwhm_px": 9.6,
+     "ratio": 0.518,
+     "snr": 8.9,
+     "status": "confirmed",
+     "y": 95.8
+    },
+    {
+     "agreement": 0.98,
+     "fwhm_px": 5.0,
+     "lane": 2,
+     "nominal_fwhm_px": 9.6,
+     "ratio": 0.518,
+     "snr": 26.0,
+     "status": "confirmed",
+     "y": 128.7
+    },
+    {
+     "agreement": 0.553,
+     "fwhm_px": 9.0,
+     "lane": 3,
+     "nominal_fwhm_px": 9.6,
+     "ratio": 0.933,
+     "snr": 6.0,
+     "status": "confirmed",
+     "y": 67.3
+    }
+   ],
+   "file": "MEHQ-P35_4hr_4th Aug26.png",
+   "pitch": 22.8,
+   "plate_h": 165,
+   "plate_w": 91
+  },
+  {
+   "bands": [
+    {
+     "agreement": 0.768,
+     "fwhm_px": 3.0,
+     "lane": 0,
+     "nominal_fwhm_px": 11.6,
+     "ratio": 0.26,
+     "snr": 10.7,
+     "status": "confirmed",
+     "y": 144.6
+    },
+    {
+     "agreement": 0.852,
+     "fwhm_px": 3.0,
+     "lane": 1,
+     "nominal_fwhm_px": 11.6,
+     "ratio": 0.26,
+     "snr": 9.4,
+     "status": "confirmed",
+     "y": 109.7
+    },
+    {
+     "agreement": 0.626,
+     "fwhm_px": 5.0,
+     "lane": 1,
+     "nominal_fwhm_px": 11.6,
+     "ratio": 0.433,
+     "snr": 7.8,
+     "status": "confirmed",
+     "y": 141.5
+    },
+    {
+     "agreement": 0.937,
+     "fwhm_px": 5.0,
+     "lane": 1,
+     "nominal_fwhm_px": 11.6,
+     "ratio": 0.433,
+     "snr": 19.8,
+     "status": "confirmed",
+     "y": 162.1
+    },
+    {
+     "agreement": 0.766,
+     "fwhm_px": 6.0,
+     "lane": 2,
+     "nominal_fwhm_px": 11.6,
+     "ratio": 0.519,
+     "snr": 10.7,
+     "status": "confirmed",
+     "y": 75.5
+    },
+    {
+     "agreement": 0.98,
+     "fwhm_px": 4.0,
+     "lane": 2,
+     "nominal_fwhm_px": 11.6,
+     "ratio": 0.346,
+     "snr": 14.2,
+     "status": "confirmed",
+     "y": 133.9
+    },
+    {
+     "agreement": 0.937,
+     "fwhm_px": 8.0,
+     "lane": 2,
+     "nominal_fwhm_px": 11.6,
+     "ratio": 0.693,
+     "snr": 33.5,
+     "status": "confirmed",
+     "y": 162.8
+    },
+    {
+     "agreement": 0.895,
+     "fwhm_px": 12.0,
+     "lane": 3,
+     "nominal_fwhm_px": 11.6,
+     "ratio": 1.039,
+     "snr": 12.8,
+     "status": "confirmed",
+     "y": 105.7
+    }
+   ],
+   "file": "MEHQ-P35_6hr_4th Aug26.png",
+   "pitch": 27.2,
+   "plate_h": 210,
+   "plate_w": 109
+  },
+  {
+   "bands": [
+    {
+     "agreement": 0.786,
+     "fwhm_px": 9.0,
+     "lane": 0,
+     "nominal_fwhm_px": 9.7,
+     "ratio": 0.923,
+     "snr": 12.5,
+     "status": "confirmed",
+     "y": 122.2
+    },
+    {
+     "agreement": 0.702,
+     "fwhm_px": 8.0,
+     "lane": 1,
+     "nominal_fwhm_px": 9.7,
+     "ratio": 0.821,
+     "snr": 23.3,
+     "status": "confirmed",
+     "y": 136.2
+    },
+    {
+     "agreement": 0.98,
+     "fwhm_px": 7.0,
+     "lane": 2,
+     "nominal_fwhm_px": 9.7,
+     "ratio": 0.718,
+     "snr": 34.6,
+     "status": "confirmed",
+     "y": 136.7
+    },
+    {
+     "agreement": 0.671,
+     "fwhm_px": 5.0,
+     "lane": 3,
+     "nominal_fwhm_px": 9.7,
+     "ratio": 0.513,
+     "snr": 9.0,
+     "status": "confirmed",
+     "y": 32.0
+    },
+    {
+     "agreement": 0.714,
+     "fwhm_px": 4.0,
+     "lane": 3,
+     "nominal_fwhm_px": 9.7,
+     "ratio": 0.41,
+     "snr": 9.4,
+     "status": "confirmed",
+     "y": 40.4
+    },
+    {
+     "agreement": 0.937,
+     "fwhm_px": 10.0,
+     "lane": 3,
+     "nominal_fwhm_px": 9.7,
+     "ratio": 1.026,
+     "snr": 16.2,
+     "status": "confirmed",
+     "y": 85.7
+    }
+   ],
+   "file": "MEHQ-P36_4hr_4th Aug26.png",
+   "pitch": 23.0,
+   "plate_h": 172,
+   "plate_w": 92
+  },
+  {
+   "bands": [
+    {
+     "agreement": 0.98,
+     "fwhm_px": 11.0,
+     "lane": 0,
+     "nominal_fwhm_px": 12.2,
+     "ratio": 0.903,
+     "snr": 15.3,
+     "status": "confirmed",
+     "y": 39.8
+    },
+    {
+     "agreement": 0.636,
+     "fwhm_px": 10.0,
+     "lane": 0,
+     "nominal_fwhm_px": 12.2,
+     "ratio": 0.821,
+     "snr": 6.9,
+     "status": "confirmed",
+     "y": 134.2
+    },
+    {
+     "agreement": 0.584,
+     "fwhm_px": 5.0,
+     "lane": 3,
+     "nominal_fwhm_px": 12.2,
+     "ratio": 0.41,
+     "snr": 8.6,
+     "status": "confirmed",
+     "y": 51.2
+    },
+    {
+     "agreement": 0.852,
+     "fwhm_px": 9.0,
+     "lane": 3,
+     "nominal_fwhm_px": 12.2,
+     "ratio": 0.738,
+     "snr": 10.0,
+     "status": "confirmed",
+     "y": 89.1
+    }
+   ],
+   "file": "MEHQ-P36_6hr_4th Aug26.png",
+   "pitch": 28.8,
+   "plate_h": 214,
+   "plate_w": 115
+  },
+  {
+   "bands": [
+    {
+     "agreement": 0.937,
+     "fwhm_px": 19.0,
+     "lane": 0,
+     "nominal_fwhm_px": 11.8,
+     "ratio": 1.615,
+     "snr": 16.6,
+     "status": "confirmed",
+     "y": 148.0
+    },
+    {
+     "agreement": 0.636,
+     "fwhm_px": 4.0,
+     "lane": 2,
+     "nominal_fwhm_px": 11.8,
+     "ratio": 0.34,
+     "snr": 10.5,
+     "status": "confirmed",
+     "y": 63.4
+    },
+    {
+     "agreement": 0.98,
+     "fwhm_px": 18.0,
+     "lane": 2,
+     "nominal_fwhm_px": 11.8,
+     "ratio": 1.53,
+     "snr": 17.8,
+     "status": "confirmed",
+     "y": 161.6
+    },
+    {
+     "agreement": 0.44,
+     "fwhm_px": 9.0,
+     "lane": 3,
+     "nominal_fwhm_px": 11.8,
+     "ratio": 0.765,
+     "snr": 9.1,
+     "status": "candidate",
+     "y": 97.3
+    }
+   ],
+   "file": "MEHQ-P37-4hr_6th Aug26.png",
+   "pitch": 27.8,
+   "plate_h": 205,
+   "plate_w": 111
+  },
+  {
+   "bands": [
+    {
+     "agreement": 0.697,
+     "fwhm_px": 26.0,
+     "lane": 1,
+     "nominal_fwhm_px": 16.2,
+     "ratio": 1.604,
+     "snr": 34.0,
+     "status": "confirmed",
+     "y": 212.4
+    },
+    {
+     "agreement": 0.897,
+     "fwhm_px": 28.0,
+     "lane": 2,
+     "nominal_fwhm_px": 16.2,
+     "ratio": 1.727,
+     "snr": 42.7,
+     "status": "confirmed",
+     "y": 213.4
+    }
+   ],
+   "file": "MEHQ-P37-7hr_6th Aug26.png",
+   "pitch": 38.2,
+   "plate_h": 267,
+   "plate_w": 153
+  },
+  {
+   "bands": [],
+   "file": "MEHQ-P38-1st Step_3hr_6th Aug26.png",
+   "pitch": 21.8,
+   "plate_h": 186,
+   "plate_w": 87
+  },
+  {
+   "bands": [
+    {
+     "agreement": 0.443,
+     "fwhm_px": 28.0,
+     "lane": 3,
+     "nominal_fwhm_px": 14.6,
+     "ratio": 1.915,
+     "snr": 34.6,
+     "status": "candidate",
+     "y": 156.3
+    }
+   ],
+   "file": "MEHQ-P38-1st Step_6hr_6th Aug26.png",
+   "pitch": 34.5,
+   "plate_h": 288,
+   "plate_w": 138
+  },
+  {
+   "bands": [
+    {
+     "agreement": 0.98,
+     "fwhm_px": 13.0,
+     "lane": 0,
+     "nominal_fwhm_px": 9.2,
+     "ratio": 1.41,
+     "snr": 41.3,
+     "status": "confirmed",
+     "y": 88.9
+    },
+    {
+     "agreement": 0.98,
+     "fwhm_px": 32.0,
+     "lane": 2,
+     "nominal_fwhm_px": 9.2,
+     "ratio": 3.471,
+     "snr": 46.2,
+     "status": "confirmed",
+     "y": 94.8
+    }
+   ],
+   "file": "MEHQ-P39_3hr_6th Aug26.png",
+   "pitch": 21.8,
+   "plate_h": 202,
+   "plate_w": 87
+  },
+  {
+   "bands": [
+    {
+     "agreement": 0.498,
+     "fwhm_px": 10.0,
+     "lane": 0,
+     "nominal_fwhm_px": 9.5,
+     "ratio": 1.048,
+     "snr": 29.6,
+     "status": "candidate",
+     "y": 78.6
+    }
+   ],
+   "file": "MEHQ-P40_3hr_6th Aug26.png",
+   "pitch": 22.5,
+   "plate_h": 202,
+   "plate_w": 90
+  },
+  {
+   "bands": [
+    {
+     "agreement": 0.937,
+     "fwhm_px": 12.0,
+     "lane": 0,
+     "nominal_fwhm_px": 11.0,
+     "ratio": 1.089,
+     "snr": 41.8,
+     "status": "confirmed",
+     "y": 105.2
+    },
+    {
+     "agreement": 0.98,
+     "fwhm_px": 14.0,
+     "lane": 1,
+     "nominal_fwhm_px": 11.0,
+     "ratio": 1.27,
+     "snr": 35.1,
+     "status": "confirmed",
+     "y": 86.2
+    },
+    {
+     "agreement": 0.821,
+     "fwhm_px": 13.0,
+     "lane": 1,
+     "nominal_fwhm_px": 11.0,
+     "ratio": 1.18,
+     "snr": 42.5,
+     "status": "confirmed",
+     "y": 109.1
+    },
+    {
+     "agreement": 0.98,
+     "fwhm_px": 14.0,
+     "lane": 2,
+     "nominal_fwhm_px": 11.0,
+     "ratio": 1.27,
+     "snr": 36.0,
+     "status": "confirmed",
+     "y": 86.0
+    }
+   ],
+   "file": "MEHQ-P41 Step 1-6hr_10th Aug26.png",
+   "pitch": 26.0,
+   "plate_h": 205,
+   "plate_w": 104
+  },
+  {
+   "bands": [
+    {
+     "agreement": 0.641,
+     "fwhm_px": 11.0,
+     "lane": 0,
+     "nominal_fwhm_px": 10.9,
+     "ratio": 1.008,
+     "snr": 12.1,
+     "status": "confirmed",
+     "y": 79.3
+    },
+    {
+     "agreement": 0.937,
+     "fwhm_px": 30.0,
+     "lane": 1,
+     "nominal_fwhm_px": 10.9,
+     "ratio": 2.748,
+     "snr": 14.1,
+     "status": "confirmed",
+     "y": 87.5
+    }
+   ],
+   "file": "MEHQ-P42 Step 1-6hr_10th Aug26.png",
+   "pitch": 25.8,
+   "plate_h": 196,
+   "plate_w": 103
+  },
+  {
+   "bands": [
+    {
+     "agreement": 0.895,
+     "fwhm_px": 13.0,
+     "lane": 0,
+     "nominal_fwhm_px": 13.1,
+     "ratio": 0.989,
+     "snr": 18.1,
+     "status": "confirmed",
+     "y": 108.5
+    }
+   ],
+   "file": "MEHQ-P43 Step 1 6hr_10th Aug26.png",
+   "pitch": 31.0,
+   "plate_h": 218,
+   "plate_w": 124
+  },
+  {
+   "bands": [
+    {
+     "agreement": 0.445,
+     "fwhm_px": 16.0,
+     "lane": 0,
+     "nominal_fwhm_px": 14.1,
+     "ratio": 1.135,
+     "snr": 19.9,
+     "status": "candidate",
+     "y": 159.0
+    }
+   ],
+   "file": "MEHQ-P44 Step 1 6hr_10th Aug26.png",
+   "pitch": 33.2,
+   "plate_h": 281,
+   "plate_w": 133
+  },
+  {
+   "bands": [
+    {
+     "agreement": 0.855,
+     "fwhm_px": 12.0,
+     "lane": 0,
+     "nominal_fwhm_px": 9.4,
+     "ratio": 1.272,
+     "snr": 41.4,
+     "status": "confirmed",
+     "y": 101.7
+    },
+    {
+     "agreement": 0.937,
+     "fwhm_px": 11.0,
+     "lane": 1,
+     "nominal_fwhm_px": 9.4,
+     "ratio": 1.166,
+     "snr": 41.6,
+     "status": "confirmed",
+     "y": 73.8
+    },
+    {
+     "agreement": 0.895,
+     "fwhm_px": 5.0,
+     "lane": 1,
+     "nominal_fwhm_px": 9.4,
+     "ratio": 0.53,
+     "snr": 37.2,
+     "status": "confirmed",
+     "y": 104.1
+    },
+    {
+     "agreement": 0.937,
+     "fwhm_px": 11.0,
+     "lane": 2,
+     "nominal_fwhm_px": 9.4,
+     "ratio": 1.166,
+     "snr": 39.8,
+     "status": "confirmed",
+     "y": 73.9
+    }
+   ],
+   "file": "MEHQ-P45 Step 1_4hr_11th Aug26.png",
+   "pitch": 22.2,
+   "plate_h": 189,
+   "plate_w": 89
+  },
+  {
+   "bands": [
+    {
+     "agreement": 0.521,
+     "fwhm_px": 16.0,
+     "lane": 0,
+     "nominal_fwhm_px": 11.4,
+     "ratio": 1.398,
+     "snr": 17.9,
+     "status": "confirmed",
+     "y": 82.8
+    }
+   ],
+   "file": "MEHQ-P46 Step 1_4hr_11th Aug26.png",
+   "pitch": 27.0,
+   "plate_h": 203,
+   "plate_w": 108
+  },
+  {
+   "bands": [],
+   "file": "PER-P19-Opt 1-2hr.png",
+   "pitch": 24.8,
+   "plate_h": 180,
+   "plate_w": 99
+  },
+  {
+   "bands": [
+    {
+     "agreement": 0.98,
+     "fwhm_px": 14.0,
+     "lane": 0,
+     "nominal_fwhm_px": 9.1,
+     "ratio": 1.536,
+     "snr": 16.3,
+     "status": "confirmed",
+     "y": 101.3
+    }
+   ],
+   "file": "PER-P19-Opt 1-4hr.png",
+   "pitch": 21.5,
+   "plate_h": 157,
+   "plate_w": 86
+  },
+  {
+   "bands": [
+    {
+     "agreement": 0.937,
+     "fwhm_px": 18.0,
+     "lane": 0,
+     "nominal_fwhm_px": 10.1,
+     "ratio": 1.788,
+     "snr": 12.4,
+     "status": "confirmed",
+     "y": 112.9
+    }
+   ],
+   "file": "PER-P19-Opt 1-6hr.png",
+   "pitch": 23.8,
+   "plate_h": 174,
+   "plate_w": 95
+  },
+  {
+   "bands": [
+    {
+     "agreement": 0.409,
+     "fwhm_px": 19.0,
+     "lane": 1,
+     "nominal_fwhm_px": 9.9,
+     "ratio": 1.928,
+     "snr": 28.8,
+     "status": "candidate",
+     "y": 95.9
+    },
+    {
+     "agreement": 0.442,
+     "fwhm_px": 20.0,
+     "lane": 2,
+     "nominal_fwhm_px": 9.9,
+     "ratio": 2.029,
+     "snr": 31.7,
+     "status": "candidate",
+     "y": 94.0
+    }
+   ],
+   "file": "PER-P19-Opt 2-2hr.png",
+   "pitch": 23.2,
+   "plate_h": 173,
+   "plate_w": 93
+  },
+  {
+   "bands": [
+    {
+     "agreement": 0.48,
+     "fwhm_px": 20.0,
+     "lane": 0,
+     "nominal_fwhm_px": 11.3,
+     "ratio": 1.764,
+     "snr": 10.5,
+     "status": "candidate",
+     "y": 109.8
+    }
+   ],
+   "file": "PER-P19-Opt 2-4hr.png",
+   "pitch": 26.8,
+   "plate_h": 188,
+   "plate_w": 107
+  },
+  {
+   "bands": [],
+   "file": "PER-P19-Opt 2-6hr.png",
+   "pitch": 27.2,
+   "plate_h": 216,
+   "plate_w": 109
+  },
+  {
+   "bands": [
+    {
+     "agreement": 0.406,
+     "fwhm_px": 17.0,
+     "lane": 0,
+     "nominal_fwhm_px": 11.0,
+     "ratio": 1.542,
+     "snr": 17.2,
+     "status": "candidate",
+     "y": 119.2
+    }
+   ],
+   "file": "PER-P19-Opt 3-2hr_18th July26.png",
+   "pitch": 26.0,
+   "plate_h": 199,
+   "plate_w": 104
+  },
+  {
+   "bands": [
+    {
+     "agreement": 0.732,
+     "fwhm_px": 20.0,
+     "lane": 0,
+     "nominal_fwhm_px": 12.8,
+     "ratio": 1.56,
+     "snr": 27.1,
+     "status": "confirmed",
+     "y": 109.6
+    },
+    {
+     "agreement": 0.556,
+     "fwhm_px": 4.0,
+     "lane": 1,
+     "nominal_fwhm_px": 12.8,
+     "ratio": 0.312,
+     "snr": 31.3,
+     "status": "confirmed",
+     "y": 41.9
+    }
+   ],
+   "file": "PER-P19-Opt 3-4hr_18th July26.png",
+   "pitch": 30.2,
+   "plate_h": 214,
+   "plate_w": 121
+  },
+  {
+   "bands": [
+    {
+     "agreement": 0.692,
+     "fwhm_px": 27.0,
+     "lane": 0,
+     "nominal_fwhm_px": 19.2,
+     "ratio": 1.408,
+     "snr": 32.0,
+     "status": "confirmed",
+     "y": 179.4
+    }
+   ],
+   "file": "PER-P19-Opt 3-6hr_18th July26.png",
+   "pitch": 45.2,
+   "plate_h": 338,
+   "plate_w": 181
+  },
+  {
+   "bands": [
+    {
+     "agreement": 0.6,
+     "fwhm_px": 25.0,
+     "lane": 0,
+     "nominal_fwhm_px": 10.0,
+     "ratio": 2.51,
+     "snr": 25.0,
+     "status": "confirmed",
+     "y": 63.9
+    }
+   ],
+   "file": "PER-P19-Opt 3-Hexane_22nd July26.png",
+   "pitch": 23.5,
+   "plate_h": 162,
+   "plate_w": 94
+  },
+  {
+   "bands": [
+    {
+     "agreement": 0.849,
+     "fwhm_px": 14.0,
+     "lane": 3,
+     "nominal_fwhm_px": 12.0,
+     "ratio": 1.169,
+     "snr": 20.4,
+     "status": "confirmed",
+     "y": 95.2
+    }
+   ],
+   "file": "PER-P19-Opt 3-Methanol_22nd July26.png",
+   "pitch": 28.2,
+   "plate_h": 194,
+   "plate_w": 113
+  },
+  {
+   "bands": [],
+   "file": "PER-P19-Opt 4-2hr_18th July26.png",
+   "pitch": 27.0,
+   "plate_h": 212,
+   "plate_w": 108
+  },
+  {
+   "bands": [
+    {
+     "agreement": 0.646,
+     "fwhm_px": 14.0,
+     "lane": 0,
+     "nominal_fwhm_px": 11.6,
+     "ratio": 1.212,
+     "snr": 19.2,
+     "status": "confirmed",
+     "y": 126.1
+    },
+    {
+     "agreement": 0.692,
+     "fwhm_px": 13.0,
+     "lane": 1,
+     "nominal_fwhm_px": 11.6,
+     "ratio": 1.125,
+     "snr": 27.4,
+     "status": "confirmed",
+     "y": 124.4
+    }
+   ],
+   "file": "PER-P19-Opt 4-4hr_18th July26.png",
+   "pitch": 27.2,
+   "plate_h": 227,
+   "plate_w": 109
+  },
+  {
+   "bands": [],
+   "file": "PER-P19-Opt 4-6hr_18th July26.png",
+   "pitch": 42.2,
+   "plate_h": 282,
+   "plate_w": 169
+  },
+  {
+   "bands": [
+    {
+     "agreement": 0.413,
+     "fwhm_px": 26.0,
+     "lane": 0,
+     "nominal_fwhm_px": 12.7,
+     "ratio": 2.045,
+     "snr": 27.1,
+     "status": "candidate",
+     "y": 85.9
+    }
+   ],
+   "file": "PER-P19-Opt 4-Hexane_22nd July26.png",
+   "pitch": 30.0,
+   "plate_h": 215,
+   "plate_w": 120
+  },
+  {
+   "bands": [
+    {
+     "agreement": 0.405,
+     "fwhm_px": 14.0,
+     "lane": 3,
+     "nominal_fwhm_px": 13.2,
+     "ratio": 1.057,
+     "snr": 30.1,
+     "status": "candidate",
+     "y": 118.8
+    }
+   ],
+   "file": "PER-P19-Opt 4-Methanol_22nd July26.png",
+   "pitch": 31.2,
+   "plate_h": 219,
+   "plate_w": 125
+  },
+  {
+   "bands": [
+    {
+     "agreement": 0.772,
+     "fwhm_px": 17.0,
+     "lane": 0,
+     "nominal_fwhm_px": 10.3,
+     "ratio": 1.654,
+     "snr": 15.6,
+     "status": "confirmed",
+     "y": 78.9
+    },
+    {
+     "agreement": 0.808,
+     "fwhm_px": 25.0,
+     "lane": 1,
+     "nominal_fwhm_px": 10.3,
+     "ratio": 2.432,
+     "snr": 17.3,
+     "status": "confirmed",
+     "y": 78.5
+    }
+   ],
+   "file": "PER-P19-Opt 5-4hr MeOH_21st July26 .png",
+   "pitch": 24.2,
+   "plate_h": 146,
+   "plate_w": 97
+  },
+  {
+   "bands": [
+    {
+     "agreement": 0.751,
+     "fwhm_px": 11.0,
+     "lane": 0,
+     "nominal_fwhm_px": 9.2,
+     "ratio": 1.193,
+     "snr": 4.1,
+     "status": "confirmed",
+     "y": 73.6
+    },
+    {
+     "agreement": 0.828,
+     "fwhm_px": 2.0,
+     "lane": 1,
+     "nominal_fwhm_px": 9.2,
+     "ratio": 0.217,
+     "snr": 5.7,
+     "status": "confirmed",
+     "y": 28.0
+    },
+    {
+     "agreement": 0.442,
+     "fwhm_px": 13.0,
+     "lane": 1,
+     "nominal_fwhm_px": 9.2,
+     "ratio": 1.41,
+     "snr": 7.0,
+     "status": "candidate",
+     "y": 73.7
+    },
+    {
+     "agreement": 0.413,
+     "fwhm_px": 5.0,
+     "lane": 2,
+     "nominal_fwhm_px": 9.2,
+     "ratio": 0.542,
+     "snr": 2.7,
+     "status": "candidate",
+     "y": 70.1
+    }
+   ],
+   "file": "PER-P19-Opt 5-6hr MeOH_21st July26.png",
+   "pitch": 21.8,
+   "plate_h": 133,
+   "plate_w": 87
+  },
+  {
+   "bands": [],
+   "file": "Scale-up_MEHQ-P20-Step-1_3.5hr_30th July26.png",
+   "pitch": 29.5,
+   "plate_h": 231,
+   "plate_w": 118
+  }
+ ],
+ "summary": {
+  "frac_above_2x": 0.047,
+  "frac_above_3x": 0.007,
+  "frac_above_4x": 0.0,
+  "mean": 1.044,
+  "n_bands": 150,
+  "n_bands_snr5": 138,
+  "n_plates": 66,
+  "nominal_definition": "2.355 * 0.18 * lane_pitch \u2014 the width the pipeline assumes for a spot",
+  "ratio_quantiles": {
+   "10": 0.346,
+   "25": 0.563,
+   "5": 0.335,
+   "50": 0.999,
+   "75": 1.376,
+   "90": 1.727,
+   "95": 1.928
+  },
+  "ratio_quantiles_snr5": {
+   "10": 0.433,
+   "25": 0.635,
+   "5": 0.337,
+   "50": 1.043,
+   "75": 1.409,
+   "90": 1.741,
+   "95": 1.943
+  },
+  "sd": 0.551
+ }
+}

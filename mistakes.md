@@ -448,16 +448,44 @@ sigma_od 0.0017 — produced **zero counted bands** on a lane carrying an 87-sig
    fraction (0.4) of a NOMINAL spot FWHM, while the configs' centre estimates on a 57-px-wide band
    scatter over ~18 px — so one band was split into clusters of 11 + 9 + 2, and the largest reached
    agreement 0.45 against a 0.50 reporting bar. A band 22 of 24 pipelines agreed on was not counted.
-3. Measured band widths, real vs synthetic (12 plates, FWHM measured on the strongest band outside
+3. ~~Measured band widths, real vs synthetic (12 plates, FWHM measured on the strongest band outside
    the handwriting and origin zones, divided by the nominal spot width the pipeline assumes):
-   **real median 2.75x, range 0.45-5.97; the synthetic generator produces 1.10x.**
+   **real median 2.75x, range 0.45-5.97; the synthetic generator produces 1.10x.**~~
+   **RETRACTED — see the correction below. That 2.75x was measured with a crude proxy and is wrong.**
 4. A width sweep on synthetic plates reproduces the failure exactly: agreement 0.98 at 1.0-2.5x
    nominal, 0.70 at 3.3x, **0.45 at 4.4x** — an 18-sigma band, invisible to the reporting tier.
 
-**Why it matters.** Gate 4's recall of 0.955 was measured on a battery whose bands are
-unrepresentatively narrow, so it does not transfer to the plates this lab actually shoots. This is
-the synthetic-generator fidelity gap that Gate 1 did not test: Gate 1 calibrated illumination, noise,
-clipping and geometry against corpus statistics — never spot WIDTH.
+**Why it seemed to matter.** If real bands were 2.75x wider, Gate 4's recall would have been measured
+on an unrepresentative battery and would not transfer. That inference was correct; its premise was not.
+
+### CORRECTION (2026-08-27, same day)
+
+The 2.75x figure came from a throwaway script over 12 plates that took **the single strongest OD row
+on each plate** and measured the width there. On a plate with a streaking lane, that row is the
+smear — so the script measured smears, not bands.
+
+`scripts/measure_band_widths.py` does it properly: every band the pipeline actually detects, across
+all 66 plates, FWHM taken from the contiguous run through the peak, handwriting and origin zones
+excluded. Result (`reports/band_widths.json`, 150 bands, 138 of them above 5 sigma):
+
+| quantile | 5% | 25% | 50% | 75% | 90% | 95% |
+|---|---|---|---|---|---|---|
+| real band width / nominal | 0.34 | 0.56 | **1.00** | 1.38 | 1.73 | 1.93 |
+
+Mean 1.04, sd 0.55, 4.7% above 2x, 0.7% above 3x, **none above 4x**. The synthetic generator produces
+1.10x. **Real detected bands are the width the pipeline assumes.** The claim that the generator is
+unrepresentative in width is withdrawn, and with it the claim that Gate 4's recall does not transfer
+for that reason.
+
+**What survives.** The width-aware clustering (D-032) is still right — it only widens the tolerance
+when the templates themselves are wide, it measurably rescues the wide case (agreement 0.45 -> 0.89
+at 4.4x nominal), and it changed the real corpus by +2 bands of 119, which is exactly what 0.7% of
+bands above 3x predicts. What is refuted is the diagnosis of why 28 of 66 real plates yield nothing.
+
+**What the two measurements together actually say.** Detected bands on real plates are of normal
+width; the strongest *feature* on a real plate is often 3-6x nominal — because it is a smear. Real
+plates from this lab streak often, and the open question is no longer "are the bands wider" but
+"are those lanes really streaking, or is the plateau statistic (M-027) mis-flagging them".
 
 **Fix.** `MATCH_TOL` becomes width-aware: the clustering window is 0.4 x the widest matched-filter
 template either side actually used, floored at the nominal spot and capped at 6x nominal (D-032).
