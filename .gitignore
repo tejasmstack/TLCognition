@@ -24,3 +24,7 @@ data/
 # regenerable sweep/battery checkpoints (evidence summaries are committed instead)
 reports/grid_sweep_cache/
 reports/gate4_cache/
+
+# local run stores (demo and dev); never part of the audit trail
+demo_data/
+data/
