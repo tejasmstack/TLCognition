@@ -28,8 +28,8 @@ from tlc.pipeline.noise import (
 from tlc.pipeline.photometry import LANE_HALFWIDTH_FRAC, compute_od
 from tlc.pipeline.surrogates import (
     bh_reject,
-    gutter_columns,
     mc_p_value,
+    null_column_pool,
     s1_gutter_profile,
     s2_iaaft_profile,
 )
@@ -278,6 +278,7 @@ def scan_lane_shared(
     green: np.ndarray,
     valid: np.ndarray,
     noise: NoiseModel,
+    exclusion: np.ndarray,
     x_center: float,
     pitch: float,
     lane_centres: list[float],
@@ -302,7 +303,8 @@ def scan_lane_shared(
         for pk in matched_filter_scan(prof, templates, c_prof, sigma0_prof, analysable_rows)
         if pk.z > 0 and pk.amplitude > 0
     ]
-    gutters = gutter_columns(green.shape[1], lane_centres, hw)
+    gutters, null_pool_source = null_column_pool(od, od_valid, exclusion, lane_centres, hw,
+                                                 analysable_rows, x_center)
     if not peaks:
         return SharedLaneDetection((), (), (), (), od, od_valid, gutters, window_cols)
 
@@ -356,7 +358,7 @@ def detect_lane(
 ) -> list[LanePeak]:
     """The per-config lane detector: sigma-variant floor AND BH(FWER MC-p) at q=0.10."""
     shared = scan_lane_shared(
-        cfg, green, valid, noise, x_center, pitch, lane_centres, analysable_rows, rng,
+        cfg, green, valid, noise, exclusion, x_center, pitch, lane_centres, analysable_rows, rng,
         n_surrogates, od_cache,
     )
     return shared.accept(cfg, exclusion, noise)

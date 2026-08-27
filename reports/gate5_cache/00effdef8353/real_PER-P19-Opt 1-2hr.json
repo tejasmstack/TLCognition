@@ -1,1 +1,0 @@
-{"file": "PER-P19-Opt 1-2hr.png", "n_refusals": 4, "n_spots": 2, "refusal_codes": ["E_LANE_COUNT_UNKNOWN", "E_NO_FRONT", "E_NO_REFERENCE_LANE", "E_NULL_NOT_CONSTRUCTIBLE"], "schema_valid": true, "silent_nulls": [], "status": "degraded", "verdict": "ok"}

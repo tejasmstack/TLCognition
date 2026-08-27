@@ -733,3 +733,32 @@ unaffected, while 40 of 66 real plates do.
 **Revisit when** a null that needs no signal-free region exists (M-030's closing note). Then these
 plates get tested instead of refused, and this condition becomes the switch that chooses the null
 rather than the one that refuses.
+
+## D-039 — The surrogate null draws from clean columns, not only from the gutters (2026-08-27)
+S1 transplants a null lane from the strips between the lanes. M-030 showed why that fails on this
+lab's plates: broad bands bleed across the gutters, so the null contains a bigger version of the thing
+it is testing for and every p saturates at 1. But the plates are not short of signal-free material —
+measured, 6,000-10,000 pixels per plate survive the pre-pass exclusion mask, 29-49% of the analysable
+band being excluded.
+
+`null_column_pool` therefore picks the columns the null is built from in this order, and records which:
+
+1. **`gutter_clean`** — gutter columns that the exclusion mask calls signal-free. Still first choice:
+   furthest from the chemistry, closest in texture to a real lane.
+2. **`clean_columns_anywhere`** — any signal-free column outside this lane's own window, when the
+   gutters do not supply enough. Still the plate's own pixels, so the null stays texture-true.
+3. **`gutter_contaminated`** — the old behaviour, kept only so the shape of the failure is unchanged
+   when nothing clean exists; the lane is refused by D-038 in that state anyway.
+
+Measured across the 66 real plates:
+
+| | gutters only | clean columns |
+|---|---|---|
+| counted bands | 119 | **229** |
+| plates with a counted band | 38 | **52** |
+| plates with an Rst anchor | 33 | **48** |
+| lanes claimed empty | 52 | **17** |
+| plates that could not build a null | 40 | 34 |
+
+An Rst anchor is what the reaction reading needs to say anything at all, so this moves the reading
+from 33 plates to 48 of 66.

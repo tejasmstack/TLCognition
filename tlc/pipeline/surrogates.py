@@ -26,6 +26,47 @@ def gutter_columns(width: int, lane_centres: list[float], lane_halfwidth: float)
     return np.nonzero(cols)[0]
 
 
+def null_column_pool(
+    od: np.ndarray,
+    od_valid: np.ndarray,
+    exclusion: np.ndarray,
+    lane_centres: list[float],
+    lane_halfwidth: float,
+    rows: tuple[int, int],
+    own_center: float,
+    min_clean_frac: float = 0.8,
+) -> tuple[np.ndarray, str]:
+    """Columns the S1 null may be transplanted from, and where they came from.
+
+    The gutters between the lanes are the first choice: they are furthest from the chemistry and
+    keep the null's texture closest to a real lane's. But a gutter is only a null while it holds no
+    chemistry, and on real plates broad bands bleed straight across it — measured up to 43 sigma in
+    the mean gutter profile, larger than the band being tested (M-030). So the pool falls back to
+    ANY column the pre-pass exclusion mask calls signal-free, excluding this lane's own window, and
+    says which pool it used so the result can carry that provenance.
+    """
+    r0, r1 = rows
+    n_rows = max(1, r1 - r0)
+    usable = (~exclusion[r0:r1, :]) & od_valid[r0:r1, :]
+    clean_frac = usable.sum(axis=0) / n_rows
+
+    gutters = gutter_columns(od.shape[1], lane_centres, lane_halfwidth)
+    gutters_clean = np.array([x for x in gutters if clean_frac[x] >= min_clean_frac], dtype=int)
+    needed = max(4, int(round(2 * lane_halfwidth)) // 3)
+    if gutters_clean.size >= needed:
+        return gutters_clean, "gutter_clean"
+
+    lo = int(np.floor(own_center - lane_halfwidth - 2))
+    hi = int(np.ceil(own_center + lane_halfwidth + 2))
+    anywhere = np.array([x for x in range(od.shape[1])
+                         if clean_frac[x] >= min_clean_frac and not (lo <= x <= hi)], dtype=int)
+    if anywhere.size >= needed:
+        return anywhere, "clean_columns_anywhere"
+    if gutters.size >= needed:
+        return gutters, "gutter_contaminated"
+    return np.array([], dtype=int), "none"
+
+
 def s1_gutter_profile(
     od: np.ndarray,
     od_valid: np.ndarray,

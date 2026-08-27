@@ -108,7 +108,7 @@ def process_plate(args: tuple[str, PlateSpec, int]) -> dict:
         for bi, bcfg in enumerate(base_cfgs):
             rng = np.random.Generator(np.random.PCG64(seed ^ (bi * 0x9E3779B9 + lane)))
             shared = scan_lane_shared(
-                bcfg, pp.green, pp.valid, noise, xc, gt.lane_pitch,
+                bcfg, pp.green, pp.valid, noise, excl, xc, gt.lane_pitch,
                 list(gt.lane_centres_x), band, rng, n_surrogates=N_SURR, od_cache=od_cache,
             )
             for sv in ("masked_mad", "unmasked_mad", "gutter_only", "autocov_full"):
